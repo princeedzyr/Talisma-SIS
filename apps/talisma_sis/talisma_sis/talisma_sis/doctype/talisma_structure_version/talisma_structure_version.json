@@ -19,7 +19,7 @@
   {"fieldname": "effective_section", "fieldtype": "Section Break", "label": "Effective Interval"},
   {"fieldname": "valid_from", "fieldtype": "Date", "in_standard_filter": 1, "label": "Valid From", "reqd": 1},
   {"description": "Optional in Draft and required before submission. Exclusive interval end.", "fieldname": "valid_to", "fieldtype": "Date", "in_standard_filter": 1, "label": "Valid To", "mandatory_depends_on": "eval:doc.docstatus==1"},
-  {"fieldname": "supersedes", "fieldtype": "Link", "in_standard_filter": 1, "label": "Supersedes", "options": "Talisma Structure Version", "search_index": 1},
+  {"fieldname": "supersedes", "fieldtype": "Link", "in_standard_filter": 1, "label": "Supersedes", "options": "Talisma Structure Version", "search_index": 1, "unique": 1},
   {"fieldname": "governance_section", "fieldtype": "Section Break", "label": "Governance"},
   {"fieldname": "change_summary", "fieldtype": "Small Text", "label": "Change Summary", "reqd": 1},
   {"description": "Required before submission.", "fieldname": "approval_reference", "fieldtype": "Data", "label": "Approval Reference", "mandatory_depends_on": "eval:doc.docstatus==1"}
