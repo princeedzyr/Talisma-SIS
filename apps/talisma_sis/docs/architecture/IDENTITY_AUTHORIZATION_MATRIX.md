@@ -1,6 +1,6 @@
 # Identity Authorization and FERPA Matrix
 
-Status: **Proposed for ADR-002 approval**
+Status: **Accepted supporting architecture under ADR-002; institution-specific policy and implementation not authorized**
 
 This matrix defines policy expectations, not Frappe roles or permissions. Legal counsel and each institution must validate its FERPA and jurisdiction-specific rules.
 

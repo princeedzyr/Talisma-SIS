@@ -1,6 +1,6 @@
 # Identity Threat Model
 
-Status: **Proposed for ADR-002 approval**
+Status: **Accepted supporting architecture under ADR-002; security implementation remains gated**
 
 ## Scope and assets
 

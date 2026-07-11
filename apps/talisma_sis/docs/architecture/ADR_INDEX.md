@@ -5,14 +5,14 @@ Architecture Decision Records capture consequential choices, alternatives, and c
 | ADR | Decision | Status |
 |---|---|---|
 | [ADR-001](ADR-001-FRAPPE-EDUCATION-DEPENDENCY.md) | Frappe Education dependency strategy | Proposed |
-| [ADR-002](ADR-002-IDENTITY-AND-PARTY-MODEL.md) | Identity and party model | Proposed |
+| [ADR-002](ADR-002-IDENTITY-AND-PARTY-MODEL.md) | Identity and party model | Accepted |
 | [ADR-003](ADR-003-INSTITUTIONAL-HIERARCHY.md) | Institutional and academic organization hierarchy | Proposed |
 
 Supporting evidence: [Frappe Education v16 Fit-Gap Report](FRAPPE_EDUCATION_V16_FIT_GAP_REPORT.md).
 
 Detailed domain specification: [Identity and Party Model](IDENTITY_AND_PARTY_MODEL.md).
 
-Current review gate: [ADR-002 Approval Package](ADR-002-APPROVAL-PACKAGE.md).
+ADR-002 decision evidence: [Approval Package](ADR-002-APPROVAL-PACKAGE.md) and [Acceptance Record](ADR-002-ACCEPTANCE-RECORD.md).
 
 ## Lifecycle
 

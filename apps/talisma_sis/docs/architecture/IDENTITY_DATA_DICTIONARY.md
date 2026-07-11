@@ -1,6 +1,6 @@
 # Identity Conceptual Data Dictionary
 
-Status: **Proposed for ADR-002 approval**
+Status: **Accepted supporting architecture under ADR-002; physical schema not authorized**
 
 This is a field-level conceptual model, not an approved Frappe schema. Names are architectural labels and must not be treated as authorized DocType or field names.
 

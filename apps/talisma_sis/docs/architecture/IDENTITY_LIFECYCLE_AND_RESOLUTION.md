@@ -1,6 +1,6 @@
 # Identity Lifecycle and Resolution Rules
 
-Status: **Proposed for ADR-002 approval**
+Status: **Accepted supporting architecture under ADR-002; workflow implementation not authorized**
 
 ## Person lifecycle
 
