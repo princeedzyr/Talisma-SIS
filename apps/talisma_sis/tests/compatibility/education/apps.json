@@ -1,0 +1,10 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext.git",
+    "branch": "v16.26.2"
+  },
+  {
+    "url": "https://github.com/frappe/education.git",
+    "branch": "v16.0.1"
+  }
+]

@@ -50,10 +50,20 @@ services:
       GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
       GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--show-error", "--max-time", "5", "--output", "/dev/null", "http://127.0.0.1:8000/api/method/ping"]
+      start_period: 30s
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
     <<: *customizable_image
     platform: linux/amd64
+
+    ports:
+      - "8081:8080"
+
     command:
       - nginx-entrypoint.sh
     environment:
@@ -68,8 +78,16 @@ services:
     volumes:
       - sites:/home/frappe/frappe-bench/sites
     depends_on:
-      - backend
-      - websocket
+      backend:
+        condition: service_healthy
+      websocket:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--show-error", "--max-time", "5", "--output", "/dev/null", "http://127.0.0.1:8080/api/method/ping"]
+      start_period: 10s
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   websocket:
     <<: [*depends_on_configurator, *customizable_image]
