@@ -1,6 +1,6 @@
 # Institutional Physical Schema Review Gate
 
-Status: **Slice A approved on 2026-07-11; Slices B and C not approved**
+Status: **Slice A and Campus Slice B1 approved on 2026-07-11; later slices not approved**
 
 This gate determines whether accepted ADR-003 is specified sufficiently for a minimal implementation. Merging the design documents does not authorize DocTypes.
 
@@ -25,7 +25,7 @@ Each slice requires independent approval and verification. Schema approval does 
 
 - [x] UUID naming and immutable stable-code rules approved for Slice A.
 - [x] Institution fields and lifecycle approved for Slice A, with policy-profile field deferred.
-- [ ] Campus fields, address and parent behavior approved.
+- [x] Campus fields, address behavior, and deferral of parent grouping approved in Slice B1.
 - [ ] Academic Unit Type capabilities approved.
 - [ ] Academic Unit fields and lifecycle approved.
 - [ ] Structure Version submission/effective-date rules approved.
@@ -42,7 +42,7 @@ Each slice requires independent approval and verification. Schema approval does 
 - [ ] Numeric performance/volume targets recorded.
 - [x] Education remains optional and absent from Slice A metadata Links.
 - [x] Slice A scope and exclusions approved in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
-- [ ] Campus Slice B1 reviewed through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md).
+- [x] Campus Slice B1 accepted through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 
 ## Open decisions before approval
 
@@ -62,4 +62,4 @@ Product architecture, institutional administration, registrar/academic governanc
 
 ## Approval outcome
 
-The project owner approved Slice A only on 2026-07-11. The exact authorization is recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md). Campus has been separated into a proposed Slice B1 to keep implementation independently reviewable. All unchecked items and all later slices remain design-only.
+The project owner approved Slice A and Campus Slice B1 on 2026-07-11. Their exact authorizations are recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md) and [Campus Slice B1 acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md). All unchecked items and all later slices remain design-only.

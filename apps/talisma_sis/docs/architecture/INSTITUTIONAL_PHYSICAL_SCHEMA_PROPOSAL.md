@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Partially approved: Slice A (`Talisma Institution`) only; Campus Slice B1 proposed separately; later slices not authorized**
+Status: **Partially approved: Slice A (`Talisma Institution`) and Campus Slice B1 accepted; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -260,7 +260,7 @@ This supplements rather than replaces Frappe roles. A generic role without an ef
 
 ### Slice B: current academic structure
 
-1. Slice B1 proposes Campus independently in the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md).
+1. Slice B1 approves Campus independently through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 2. Later independently approved slices may introduce Academic Unit Type and Academic Unit.
 3. Structure Version and Unit Placement require a separate approval.
 4. Unit Closure materialization and Scope Grant permission enforcement require a separate approval.
