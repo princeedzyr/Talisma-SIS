@@ -48,7 +48,9 @@ Keep Company, Department, Branch/location, Cost Center, and accounting dimension
 
 ## Proposed decision
 
-Adopt **Option D**.
+Adopt **Option D**, refined by the [Institutional Hierarchy Model](INSTITUTIONAL_HIERARCHY_MODEL.md).
+
+Use a Talisma-owned Institution as the stable security, policy and data-partition root and as ADR-002's `institution_scope` target. Model Campus separately from academic governance. Represent stable Academic Units independently from their versioned parent/child placements so reorganizations do not rewrite history.
 
 ### Ownership model
 
@@ -57,8 +59,9 @@ Adopt **Option D**.
 | Legal entity and accounting books | ERPNext Company |
 | Operational/HR department | ERPNext Department |
 | Financial responsibility hierarchy | ERPNext Cost Center and accounting dimensions |
-| Physical campus/location | Existing location/branch capability after fit-gap review |
-| Academic governance hierarchy | Talisma academic-unit concept |
+| Institutional permission/policy scope | Talisma Institution |
+| Physical campus/location | Talisma Campus with optional standard mappings |
+| Academic governance hierarchy | Talisma Academic Unit plus versioned Structure/Placement |
 | Program and course academic ownership | Effective-dated relationship to academic unit |
 
 `Academic Unit` is a working architectural label, not an approved DocType.
@@ -128,15 +131,15 @@ The hierarchy must allow institutions that do not use every level; College must 
 - Effective dating makes validation and reporting more complex.
 - Migration requires resolving inconsistent existing organization data.
 
-## Open questions before acceptance
+## Proposed resolutions pending acceptance
 
-- Is multi-institution operation required within one Frappe site?
-- Which campus/location standard record should be reused?
-- Can Department satisfy the academic-unit requirement for the first release?
-- Which organizational levels can grant credentials, own courses, employ faculty, and receive financial postings?
-- How are jointly owned and cross-campus programs represented?
-- Which hierarchy drives row-level permissions?
-- What reorganization and code-retention policies apply?
+- The domain supports multiple Institutions in one site, while deployment policy may choose separate sites for stronger isolation.
+- Talisma Campus is the campus master; Branch is only an optional compatibility mapping.
+- Department cannot satisfy the academic-unit requirement because it remains a company-bound operational/HR tree.
+- Academic Unit capabilities explicitly control credential, program and course ownership; employment and financial posting remain owned by Employee/Department and Company/Cost Center mappings.
+- Joint and cross-campus programs use effective-dated ownership assignments without duplicating the Program master.
+- Talisma Institution is the top row-level permission boundary; Academic Unit descendant scope uses an approved structure version.
+- Reorganizations create new structure versions and lineage; stable codes are not recycled and historical facts are not rewritten.
 
 ## Validation plan
 
@@ -148,6 +151,10 @@ The hierarchy must allow institutions that do not use every level; College must 
 
 ## References
 
+- [ADR-003 approval package](ADR-003-APPROVAL-PACKAGE.md)
+- [Standard DocType fit-gap](INSTITUTIONAL_STANDARD_DOCTYPE_FIT_GAP.md)
+- [Detailed institutional hierarchy model](INSTITUTIONAL_HIERARCHY_MODEL.md)
+- [Governance and validation](INSTITUTIONAL_HIERARCHY_GOVERNANCE.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [ERPNext reuse strategy](ERPNEXT_REUSE_STRATEGY.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)
