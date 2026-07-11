@@ -1,6 +1,6 @@
 # Institutional Physical Schema Review Gate
 
-Status: **Ready for review; not approved**
+Status: **Slice A approved on 2026-07-11; Slices B and C not approved**
 
 This gate determines whether accepted ADR-003 is specified sufficiently for a minimal implementation. Merging the design documents does not authorize DocTypes.
 
@@ -23,8 +23,8 @@ Each slice requires independent approval and verification. Schema approval does 
 
 ## Review checklist
 
-- [ ] UUID naming and immutable stable-code rules approved.
-- [ ] Institution fields and lifecycle approved.
+- [x] UUID naming and immutable stable-code rules approved for Slice A.
+- [x] Institution fields and lifecycle approved for Slice A, with policy-profile field deferred.
 - [ ] Campus fields, address and parent behavior approved.
 - [ ] Academic Unit Type capabilities approved.
 - [ ] Academic Unit fields and lifecycle approved.
@@ -35,13 +35,13 @@ Each slice requires independent approval and verification. Schema approval does 
 - [ ] Academic ownership roles and primary-owner constraint approved.
 - [ ] Scope Grant semantics and Frappe role interaction approved.
 - [ ] Composite indexes and MariaDB concurrency strategy approved.
-- [ ] Server-side permission enforcement points approved.
+- [x] Minimal Institution Manager/Viewer enforcement approved for Slice A; hierarchy scope remains pending.
 - [ ] Reorganization impact and scope-expansion review approved.
 - [ ] Audit events and idempotency approved.
-- [ ] Migration, reconciliation and recovery plan approved.
+- [x] No-data-migration Slice A install/migrate/backup tests approved; later migration remains pending.
 - [ ] Numeric performance/volume targets recorded.
-- [ ] Education remains optional and absent from base metadata Links.
-- [ ] Slice A scope and exclusions approved separately.
+- [x] Education remains optional and absent from Slice A metadata Links.
+- [x] Slice A scope and exclusions approved in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
 
 ## Open decisions before approval
 
@@ -61,4 +61,4 @@ Product architecture, institutional administration, registrar/academic governanc
 
 ## Approval outcome
 
-Approval must identify the exact document revision and which slice is authorized. The recommended initial authorization is Slice A only. Slice A creates the stable Institution dependency without prematurely implementing hierarchy, mappings, ownership or migration.
+The project owner approved Slice A only on 2026-07-11. The exact authorization is recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md). All unchecked items and all later slices remain design-only.

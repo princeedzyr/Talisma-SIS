@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Proposed; no DocType creation authorized**
+Status: **Partially approved: Slice A (`Talisma Institution`) only; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -49,7 +49,7 @@ Standalone, non-submittable root for security, policy and data partitioning. Thi
 | `country` | Link: Country | No | Index | Policy/reporting context, not Company ownership |
 | `website` | Data | No | No | URL validation |
 | `primary_address` | Link: Address | No | No | Standard address; governed deletion |
-| `policy_profile_code` | Data | No | No | Versioned policy reference; not embedded policy JSON |
+| `policy_profile_code` | Data | No | No | Deferred from Slice A until a policy-profile schema is approved |
 
 ### Rules
 

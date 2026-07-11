@@ -158,6 +158,7 @@ The hierarchy must allow institutions that do not use every level; College must 
 - [Detailed institutional hierarchy model](INSTITUTIONAL_HIERARCHY_MODEL.md)
 - [Governance and validation](INSTITUTIONAL_HIERARCHY_GOVERNANCE.md)
 - [Institutional physical schema review gate](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md)
+- [Institutional schema Slice A approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [ERPNext reuse strategy](ERPNEXT_REUSE_STRATEGY.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)
