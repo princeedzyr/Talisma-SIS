@@ -5,10 +5,24 @@ Architecture Decision Records capture consequential choices, alternatives, and c
 | ADR | Decision | Status |
 |---|---|---|
 | [ADR-001](ADR-001-FRAPPE-EDUCATION-DEPENDENCY.md) | Frappe Education dependency strategy | Proposed |
-| [ADR-002](ADR-002-IDENTITY-AND-PARTY-MODEL.md) | Identity and party model | Proposed |
-| [ADR-003](ADR-003-INSTITUTIONAL-HIERARCHY.md) | Institutional and academic organization hierarchy | Proposed |
+| [ADR-002](ADR-002-IDENTITY-AND-PARTY-MODEL.md) | Identity and party model | Accepted |
+| [ADR-003](ADR-003-INSTITUTIONAL-HIERARCHY.md) | Institutional and academic organization hierarchy | Accepted |
 
 Supporting evidence: [Frappe Education v16 Fit-Gap Report](FRAPPE_EDUCATION_V16_FIT_GAP_REPORT.md).
+
+Detailed domain specification: [Identity and Party Model](IDENTITY_AND_PARTY_MODEL.md).
+
+ADR-002 decision evidence: [Approval Package](ADR-002-APPROVAL-PACKAGE.md) and [Acceptance Record](ADR-002-ACCEPTANCE-RECORD.md).
+
+ADR-002 next implementation gate: [Identity Physical Schema Review](IDENTITY_SCHEMA_REVIEW_GATE.md).
+
+ADR-003 decision evidence: [Approval Package](ADR-003-APPROVAL-PACKAGE.md) and [Acceptance Record](ADR-003-ACCEPTANCE-RECORD.md).
+
+ADR-003 next implementation gate: [Institutional Physical Schema Review](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md).
+
+ADR-003 implementation authorizations: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Campus Slice B1 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md), and [Academic Unit Slice B2 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
+
+ADR-003 accepted Slice B2 proposal: [Institutional Schema Slice B2 — Academic Unit Type and Academic Unit](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md). Structure Version, Placement, Unit Closure, and Scope Grant remain separately gated.
 
 ## Lifecycle
 

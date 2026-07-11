@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "institution_code",
+  "institution_name",
+  "legal_name",
+  "short_name",
+  "lifecycle_section",
+  "status",
+  "valid_from",
+  "valid_to",
+  "locale_section",
+  "default_timezone",
+  "default_language",
+  "country",
+  "contact_section",
+  "website",
+  "primary_address"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
+  {
+   "description": "Stable institution code. Uppercase letters, numbers, hyphens and underscores only.",
+   "fieldname": "institution_code",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Institution Code",
+   "length": 32,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "institution_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Institution Name",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Informational only. ERPNext Company remains authoritative for legal and accounting identity.",
+   "fieldname": "legal_name",
+   "fieldtype": "Data",
+   "label": "Legal Name"
+  },
+  {
+   "fieldname": "short_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Short Name",
+   "search_index": 1
+  },
+  {
+   "fieldname": "lifecycle_section",
+   "fieldtype": "Section Break",
+   "label": "Lifecycle"
+  },
+  {
+   "default": "Planned",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Planned\nActive\nInactive\nClosed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid To"
+  },
+  {
+   "fieldname": "locale_section",
+   "fieldtype": "Section Break",
+   "label": "Locale"
+  },
+  {
+   "fieldname": "default_timezone",
+   "fieldtype": "Autocomplete",
+   "label": "Default Timezone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_language",
+   "fieldtype": "Link",
+   "label": "Default Language",
+   "options": "Language"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Country",
+   "options": "Country",
+   "search_index": 1
+  },
+  {
+   "fieldname": "contact_section",
+   "fieldtype": "Section Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "website",
+   "fieldtype": "Data",
+   "label": "Website",
+   "options": "URL"
+  },
+  {
+   "fieldname": "primary_address",
+   "fieldtype": "Link",
+   "label": "Primary Address",
+   "options": "Address"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Talisma SIS",
+ "name": "Talisma Institution",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Talisma Institution Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Talisma Institution Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "institution_code,institution_name,short_name",
+ "sort_field": "institution_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "institution_name",
+ "track_changes": 1
+}

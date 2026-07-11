@@ -1,0 +1,164 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "institution",
+  "campus_code",
+  "campus_name",
+  "short_name",
+  "classification_section",
+  "campus_type",
+  "status",
+  "valid_from",
+  "valid_to",
+  "location_section",
+  "timezone",
+  "address",
+  "website"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
+  {
+   "fieldname": "institution",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Institution",
+   "options": "Talisma Institution",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Stable campus code within the Institution. Uppercase letters, numbers, hyphens and underscores only.",
+   "fieldname": "campus_code",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Campus Code",
+   "length": 32,
+   "reqd": 1
+  },
+  {
+   "fieldname": "campus_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Campus Name",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "short_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Short Name",
+   "search_index": 1
+  },
+  {
+   "fieldname": "classification_section",
+   "fieldtype": "Section Break",
+   "label": "Classification and Lifecycle"
+  },
+  {
+   "fieldname": "campus_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Campus Type",
+   "options": "Main\nSatellite\nLearning Center\nVirtual\nOther",
+   "reqd": 1
+  },
+  {
+   "default": "Planned",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Planned\nActive\nInactive\nClosed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid To"
+  },
+  {
+   "fieldname": "location_section",
+   "fieldtype": "Section Break",
+   "label": "Location and Contact"
+  },
+  {
+   "description": "Defaults from the Institution when a new Campus is created.",
+   "fieldname": "timezone",
+   "fieldtype": "Autocomplete",
+   "label": "Timezone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "label": "Address",
+   "mandatory_depends_on": "eval:doc.campus_type!='Virtual'",
+   "options": "Address"
+  },
+  {
+   "fieldname": "website",
+   "fieldtype": "Data",
+   "label": "Website",
+   "options": "URL"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Talisma SIS",
+ "name": "Talisma Campus",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Talisma Institution Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Talisma Institution Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "campus_code,campus_name,short_name",
+ "sort_field": "campus_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "campus_name",
+ "track_changes": 1
+}

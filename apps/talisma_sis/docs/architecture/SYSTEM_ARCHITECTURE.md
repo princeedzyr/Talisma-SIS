@@ -127,6 +127,8 @@ flowchart LR
 
 `User` is authentication identity, `Contact` and `Address` are shared contact records, `Employee` is the employment record, `Instructor` is the teaching profile, and `Student` is the academic identity. These records may refer to the same person but must not be merged into one overloaded DocType.
 
+The accepted cross-role identity boundary, ownership rules, lifecycle, privacy controls, and resolution workflow are defined in the [Identity and Party Model](IDENTITY_AND_PARTY_MODEL.md) and governed by ADR-002. The physical schema and implementation remain subject to a separate approval gate.
+
 Talisma must define a duplicate-prevention and identity-linking policy before admissions implementation. Government identifiers and sensitive identity evidence must not be used as document names.
 
 ### Institutional model
