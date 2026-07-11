@@ -20,7 +20,7 @@ ADR-003 decision evidence: [Approval Package](ADR-003-APPROVAL-PACKAGE.md) and [
 
 ADR-003 next implementation gate: [Institutional Physical Schema Review](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md).
 
-ADR-003 implementation authorization: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
+ADR-003 implementation authorizations: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md) and [Campus Slice B1 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 
 ## Lifecycle
 

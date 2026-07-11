@@ -1,7 +1,7 @@
 # Institutional Schema Slice B1: Campus Proposal
 
 - **Architecture:** Accepted ADR-003 Institutional Hierarchy
-- **Status:** Proposed for architecture approval; implementation is not authorized
+- **Status:** Accepted on 2026-07-11; implementation boundary recorded in the acceptance record
 - **Prepared:** 2026-07-11
 - **Scope:** `Talisma Campus` only
 
@@ -9,7 +9,7 @@
 
 This proposal introduces the physical and operational campus master beneath an existing `Talisma Institution`. It deliberately separates campus location from academic governance, ERPNext legal/accounting structure, and ERPNext Branch semantics.
 
-Approval of this document would authorize a later implementation package only after the project owner records explicit acceptance. This proposal itself creates no DocTypes, roles, hooks, migrations, APIs, or runtime behavior.
+The project owner accepted this proposal on 2026-07-11. The exact authorization and change-control conditions are recorded in the [Campus Slice B1 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md). This document itself creates no DocTypes, roles, hooks, migrations, APIs, or runtime behavior.
 
 ## Architectural boundary
 
@@ -140,20 +140,20 @@ Not authorized by this proposal:
 
 ## Approval checklist
 
-- [ ] Campus is approved as distinct from Branch and Academic Unit.
-- [ ] Exact fields and Select values are approved.
-- [ ] Institution-scoped immutable code and composite uniqueness are approved.
-- [ ] `parent_campus` and redundant `is_virtual` are deferred.
-- [ ] Address requirements for Virtual versus physical campuses are approved.
-- [ ] Lifecycle and effective-interval rules are approved.
-- [ ] Existing Manager/Viewer roles are approved; no new role is required.
-- [ ] Multi-institution limitation before Scope Grant enforcement is accepted.
-- [ ] Tests, migration, rollback, and exclusions are approved.
-- [ ] Project owner has recorded explicit implementation authorization.
+- [x] Campus is approved as distinct from Branch and Academic Unit.
+- [x] Exact fields and Select values are approved.
+- [x] Institution-scoped immutable code and composite uniqueness are approved.
+- [x] `parent_campus` and redundant `is_virtual` are deferred.
+- [x] Address requirements for Virtual versus physical campuses are approved.
+- [x] Lifecycle and effective-interval rules are approved.
+- [x] Existing Manager/Viewer roles are approved; no new role is required.
+- [x] Multi-institution limitation before Scope Grant enforcement is accepted.
+- [x] Tests, migration, rollback, and exclusions are approved.
+- [x] Project owner recorded explicit implementation authorization on 2026-07-11.
 
-## Decision requested
+## Decision outcome
 
-Approve, reject, or request changes to **Slice B1: Talisma Campus only**. Approval must identify the project owner, date, exact authorized scope, and any qualifications. Implementation must occur on a separate feature branch after acceptance.
+**Slice B1: Talisma Campus only** was accepted without qualifications by Prince Ebinezer, Project Owner, on 2026-07-11. Implementation must occur on a separate feature branch after the acceptance record is merged.
 
 ## References
 
@@ -163,3 +163,4 @@ Approve, reject, or request changes to **Slice B1: Talisma Campus only**. Approv
 - [Institutional Schema Review Gate](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md)
 - [Institutional Schema Operations and Security](INSTITUTIONAL_SCHEMA_OPERATIONS_AND_SECURITY.md)
 - [Institutional Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md)
+- [Campus Slice B1 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md)
