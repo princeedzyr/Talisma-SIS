@@ -158,5 +158,6 @@ Collection must be purpose-limited. Talisma must not collect sensitive fields me
 - [Lifecycle and resolution rules](IDENTITY_LIFECYCLE_AND_RESOLUTION.md)
 - [Threat model](IDENTITY_THREAT_MODEL.md)
 - [Retention and migration strategy](IDENTITY_RETENTION_AND_MIGRATION.md)
+- [Physical schema review gate](IDENTITY_SCHEMA_REVIEW_GATE.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)

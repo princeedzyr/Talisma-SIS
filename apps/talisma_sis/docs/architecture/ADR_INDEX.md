@@ -14,6 +14,8 @@ Detailed domain specification: [Identity and Party Model](IDENTITY_AND_PARTY_MOD
 
 ADR-002 decision evidence: [Approval Package](ADR-002-APPROVAL-PACKAGE.md) and [Acceptance Record](ADR-002-ACCEPTANCE-RECORD.md).
 
+ADR-002 next implementation gate: [Identity Physical Schema Review](IDENTITY_SCHEMA_REVIEW_GATE.md).
+
 ## Lifecycle
 
 1. **Proposed:** Under review; no implementation authorization.
