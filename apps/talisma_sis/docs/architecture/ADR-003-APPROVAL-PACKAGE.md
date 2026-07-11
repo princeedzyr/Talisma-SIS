@@ -1,6 +1,6 @@
 # ADR-003 Approval Package
 
-Status: **Ready for stakeholder review; not approved**
+Status: **Approved on 2026-07-11; physical schema and implementation not authorized**
 
 This package resolves the conceptual choices needed for ADR-003. It authorizes no DocTypes, fields, permissions, migrations or runtime changes.
 
@@ -33,22 +33,22 @@ This package resolves the conceptual choices needed for ADR-003. It authorizes n
 
 ## Approval checklist
 
-- [ ] Multi-institution-per-site domain capability approved.
-- [ ] Talisma Institution approved as permission and policy root.
-- [ ] Talisma Institution approved as ADR-002 `institution_scope` target.
-- [ ] Company retained exclusively for legal/accounting authority.
-- [ ] Campus separated from Branch and Academic Unit.
-- [ ] Academic Unit types and capabilities approved.
-- [ ] Versioned Structure/Placement model approved.
-- [ ] Department and Cost Center mapping boundaries approved.
-- [ ] Program/Course ownership roles and effective dating approved.
-- [ ] Joint and cross-campus ownership behavior approved.
-- [ ] Reorganization, lineage and historical-query rules approved.
-- [ ] Permission scope and reorganization-review behavior approved.
-- [ ] Stable code and non-reuse policy approved.
-- [ ] Migration and reconciliation strategy approved.
-- [ ] Education remains optional until ADR-001 is accepted.
-- [ ] Physical-schema design remains a separate gate.
+- [x] Multi-institution-per-site domain capability approved, subject to deployment isolation validation.
+- [x] Talisma Institution approved as permission and policy root.
+- [x] Talisma Institution approved as ADR-002 `institution_scope` target.
+- [x] Company retained exclusively for legal/accounting authority.
+- [x] Campus separated from Branch and Academic Unit.
+- [x] Academic Unit types and capabilities approved conceptually.
+- [x] Versioned Structure/Placement model approved conceptually.
+- [x] Department and Cost Center mapping boundaries approved.
+- [x] Program/Course ownership roles and effective dating approved.
+- [x] Joint and cross-campus ownership behavior approved.
+- [x] Reorganization, lineage and historical-query rules approved.
+- [x] Permission scope and reorganization-review behavior approved.
+- [x] Stable code and non-reuse policy approved.
+- [x] Migration and reconciliation strategy approved.
+- [x] Education remains optional until ADR-001 is accepted.
+- [x] Physical-schema design remains a separate gate.
 
 ## Required reviewers
 
@@ -56,7 +56,7 @@ Product architecture, institutional administration, registrar/academic governanc
 
 ## Conditions for ADR acceptance
 
-ADR-003 may become Accepted when the applicable checklist is approved and exceptions are recorded. Acceptance unblocks the conceptual identity `institution_scope` target but does not authorize physical schema. Exact DocTypes, fields, indexes, permission queries, hierarchy cache/materialization and migration scripts require a later schema review.
+These conditions were satisfied by project-owner approval on 2026-07-11 with qualifications recorded in the [acceptance record](ADR-003-ACCEPTANCE-RECORD.md). Acceptance unblocks the conceptual identity `institution_scope` target but does not authorize physical schema. Exact DocTypes, fields, indexes, permission queries, hierarchy cache/materialization and migration scripts require a later schema review.
 
 ## Next gate after acceptance
 

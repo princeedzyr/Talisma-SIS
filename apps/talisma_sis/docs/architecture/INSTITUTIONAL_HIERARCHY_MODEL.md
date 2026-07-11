@@ -1,6 +1,6 @@
 # Talisma Institutional Hierarchy Model
 
-Status: **Proposed for ADR-003 approval; no schema authorized**
+Status: **Accepted architecture baseline under ADR-003; no schema authorized**
 
 ## Decision proposal
 

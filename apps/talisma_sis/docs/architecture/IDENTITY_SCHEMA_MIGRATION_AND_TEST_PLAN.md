@@ -71,7 +71,7 @@ The first implementation slice is acceptable only when it installs without Educa
 
 ## Production blockers
 
-- ADR-003 not accepted or institution target unresolved.
+- Talisma Institution physical schema not approved/available, despite conceptual acceptance in ADR-003.
 - Exact roles/permissions not approved.
 - Identifier hashing/encryption key design not approved.
 - Composite uniqueness not race-tested on supported MariaDB.
