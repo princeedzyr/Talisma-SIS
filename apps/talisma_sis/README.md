@@ -4,7 +4,7 @@ Talisma SIS is a commercial Student Information System for higher-education inst
 
 ## Current status
 
-The application is at its foundation stage. The approved `Talisma Institution` scope root and its Manager/Viewer roles are implemented; Campus and all other business domains remain design-only. No workflows, reports, APIs, portals, or user interfaces have been implemented.
+The application is at its foundation stage. The approved `Talisma Institution`, `Talisma Campus`, `Talisma Academic Unit Type`, and `Talisma Academic Unit` foundations are implemented with their Manager/Viewer roles. Versioned hierarchy, Closure, Scope Grant, and all transactional business domains remain gated or design-only. No workflows, reports, APIs, portals, or user interfaces have been implemented.
 
 ## Architecture principles
 

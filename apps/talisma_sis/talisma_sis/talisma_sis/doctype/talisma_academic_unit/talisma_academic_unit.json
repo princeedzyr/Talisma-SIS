@@ -1,0 +1,166 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "institution",
+  "unit_code",
+  "unit_name",
+  "short_name",
+  "classification_section",
+  "unit_type",
+  "status",
+  "valid_from",
+  "valid_to",
+  "capability_section",
+  "can_grant_credentials",
+  "can_own_programs",
+  "can_own_courses"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
+  {
+   "fieldname": "institution",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Institution",
+   "options": "Talisma Institution",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Stable academic unit code within the Institution. Uppercase letters, numbers, hyphens and underscores only.",
+   "fieldname": "unit_code",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Unit Code",
+   "length": 32,
+   "reqd": 1
+  },
+  {
+   "fieldname": "unit_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Unit Name",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "short_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Short Name",
+   "search_index": 1
+  },
+  {
+   "fieldname": "classification_section",
+   "fieldtype": "Section Break",
+   "label": "Classification and Lifecycle"
+  },
+  {
+   "fieldname": "unit_type",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Unit Type",
+   "options": "Talisma Academic Unit Type",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Planned",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Planned\nActive\nInactive\nClosed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Valid To"
+  },
+  {
+   "fieldname": "capability_section",
+   "fieldtype": "Section Break",
+   "label": "Capabilities"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_grant_credentials",
+   "fieldtype": "Check",
+   "label": "Can Grant Credentials",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "can_own_programs",
+   "fieldtype": "Check",
+   "label": "Can Own Programs",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "can_own_courses",
+   "fieldtype": "Check",
+   "label": "Can Own Courses",
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Talisma SIS",
+ "name": "Talisma Academic Unit",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Talisma Institution Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Talisma Institution Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "search_fields": "unit_code,unit_name,short_name",
+ "sort_field": "unit_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "unit_name",
+ "track_changes": 1
+}
