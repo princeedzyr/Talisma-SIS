@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Partially approved: Slices A, B1, B2, and Structure Slice B3 accepted; later slices not authorized**
+Status: **Partially approved: Slices A, B1, B2, B3, and B4 accepted; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -161,6 +161,8 @@ Unique `(structure_version, academic_unit)`. Both units must share Institution. 
 ## Talisma Unit Closure
 
 System-managed materialized transitive closure for descendant permission and reporting queries. Users cannot create/edit/delete these records directly.
+
+The accepted [B4 Closure proposal](INSTITUTIONAL_SCHEMA_SLICE_B4_CLOSURE_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B4_CLOSURE_ACCEPTANCE.md) supersede this preliminary shape by introducing an explicit Closure Build generation record. B4 implementation must follow those accepted documents exactly.
 
 | Field | Type | Required | Index/unique | Semantics |
 |---|---|---:|---|---|

@@ -22,6 +22,8 @@ ADR-003 next implementation gate: [Institutional Physical Schema Review](INSTITU
 
 ADR-003 implementation authorizations: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Campus Slice B1 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md), [Academic Unit Slice B2 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md), and [Structure Slice B3 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md).
 
+ADR-003 accepted Slice B4: [Unit Closure Proposal](INSTITUTIONAL_SCHEMA_SLICE_B4_CLOSURE_PROPOSAL.md) and [Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B4_CLOSURE_ACCEPTANCE.md). Implementation remains blocked until the acceptance record is merged into `develop`.
+
 ADR-003 B3 amendment: [Bounded Submitted Structure Versions](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md).
 
 ADR-003 accepted Slice B2 proposal: [Institutional Schema Slice B2 — Academic Unit Type and Academic Unit](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md). Structure Version, Placement, Unit Closure, and Scope Grant remain separately gated.
