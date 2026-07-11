@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Partially approved: Slice A, Campus Slice B1, and Academic Unit Slice B2 accepted; Structure Slice B3 proposed separately; later slices not authorized**
+Status: **Partially approved: Slices A, B1, B2, and Structure Slice B3 accepted; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -262,7 +262,7 @@ This supplements rather than replaces Frappe roles. A generic role without an ef
 
 1. Slice B1 approves Campus independently through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 2. Slice B2 approves Academic Unit Type and Academic Unit through the [B2 proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
-3. Slice B3 proposes Structure Version and Unit Placement independently in the [B3 proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md).
+3. Slice B3 approves Structure Version and Unit Placement through the [B3 proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md).
 4. Unit Closure materialization and Scope Grant permission enforcement require a separate approval.
 
 ### Slice C: integrations

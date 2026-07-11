@@ -1,13 +1,13 @@
 # Institutional Schema Slice B3: Structure Version and Unit Placement Proposal
 
 - **Architecture:** Accepted ADR-003 Institutional Hierarchy
-- **Status:** Proposed for architecture approval; implementation is not authorized
+- **Status:** Accepted on 2026-07-11; implementation boundary recorded in the acceptance record
 - **Prepared:** 2026-07-11
 - **Scope:** `Talisma Structure Version` and `Talisma Unit Placement` only
 
 ## Purpose
 
-This proposal adds an immutable, effective-dated representation of academic-unit parentage without changing stable `Talisma Academic Unit` records. It allows governance teams to prepare and approve a structure snapshot while preserving prior versions for historical interpretation.
+This proposal adds an immutable, effective-dated representation of academic-unit parentage without changing stable `Talisma Academic Unit` records. It allows governance teams to prepare and approve a structure snapshot while preserving prior versions for historical interpretation. The project owner accepted it on 2026-07-11; the exact authorization is recorded in the [B3 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md).
 
 B3 does not activate a structure for permissions, ownership, reporting, or integrations. Submission means the placement graph passed governance validation; it does not mean Closure rows exist or that any consumer may traverse it in production.
 
@@ -195,20 +195,20 @@ This proposal does not authorize:
 
 ## Review checklist
 
-- [ ] Exact Structure Version and Placement fields approved.
-- [ ] Submission selected as the approval and immutability boundary.
-- [ ] Forest, root, parent-presence, cycle, depth, and interval rules approved.
-- [ ] Composite constraints and MariaDB submission lock strategy approved.
-- [ ] Supersession and non-overlap rules approved.
-- [ ] Submitted structures explicitly remain inactive and unusable for permissions.
-- [ ] New Academic Structure Approver role and DocPerm limitation accepted.
-- [ ] Scale targets and required tests approved.
-- [ ] Migration, rollback, and exclusions approved.
-- [ ] Project owner recorded explicit implementation authorization.
+- [x] Exact Structure Version and Placement fields approved.
+- [x] Submission selected as the approval and immutability boundary.
+- [x] Forest, root, parent-presence, cycle, depth, and interval rules approved.
+- [x] Composite constraints and MariaDB submission lock strategy approved.
+- [x] Supersession and non-overlap rules approved.
+- [x] Submitted structures explicitly remain inactive and unusable for permissions.
+- [x] New Academic Structure Approver role and DocPerm limitation accepted.
+- [x] Scale targets and required tests approved.
+- [x] Migration, rollback, and exclusions approved.
+- [x] Project owner recorded explicit implementation authorization on 2026-07-11.
 
-## Decision requested
+## Decision outcome
 
-Approve, reject, or request changes to **Slice B3: Talisma Structure Version and Talisma Unit Placement only**. Implementation must remain blocked until an acceptance record is reviewed and merged.
+**Slice B3: Talisma Structure Version and Talisma Unit Placement only** was accepted without qualifications by Prince Ebinezer, Project Owner, on 2026-07-11. Implementation must remain blocked until the acceptance record is reviewed and merged.
 
 ## References
 
@@ -219,3 +219,4 @@ Approve, reject, or request changes to **Slice B3: Talisma Structure Version and
 - [Institutional Operations and Security](INSTITUTIONAL_SCHEMA_OPERATIONS_AND_SECURITY.md)
 - [Institutional Migration and Test Plan](INSTITUTIONAL_SCHEMA_MIGRATION_AND_TEST_PLAN.md)
 - [Slice B2 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md)
+- [Slice B3 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md)
