@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Partially approved: Slice A (`Talisma Institution`) only; later slices not authorized**
+Status: **Partially approved: Slice A (`Talisma Institution`) only; Campus Slice B1 proposed separately; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -68,16 +68,16 @@ Standalone physical/operational campus scoped to exactly one Institution.
 | `institution` | Link: Talisma Institution | Yes | Composite index | Security root |
 | `campus_code` | Data | Yes | Composite unique | Stable code within Institution |
 | `campus_name` | Data | Yes | Search index | Display name |
+| `short_name` | Data | No | Search index | Display abbreviation |
 | `campus_type` | Select | Yes | Index | Main, Satellite, Learning Center, Virtual, Other |
 | `status` | Select | Yes | Index | Planned, Active, Inactive, Closed |
 | `valid_from` | Date | Yes | Index | Effective start |
 | `valid_to` | Date | No | Index | Effective end |
 | `timezone` | Autocomplete/Data | Yes | No | Valid IANA timezone |
 | `address` | Link: Address | Conditional | No | Required except approved Virtual campus |
-| `parent_campus` | Link: Talisma Campus | No | Index | Physical grouping only; same Institution, acyclic |
-| `is_virtual` | Check | Yes | Index | Must align with type |
+| `website` | Data | No | No | Valid HTTP or HTTPS URL |
 
-Unique constraint: `(institution, normalized campus_code)`. Campus placement does not imply academic ownership.
+Unique constraint: `(institution, normalized campus_code)`. Campus placement does not imply academic ownership. `parent_campus` is deferred with the facilities model, and Virtual behavior derives from `campus_type` rather than a duplicate flag. Exact Slice B1 rules are defined in the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md).
 
 ## Talisma Academic Unit Type
 
@@ -260,10 +260,10 @@ This supplements rather than replaces Frappe roles. A generic role without an ef
 
 ### Slice B: current academic structure
 
-1. Campus, Academic Unit Type and Academic Unit.
-2. Structure Version and Unit Placement.
-3. Unit Closure materialization.
-4. Scope Grant and permission-query enforcement.
+1. Slice B1 proposes Campus independently in the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md).
+2. Later independently approved slices may introduce Academic Unit Type and Academic Unit.
+3. Structure Version and Unit Placement require a separate approval.
+4. Unit Closure materialization and Scope Grant permission enforcement require a separate approval.
 
 ### Slice C: integrations
 

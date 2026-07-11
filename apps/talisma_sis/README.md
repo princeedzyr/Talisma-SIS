@@ -4,7 +4,7 @@ Talisma SIS is a commercial Student Information System for higher-education inst
 
 ## Current status
 
-The application is at its foundation stage. It contains the standard Frappe scaffold and project documentation only. No Talisma business DocTypes, roles, workflows, reports, APIs, or user interfaces have been implemented.
+The application is at its foundation stage. The approved `Talisma Institution` scope root and its Manager/Viewer roles are implemented; Campus and all other business domains remain design-only. No workflows, reports, APIs, portals, or user interfaces have been implemented.
 
 ## Architecture principles
 
@@ -15,7 +15,7 @@ The application is at its foundation stage. It contains the standard Frappe scaf
 - Keep domain modules cohesive and integrations explicit.
 - Make every schema and data migration repeatable through `bench migrate`.
 
-See [Project Vision](docs/PROJECT_VISION.md), [Architecture](docs/ARCHITECTURE.md), [Architecture Decisions](docs/architecture/ADR_INDEX.md), [Target Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md), [Identity Model](docs/architecture/IDENTITY_AND_PARTY_MODEL.md), [Identity Approval Package](docs/architecture/ADR-002-APPROVAL-PACKAGE.md), [ADR-002 Acceptance Record](docs/architecture/ADR-002-ACCEPTANCE-RECORD.md), [Identity Schema Review](docs/architecture/IDENTITY_SCHEMA_REVIEW_GATE.md), [Institutional Hierarchy Review](docs/architecture/ADR-003-APPROVAL-PACKAGE.md), [ADR-003 Acceptance Record](docs/architecture/ADR-003-ACCEPTANCE-RECORD.md), [Institutional Schema Review](docs/architecture/INSTITUTIONAL_SCHEMA_REVIEW_GATE.md), [Institutional Slice A Approval](docs/architecture/INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Roadmap](docs/ROADMAP.md), [Modules](docs/MODULES.md), and [Coding Standards](docs/CODING_STANDARDS.md).
+See [Project Vision](docs/PROJECT_VISION.md), [Architecture](docs/ARCHITECTURE.md), [Architecture Decisions](docs/architecture/ADR_INDEX.md), [Target Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md), [Identity Model](docs/architecture/IDENTITY_AND_PARTY_MODEL.md), [Identity Approval Package](docs/architecture/ADR-002-APPROVAL-PACKAGE.md), [ADR-002 Acceptance Record](docs/architecture/ADR-002-ACCEPTANCE-RECORD.md), [Identity Schema Review](docs/architecture/IDENTITY_SCHEMA_REVIEW_GATE.md), [Institutional Hierarchy Review](docs/architecture/ADR-003-APPROVAL-PACKAGE.md), [ADR-003 Acceptance Record](docs/architecture/ADR-003-ACCEPTANCE-RECORD.md), [Institutional Schema Review](docs/architecture/INSTITUTIONAL_SCHEMA_REVIEW_GATE.md), [Institutional Slice A Approval](docs/architecture/INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Campus Slice B1 Proposal](docs/architecture/INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md), [Roadmap](docs/ROADMAP.md), [Modules](docs/MODULES.md), and [Coding Standards](docs/CODING_STANDARDS.md).
 
 ## Development environment
 
