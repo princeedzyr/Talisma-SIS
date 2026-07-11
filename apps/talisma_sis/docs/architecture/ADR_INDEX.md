@@ -12,6 +12,8 @@ Supporting evidence: [Frappe Education v16 Fit-Gap Report](FRAPPE_EDUCATION_V16_
 
 Detailed domain specification: [Identity and Party Model](IDENTITY_AND_PARTY_MODEL.md).
 
+Current review gate: [ADR-002 Approval Package](ADR-002-APPROVAL-PACKAGE.md).
+
 ## Lifecycle
 
 1. **Proposed:** Under review; no implementation authorization.

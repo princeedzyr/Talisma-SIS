@@ -149,6 +149,12 @@ Collection must be purpose-limited. Talisma must not collect sensitive fields me
 
 ## References
 
+- [ADR-002 approval package](ADR-002-APPROVAL-PACKAGE.md)
 - [Detailed identity and party model](IDENTITY_AND_PARTY_MODEL.md)
+- [Conceptual data dictionary](IDENTITY_DATA_DICTIONARY.md)
+- [Authorization and FERPA matrix](IDENTITY_AUTHORIZATION_MATRIX.md)
+- [Lifecycle and resolution rules](IDENTITY_LIFECYCLE_AND_RESOLUTION.md)
+- [Threat model](IDENTITY_THREAT_MODEL.md)
+- [Retention and migration strategy](IDENTITY_RETENTION_AND_MIGRATION.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)
