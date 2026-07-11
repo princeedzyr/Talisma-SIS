@@ -18,6 +18,8 @@ ADR-002 next implementation gate: [Identity Physical Schema Review](IDENTITY_SCH
 
 ADR-003 decision evidence: [Approval Package](ADR-003-APPROVAL-PACKAGE.md) and [Acceptance Record](ADR-003-ACCEPTANCE-RECORD.md).
 
+ADR-003 next implementation gate: [Institutional Physical Schema Review](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md).
+
 ## Lifecycle
 
 1. **Proposed:** Under review; no implementation authorization.

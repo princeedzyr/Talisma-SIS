@@ -157,6 +157,7 @@ The hierarchy must allow institutions that do not use every level; College must 
 - [Standard DocType fit-gap](INSTITUTIONAL_STANDARD_DOCTYPE_FIT_GAP.md)
 - [Detailed institutional hierarchy model](INSTITUTIONAL_HIERARCHY_MODEL.md)
 - [Governance and validation](INSTITUTIONAL_HIERARCHY_GOVERNANCE.md)
+- [Institutional physical schema review gate](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [ERPNext reuse strategy](ERPNEXT_REUSE_STRATEGY.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)
