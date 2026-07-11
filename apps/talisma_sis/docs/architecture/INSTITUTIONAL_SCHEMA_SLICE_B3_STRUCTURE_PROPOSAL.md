@@ -44,7 +44,7 @@ No B3 record is an authorization source. Consumers must fail closed rather than 
 | `structure_name` | Data | Yes | Searchable display title |
 | `structure_purpose` | Select | Yes | `Academic Governance` only in B3 |
 | `valid_from` | Date | Yes | Inclusive effective start |
-| `valid_to` | Date | No | Exclusive effective end; open-ended when blank |
+| `valid_to` | Date | Conditional | Exclusive effective end; optional in Draft and required on submit |
 | `supersedes` | Link: Talisma Structure Version | No | Prior submitted version in the same Institution and purpose |
 | `change_summary` | Small Text | Yes | Governance explanation |
 | `approval_reference` | Data | Yes on submit | External decision or meeting reference |
@@ -101,7 +101,7 @@ Submission is one transaction and must acquire a bounded MariaDB advisory lock s
 Before submission, validate:
 
 1. Institution is Planned or Active and the version interval fits Institution validity.
-2. `valid_to`, when set, is strictly after `valid_from` under the half-open interval convention.
+2. `valid_to` is present and strictly after `valid_from` under the half-open interval convention.
 3. At least one Placement exists.
 4. Every Placement and referenced Unit belongs to the Structure Version's Institution.
 5. Every child Unit appears exactly once.
@@ -126,7 +126,7 @@ Cycle and reachability validation must be deterministic and operate on a single 
 
 ## Concurrency and effective intervals
 
-Intervals are half-open: `[valid_from, valid_to)`, with null `valid_to` meaning open-ended. Adjacent versions may use `previous.valid_to = next.valid_from`; overlapping submitted versions are forbidden for one Institution and purpose.
+Submitted intervals are bounded and half-open: `[valid_from, valid_to)`. Draft versions may leave `valid_to` blank, but submission cannot. Adjacent versions may use `previous.valid_to = next.valid_from`; overlapping submitted versions are forbidden for one Institution and purpose. This rule is clarified by the [B3 valid-to amendment](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md).
 
 Submission serializes by Institution/purpose using a MariaDB advisory lock and re-runs overlap/supersession queries inside the transaction. Numeric target: two simultaneous overlapping submissions must produce exactly one success and one controlled failure.
 
@@ -220,3 +220,4 @@ This proposal does not authorize:
 - [Institutional Migration and Test Plan](INSTITUTIONAL_SCHEMA_MIGRATION_AND_TEST_PLAN.md)
 - [Slice B2 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md)
 - [Slice B3 Acceptance Record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md)
+- [Slice B3 Valid-To Amendment](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md)

@@ -31,7 +31,7 @@ Both use server-generated UUIDv4 names, disable rename, enable change tracking, 
 | `structure_name` | Data | Yes | Searchable display title |
 | `structure_purpose` | Select | Yes | `Academic Governance` only |
 | `valid_from` | Date | Yes | Inclusive effective start |
-| `valid_to` | Date | No | Exclusive effective end; open-ended when blank |
+| `valid_to` | Date | Conditional | Optional in Draft; required before submission; exclusive effective end |
 | `supersedes` | Link: Talisma Structure Version | No | Unique prior submitted version in the same Institution and purpose |
 | `change_summary` | Small Text | Yes | Governance explanation |
 | `approval_reference` | Data | Yes on submit | External governance reference |
@@ -56,7 +56,7 @@ No other fields are authorized.
 4. Every Unit appears once; every non-null parent has a Placement in the same version.
 5. Multiple roots are allowed; every node belongs to exactly one rooted acyclic component.
 6. Maximum depth is 32 edges.
-7. Structure and Unit effective intervals must be compatible with Institution validity.
+7. Structure and Unit effective intervals must be compatible with Institution validity; submitted Structures require `valid_to > valid_from`.
 8. Submitted intervals for the same Institution and purpose cannot overlap.
 9. Supersession is same-Institution, same-purpose, submitted, chronological, and non-forking.
 10. Submitted Structures and Placements cannot be edited, deleted, or ordinarily cancelled. Corrections use a successor version.
@@ -116,6 +116,8 @@ This acceptance does not authorize:
 Implementation may begin only after this acceptance record is reviewed and merged into `develop`. It must occur on a new feature branch and match this record exactly. Any additional field, role, DocType, hook purpose, migration behavior, workflow, API, job, fixture, seed record, or core customization requires renewed approval.
 
 Completion requires code review, automated graph and concurrency tests, repeated `bench migrate`, database-constraint verification, permission verification, backup evidence, performance evidence, and implementation documentation.
+
+The open-ended submitted-interval rule in the original acceptance is superseded by the [B3 valid-to amendment](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md). All other acceptance terms remain in force.
 
 ## Future gates
 
