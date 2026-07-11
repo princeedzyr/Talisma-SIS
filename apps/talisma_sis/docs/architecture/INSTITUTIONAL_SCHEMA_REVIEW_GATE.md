@@ -46,6 +46,7 @@ Each slice requires independent approval and verification. Schema approval does 
 - [x] Slice A scope and exclusions approved in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
 - [x] Campus Slice B1 accepted through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 - [x] Slice B2 Academic Unit Type and Academic Unit accepted through the [B2 proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
+- [ ] Slice B3 Structure Version and Unit Placement reviewed through the [B3 proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md).
 
 ## Open decisions before approval
 
