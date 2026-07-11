@@ -1,6 +1,7 @@
 # Identity and Party Model
 
-Status: **Proposed for architecture approval**  
+Status: **Proposed for architecture approval**
+
 Scope: Conceptual architecture only. This document does not authorize DocTypes, fields, APIs, migrations, or business logic.
 
 ## 1. Purpose
