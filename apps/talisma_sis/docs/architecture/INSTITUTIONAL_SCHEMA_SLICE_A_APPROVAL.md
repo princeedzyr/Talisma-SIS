@@ -74,7 +74,7 @@ Two app-owned roles may be created because the DocType cannot be safely delivere
 6. Invalid timezone and website values fail clearly.
 7. Manager, Viewer and unauthorized-user permissions behave as specified.
 8. Change tracking records authorized edits without exposing secrets.
-9. Referenced Institution deletion is blocked in a synthetic dependent-link test.
+9. Unreferenced deletion succeeds; static Link deletion protection is verified with the first authorized dependent DocType rather than a non-blocking generic reference.
 10. Repeated `bench migrate` is idempotent.
 11. Backup succeeds after schema installation.
 12. Uninstall/dependency behavior is documented and tested in an isolated site before production use.
