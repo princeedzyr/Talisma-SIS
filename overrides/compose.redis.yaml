@@ -4,16 +4,30 @@ services:
       REDIS_CACHE: redis-cache:6379
       REDIS_QUEUE: redis-queue:6379
     depends_on:
-      - redis-cache
-      - redis-queue
+      redis-cache:
+        condition: service_healthy
+      redis-queue:
+        condition: service_healthy
 
   redis-cache:
     image: redis:8.6-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis-queue:
     image: redis:8.6-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - redis-queue-data:/data
 

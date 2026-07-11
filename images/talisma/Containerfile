@@ -1,0 +1,14 @@
+ARG ERPNEXT_IMAGE=frappe/erpnext:v16.26.2
+
+FROM ${ERPNEXT_IMAGE}
+
+USER frappe
+
+COPY --chown=frappe:frappe apps/talisma_sis /home/frappe/frappe-bench/apps/talisma_sis
+
+RUN /home/frappe/frappe-bench/env/bin/pip install \
+      --no-cache-dir \
+      --editable /home/frappe/frappe-bench/apps/talisma_sis \
+    && ln -s \
+      /home/frappe/frappe-bench/apps/talisma_sis/talisma_sis/public \
+      /home/frappe/frappe-bench/assets/talisma_sis
