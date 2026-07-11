@@ -163,6 +163,7 @@ The hierarchy must allow institutions that do not use every level; College must 
 - [Institutional schema Slice B1 Campus acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md)
 - [Institutional schema Slice B3 Structure proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md)
 - [Institutional schema Slice B3 Structure acceptance](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md)
+- [Institutional schema Slice B3 valid-to amendment](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md)
 - [Institutional schema Slice B2 Academic Unit proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md)
 - [Institutional schema Slice B2 Academic Unit acceptance](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)

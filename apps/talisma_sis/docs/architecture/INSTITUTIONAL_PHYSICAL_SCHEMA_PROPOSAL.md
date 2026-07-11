@@ -129,7 +129,7 @@ Submittable institutional hierarchy version. Submission is approval and immutabi
 | `structure_name` | Data | Yes | Search | Display title |
 | `structure_purpose` | Select | Yes | Composite index | Academic Governance initially |
 | `valid_from` | Date | Yes | Composite index | Activation date |
-| `valid_to` | Date | No | Composite index | Retirement date |
+| `valid_to` | Date | Conditional | Composite index | Optional in Draft; required on submit; exclusive end |
 | `supersedes` | Link: Talisma Structure Version | No | Index | Same Institution/purpose |
 | `change_summary` | Small Text | Yes | No | Human review summary |
 | `approval_reference` | Data | Yes | No | Governance decision reference |
@@ -142,6 +142,7 @@ Submittable institutional hierarchy version. Submission is approval and immutabi
 - A submitted version cannot be cancelled after it has governed transactions or permission decisions; supersede instead.
 - B3 submission approves and freezes the structure but does not make it active or usable by consumers. Materialization and activation fields are deferred to the Closure/activation slice.
 - Exact B3 rules are defined in the [Structure Version and Unit Placement proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md).
+- Submitted B3 Structures must be bounded as recorded in the [valid-to amendment](INSTITUTIONAL_SCHEMA_SLICE_B3_VALID_TO_AMENDMENT.md).
 
 ## Talisma Unit Placement
 
