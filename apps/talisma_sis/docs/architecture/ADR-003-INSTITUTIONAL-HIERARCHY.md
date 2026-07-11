@@ -161,6 +161,8 @@ The hierarchy must allow institutions that do not use every level; College must 
 - [Institutional schema Slice A approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md)
 - [Institutional schema Slice B1 Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md)
 - [Institutional schema Slice B1 Campus acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md)
+- [Institutional schema Slice B2 Academic Unit proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md)
+- [Institutional schema Slice B2 Academic Unit acceptance](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [ERPNext reuse strategy](ERPNEXT_REUSE_STRATEGY.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)

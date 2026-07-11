@@ -20,7 +20,9 @@ ADR-003 decision evidence: [Approval Package](ADR-003-APPROVAL-PACKAGE.md) and [
 
 ADR-003 next implementation gate: [Institutional Physical Schema Review](INSTITUTIONAL_SCHEMA_REVIEW_GATE.md).
 
-ADR-003 implementation authorizations: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md) and [Campus Slice B1 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
+ADR-003 implementation authorizations: [Institutional Schema Slice A Approval](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Campus Slice B1 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md), and [Academic Unit Slice B2 Acceptance](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
+
+ADR-003 accepted Slice B2 proposal: [Institutional Schema Slice B2 — Academic Unit Type and Academic Unit](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md). Structure Version, Placement, Unit Closure, and Scope Grant remain separately gated.
 
 ## Lifecycle
 

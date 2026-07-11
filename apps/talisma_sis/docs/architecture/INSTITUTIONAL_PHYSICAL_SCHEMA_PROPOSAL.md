@@ -1,6 +1,6 @@
 # Institutional Physical Schema Proposal
 
-Status: **Partially approved: Slice A (`Talisma Institution`) and Campus Slice B1 accepted; later slices not authorized**
+Status: **Partially approved: Slice A, Campus Slice B1, and Academic Unit Slice B2 accepted; later slices not authorized**
 
 This proposal translates accepted ADR-003 into Frappe records. Names and fields are exact design candidates but remain unapproved until the institutional schema review gate is accepted.
 
@@ -83,6 +83,8 @@ Unique constraint: `(institution, normalized campus_code)`. Campus placement doe
 
 Governed configuration master.
 
+The exact accepted Slice B2 boundary is defined in the [Academic Unit Type and Academic Unit proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
+
 | Field | Type | Required | Semantics |
 |---|---|---:|---|
 | `type_code` | Data | Yes/unique | Immutable code |
@@ -106,15 +108,14 @@ Stable academic-governance identity without a mutable parent field.
 | `unit_name` | Data | Yes | Search index | Current display name |
 | `short_name` | Data | No | Search index | Display abbreviation |
 | `unit_type` | Link: Talisma Academic Unit Type | Yes | Index | Governed type |
-| `status` | Select | Yes | Index | Planned, Active, Inactive, Closed, Merged |
+| `status` | Select | Yes | Index | Planned, Active, Inactive, Closed |
 | `valid_from` | Date | Yes | Index | Effective start |
 | `valid_to` | Date | No | Index | Effective end |
-| `successor_unit` | Link: Talisma Academic Unit | Conditional | Index | Same Institution; required for Merged when one successor exists |
 | `can_grant_credentials` | Check | Yes | Index | Constrained by type/policy |
 | `can_own_programs` | Check | Yes | Index | Constrained by type/policy |
 | `can_own_courses` | Check | Yes | Index | Constrained by type/policy |
 
-Unique constraint: `(institution, normalized unit_code)`. Name changes are audited; codes do not change. Splits and multi-successor reorganizations use a separate lineage record in a later slice.
+Unique constraint: `(institution, normalized unit_code)`. Name changes are audited; codes do not change. Merge, split, successor and lineage semantics remain deferred to a later slice.
 
 ## Talisma Structure Version
 
@@ -261,7 +262,7 @@ This supplements rather than replaces Frappe roles. A generic role without an ef
 ### Slice B: current academic structure
 
 1. Slice B1 approves Campus independently through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
-2. Later independently approved slices may introduce Academic Unit Type and Academic Unit.
+2. Slice B2 approves Academic Unit Type and Academic Unit through the [B2 proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
 3. Structure Version and Unit Placement require a separate approval.
 4. Unit Closure materialization and Scope Grant permission enforcement require a separate approval.
 
