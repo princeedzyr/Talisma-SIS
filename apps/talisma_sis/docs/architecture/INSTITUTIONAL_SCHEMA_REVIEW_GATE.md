@@ -42,6 +42,7 @@ Each slice requires independent approval and verification. Schema approval does 
 - [ ] Numeric performance/volume targets recorded.
 - [x] Education remains optional and absent from Slice A metadata Links.
 - [x] Slice A scope and exclusions approved in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
+- [ ] Campus Slice B1 reviewed through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md).
 
 ## Open decisions before approval
 
@@ -61,4 +62,4 @@ Product architecture, institutional administration, registrar/academic governanc
 
 ## Approval outcome
 
-The project owner approved Slice A only on 2026-07-11. The exact authorization is recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md). All unchecked items and all later slices remain design-only.
+The project owner approved Slice A only on 2026-07-11. The exact authorization is recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md). Campus has been separated into a proposed Slice B1 to keep implementation independently reviewable. All unchecked items and all later slices remain design-only.
