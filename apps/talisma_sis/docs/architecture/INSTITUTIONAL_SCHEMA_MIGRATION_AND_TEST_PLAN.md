@@ -1,6 +1,6 @@
 # Institutional Schema Migration and Test Plan
 
-Status: **Proposed for physical-schema approval**
+Status: **Slice A install/test approach approved; data migration and later slices not authorized**
 
 ## Source inventory
 

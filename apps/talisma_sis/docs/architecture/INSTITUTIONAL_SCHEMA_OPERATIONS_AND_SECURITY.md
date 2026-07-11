@@ -1,6 +1,6 @@
 # Institutional Schema Operations, Security and Performance
 
-Status: **Proposed for physical-schema approval**
+Status: **Slice A minimum permissions/tests approved; hierarchy operations remain proposed**
 
 ## Authorization model
 
