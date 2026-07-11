@@ -1,0 +1,49 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section", "institution", "structure_code", "structure_name", "structure_purpose",
+  "effective_section", "valid_from", "valid_to", "supersedes",
+  "governance_section", "change_summary", "approval_reference"
+ ],
+ "fields": [
+  {"fieldname": "identity_section", "fieldtype": "Section Break", "label": "Identity"},
+  {"fieldname": "institution", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Institution", "options": "Talisma Institution", "reqd": 1, "search_index": 1},
+  {"description": "Stable code within the Institution and purpose.", "fieldname": "structure_code", "fieldtype": "Data", "in_global_search": 1, "in_list_view": 1, "label": "Structure Code", "length": 32, "reqd": 1},
+  {"fieldname": "structure_name", "fieldtype": "Data", "in_global_search": 1, "in_list_view": 1, "label": "Structure Name", "reqd": 1, "search_index": 1},
+  {"default": "Academic Governance", "fieldname": "structure_purpose", "fieldtype": "Select", "in_standard_filter": 1, "label": "Structure Purpose", "options": "Academic Governance", "reqd": 1},
+  {"fieldname": "effective_section", "fieldtype": "Section Break", "label": "Effective Interval"},
+  {"fieldname": "valid_from", "fieldtype": "Date", "in_standard_filter": 1, "label": "Valid From", "reqd": 1},
+  {"description": "Optional in Draft and required before submission. Exclusive interval end.", "fieldname": "valid_to", "fieldtype": "Date", "in_standard_filter": 1, "label": "Valid To", "mandatory_depends_on": "eval:doc.docstatus==1"},
+  {"fieldname": "supersedes", "fieldtype": "Link", "in_standard_filter": 1, "label": "Supersedes", "options": "Talisma Structure Version", "search_index": 1},
+  {"fieldname": "governance_section", "fieldtype": "Section Break", "label": "Governance"},
+  {"fieldname": "change_summary", "fieldtype": "Small Text", "label": "Change Summary", "reqd": 1},
+  {"description": "Required before submission.", "fieldname": "approval_reference", "fieldtype": "Data", "label": "Approval Reference", "mandatory_depends_on": "eval:doc.docstatus==1"}
+ ],
+ "index_web_pages_for_search": 0,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Talisma SIS",
+ "name": "Talisma Structure Version",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "read": 1, "role": "Talisma Institution Manager", "write": 1},
+  {"read": 1, "role": "Talisma Institution Viewer"},
+  {"read": 1, "role": "Talisma Academic Structure Approver", "submit": 1, "write": 1},
+  {"create": 1, "delete": 1, "read": 1, "role": "System Manager", "submit": 1, "write": 1}
+ ],
+ "quick_entry": 0,
+ "search_fields": "structure_code,structure_name",
+ "sort_field": "valid_from",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "structure_name",
+ "track_changes": 1
+}
