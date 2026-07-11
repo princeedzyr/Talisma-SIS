@@ -1,7 +1,8 @@
 # ADR-002: Identity and Party Model
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-11
+- **Accepted:** 2026-07-11 by Prince Ebinezer, Project Owner
 - **Decision owners:** Product Architecture, Registrar Domain, Security and Engineering
 - **Depends on:** ADR-001
 - **Supersedes:** None
@@ -51,7 +52,7 @@ No single upstream record safely represents the institution's canonical natural 
 
 Create a narrowly scoped Talisma-owned canonical identity record. Upstream and Talisma role records link to it and retain their own lifecycle-specific data.
 
-## Proposed decision
+## Decision
 
 Adopt **Option D**.
 
@@ -129,7 +130,7 @@ Collection must be purpose-limited. Talisma must not collect sensitive fields me
 - Adds identity-resolution workflows and operational stewardship responsibilities.
 - Permission design becomes more granular and security-sensitive.
 
-## Open questions before acceptance
+## Implementation questions retained after acceptance
 
 - Which fields belong on the canonical identity versus Contact or role profiles?
 - Can Contact remain the sole channel/address mechanism for every person type?
@@ -149,6 +150,7 @@ Collection must be purpose-limited. Talisma must not collect sensitive fields me
 
 ## References
 
+- [Acceptance record](ADR-002-ACCEPTANCE-RECORD.md)
 - [ADR-002 approval package](ADR-002-APPROVAL-PACKAGE.md)
 - [Detailed identity and party model](IDENTITY_AND_PARTY_MODEL.md)
 - [Conceptual data dictionary](IDENTITY_DATA_DICTIONARY.md)

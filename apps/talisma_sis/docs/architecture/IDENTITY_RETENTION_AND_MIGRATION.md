@@ -1,6 +1,6 @@
 # Identity Retention and Migration Strategy
 
-Status: **Proposed for ADR-002 approval**
+Status: **Accepted supporting architecture under ADR-002; institutional schedules and migration implementation not authorized**
 
 This document defines control requirements. Exact retention periods are institution- and jurisdiction-specific and must be configured from an approved schedule rather than embedded in application code.
 

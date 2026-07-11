@@ -1,6 +1,6 @@
 # Identity and Party Model
 
-Status: **Proposed for architecture approval**
+Status: **Accepted architecture baseline under ADR-002; schema not authorized**
 
 Scope: Conceptual architecture only. This document does not authorize DocTypes, fields, APIs, migrations, or business logic.
 

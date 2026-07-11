@@ -1,6 +1,6 @@
 # ADR-002 Approval Package
 
-Status: **Ready for stakeholder review; not approved**
+Status: **Approved on 2026-07-11; implementation not authorized**
 
 This package converts the proposed identity architecture into reviewable decisions. It does not authorize DocTypes, fields, APIs, migrations, permissions, or production changes.
 
@@ -47,25 +47,25 @@ This package converts the proposed identity architecture into reviewable decisio
 
 ## Acceptance checklist
 
-- [ ] Canonical person and role-record boundary approved.
-- [ ] Standard `Contact`/`Address` fit-gap approved.
-- [ ] Multi-institution scoping decision approved.
-- [ ] Identifier namespaces and issuance authority approved.
-- [ ] Matching tiers and prohibited automatic matches approved.
-- [ ] Merge, split, correction, and separation-of-duty rules approved.
-- [ ] Guardian/proxy authorization model approved.
-- [ ] FERPA/data classification and permission matrix approved.
-- [ ] Directory suppression and emergency-access rules approved.
-- [ ] Threat model and security gates approved.
-- [ ] Retention schedule ownership and legal-hold workflow approved.
-- [ ] Existing-data migration and reconciliation strategy approved.
-- [ ] ADR-001 dependency implications acknowledged.
-- [ ] Legal review of Frappe Education dependency completed or implementation explicitly remains independent of it.
-- [ ] All material objections and exceptions recorded.
+- [x] Canonical person and role-record boundary approved.
+- [x] Standard `Contact`/`Address` reuse direction approved; field fit-gap remains an implementation gate.
+- [x] Multi-institution scoping decision approved.
+- [x] Identifier namespaces and issuance authority approved conceptually.
+- [x] Matching tiers and prohibited automatic matches approved.
+- [x] Merge, split, correction, and separation-of-duty rules approved.
+- [x] Guardian/proxy authorization model approved conceptually.
+- [x] FERPA/data classification and permission architecture approved, subject to institutional legal review.
+- [x] Directory suppression and emergency-access architecture approved, with institution-specific policy pending.
+- [x] Threat model and security gates approved.
+- [x] Retention ownership and legal-hold architecture approved; exact schedule remains institution-specific.
+- [x] Existing-data migration and reconciliation strategy approved.
+- [x] ADR-001 dependency implications acknowledged.
+- [x] Implementation remains independent of a mandatory Frappe Education dependency until ADR-001 legal and technical gates are accepted.
+- [x] Material conditions and exceptions recorded in the acceptance record.
 
 ## Conditions for accepting ADR-002
 
-ADR-002 may move from `Proposed` to `Accepted` only when named owners approve every applicable checklist item, unresolved items are either blockers or explicitly documented exceptions, and the acceptance commit records approval date and decision owners. Approval does not itself authorize implementation; a separate schema design review follows.
+These conditions were satisfied by project-owner approval on 2026-07-11 with the qualifications recorded in the [acceptance record](ADR-002-ACCEPTANCE-RECORD.md). Approval does not itself authorize implementation; a separate schema design review follows.
 
 ## Next gate after acceptance
 
