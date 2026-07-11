@@ -6,3 +6,4 @@
 # Patches added in this section will be executed after doctypes are migrated
 talisma_sis.patches.v0_0.add_talisma_campus_unique_constraint
 talisma_sis.patches.v0_0.add_talisma_academic_unit_unique_constraint
+talisma_sis.patches.v0_0.add_talisma_structure_constraints

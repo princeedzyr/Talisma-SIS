@@ -1,0 +1,22 @@
+{
+ "actions": [], "allow_import": 0, "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000", "doctype": "DocType", "engine": "InnoDB",
+ "field_order": ["structure_version", "institution", "academic_unit", "parent_unit", "display_order"],
+ "fields": [
+  {"fieldname": "structure_version", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Structure Version", "options": "Talisma Structure Version", "reqd": 1, "search_index": 1},
+  {"fieldname": "institution", "fieldtype": "Link", "in_standard_filter": 1, "label": "Institution", "options": "Talisma Institution", "read_only": 1, "reqd": 1, "search_index": 1},
+  {"fieldname": "academic_unit", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Academic Unit", "options": "Talisma Academic Unit", "reqd": 1, "search_index": 1},
+  {"fieldname": "parent_unit", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Parent Unit", "options": "Talisma Academic Unit", "search_index": 1},
+  {"default": "0", "fieldname": "display_order", "fieldtype": "Int", "label": "Display Order"}
+ ],
+ "index_web_pages_for_search": 0, "links": [],
+ "modified": "2026-07-11 00:00:00.000000", "modified_by": "Administrator", "module": "Talisma SIS",
+ "name": "Talisma Unit Placement", "naming_rule": "Random", "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "read": 1, "role": "Talisma Institution Manager", "write": 1},
+  {"read": 1, "role": "Talisma Institution Viewer"},
+  {"read": 1, "role": "Talisma Academic Structure Approver"},
+  {"create": 1, "delete": 1, "read": 1, "role": "System Manager", "write": 1}
+ ],
+ "quick_entry": 0, "search_fields": "academic_unit,parent_unit", "sort_field": "display_order", "sort_order": "ASC", "states": [], "track_changes": 1
+}
