@@ -16,6 +16,8 @@ ADR-002 decision evidence: [Approval Package](ADR-002-APPROVAL-PACKAGE.md) and [
 
 ADR-002 next implementation gate: [Identity Physical Schema Review](IDENTITY_SCHEMA_REVIEW_GATE.md).
 
+ADR-003 current review gate: [Institutional Hierarchy Approval Package](ADR-003-APPROVAL-PACKAGE.md).
+
 ## Lifecycle
 
 1. **Proposed:** Under review; no implementation authorization.
