@@ -27,7 +27,7 @@ No automatic matching, merge/split automation, proxy access, evidence files, gov
 
 | Blocker | Required resolution |
 |---|---|
-| ADR-003 remains Proposed | Accept authoritative institution hierarchy and Link target before physical institution-scoped fields are created |
+| Institutional physical schema not approved | ADR-003 selects Talisma Institution conceptually; approve and implement its physical DocType before identity Link fields |
 | Identifier protection | Approve keyed hashing, encryption/key ownership, masking and recovery requirements |
 | Composite uniqueness | Approve MariaDB-compatible constraint/index and concurrency strategy |
 | Contact/Address association | Verify permissions, delete behavior and no conflict with ERPNext party links |
@@ -40,7 +40,7 @@ No automatic matching, merge/split automation, proxy access, evidence files, gov
 - [ ] No PII appears in document names.
 - [ ] Standard fields are reused without bidirectional sync ambiguity.
 - [ ] Education remains optional and no metadata Link requires it.
-- [ ] Institution scope target is approved through ADR-003.
+- [x] Institution scope target is approved conceptually through ADR-003; physical dependency remains open.
 - [ ] UUID naming and immutable rename policy are approved.
 - [ ] Identifier normalization, hashing, masking and encryption are approved.
 - [ ] Composite uniqueness and race handling are approved.

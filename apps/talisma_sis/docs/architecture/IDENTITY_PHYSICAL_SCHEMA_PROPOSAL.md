@@ -11,7 +11,7 @@ This proposal translates accepted ADR-002 concepts into Frappe records. It is in
 - Human-facing institutional numbers live in `Talisma Person Identifier`, not the Person document name.
 - Child tables are used only for values that share parent permissions and lifecycle.
 - Records needing independent permissions, workflow, unique constraints or audit are standalone DocTypes.
-- Institution scope is mandatory where shown, but its Link target remains pending ADR-003.
+- Institution scope is mandatory where shown, and ADR-003 selects `Talisma Institution` as its conceptual Link target. Physical Link creation waits for the institutional schema dependency.
 - Dynamic links use a `Link` field containing the target DocType plus a `Dynamic Link` field containing the document name.
 
 ## Relationship overview
@@ -86,7 +86,7 @@ Standalone restricted record to support independent permissions, masking, unique
 | Field | Type | Required | Index/unique | Semantics |
 |---|---|---:|---|---|
 | `person` | Link: Talisma Person | Yes | Index | Owner identity |
-| `institution_scope` | Link: pending ADR-003 | Conditional | Index | Required for institution-issued values |
+| `institution_scope` | Link: Talisma Institution | Conditional | Index | Required for institution-issued values; depends on institutional schema |
 | `identifier_type` | Link: Talisma Identifier Type | Yes | Index | Governed definition |
 | `issuer_namespace` | Data | Yes | Composite | Stable issuer namespace |
 | `normalized_value_hash` | Data | Yes | Composite unique | Keyed hash for equality/uniqueness; never displayed |
@@ -127,7 +127,7 @@ Standalone link from Person to a standard or future domain profile.
 | `profile_doctype` | Link: DocType | Yes | Composite | Allowlisted target type |
 | `profile_name` | Dynamic Link | Yes | Composite unique | Target document |
 | `role_type` | Select/Link master | Yes | Index | User, Applicant, Student, Employee, Instructor, Customer, Guardian, other approved |
-| `institution_scope` | Link: pending ADR-003 | Conditional | Index | Required for scoped roles |
+| `institution_scope` | Link: Talisma Institution | Conditional | Index | Required for scoped roles; depends on institutional schema |
 | `status` | Select | Yes | Index | Pending, Active, Inactive, Disputed, Replaced |
 | `valid_from` | Date | No | Index | Association interval |
 | `valid_to` | Date | No | Index | Association interval |

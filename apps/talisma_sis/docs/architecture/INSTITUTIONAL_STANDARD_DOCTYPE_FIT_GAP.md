@@ -1,6 +1,6 @@
 # Institutional Hierarchy Standard DocType Fit-Gap
 
-Status: **Proposed for ADR-003 approval**
+Status: **Accepted supporting analysis under ADR-003**
 
 Evidence source: metadata inspected from the project's ERPNext v16 image and isolated Frappe Education v16.0.1 evaluation image on 2026-07-11. No standard metadata or database state was changed.
 

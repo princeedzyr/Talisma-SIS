@@ -1,6 +1,6 @@
 # Institutional Hierarchy Governance and Validation
 
-Status: **Proposed for ADR-003 approval**
+Status: **Accepted supporting architecture under ADR-003; workflows not authorized**
 
 ## Governance ownership
 

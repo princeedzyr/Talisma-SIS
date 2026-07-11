@@ -1,7 +1,8 @@
 # ADR-003: Institutional and Academic Organization Hierarchy
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-07-11
+- **Accepted:** 2026-07-11 by Prince Ebinezer, Project Owner
 - **Decision owners:** Product Architecture, Institutional Administration, Finance and Engineering
 - **Supersedes:** None
 
@@ -46,7 +47,7 @@ ERPNext provides `Company`, `Department`, `Branch`, `Cost Center`, and accountin
 
 Keep Company, Department, Branch/location, Cost Center, and accounting dimensions authoritative for their standard purposes. Add a Talisma academic-organization concept only for academic governance and map it explicitly to upstream records.
 
-## Proposed decision
+## Decision
 
 Adopt **Option D**, refined by the [Institutional Hierarchy Model](INSTITUTIONAL_HIERARCHY_MODEL.md).
 
@@ -131,7 +132,7 @@ The hierarchy must allow institutions that do not use every level; College must 
 - Effective dating makes validation and reporting more complex.
 - Migration requires resolving inconsistent existing organization data.
 
-## Proposed resolutions pending acceptance
+## Accepted resolutions
 
 - The domain supports multiple Institutions in one site, while deployment policy may choose separate sites for stronger isolation.
 - Talisma Campus is the campus master; Branch is only an optional compatibility mapping.
@@ -151,6 +152,7 @@ The hierarchy must allow institutions that do not use every level; College must 
 
 ## References
 
+- [ADR-003 acceptance record](ADR-003-ACCEPTANCE-RECORD.md)
 - [ADR-003 approval package](ADR-003-APPROVAL-PACKAGE.md)
 - [Standard DocType fit-gap](INSTITUTIONAL_STANDARD_DOCTYPE_FIT_GAP.md)
 - [Detailed institutional hierarchy model](INSTITUTIONAL_HIERARCHY_MODEL.md)
