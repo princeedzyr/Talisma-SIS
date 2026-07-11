@@ -149,5 +149,6 @@ Collection must be purpose-limited. Talisma must not collect sensitive fields me
 
 ## References
 
+- [Detailed identity and party model](IDENTITY_AND_PARTY_MODEL.md)
 - [Target architecture](SYSTEM_ARCHITECTURE.md)
 - [Module architecture](../modules/MODULE_ARCHITECTURE.md)
