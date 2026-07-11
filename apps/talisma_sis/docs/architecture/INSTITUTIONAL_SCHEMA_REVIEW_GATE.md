@@ -1,6 +1,6 @@
 # Institutional Physical Schema Review Gate
 
-Status: **Slice A, Campus Slice B1, and Academic Unit Slice B2 approved on 2026-07-11; later slices not approved**
+Status: **Slices A, B1, B2, and Structure Slice B3 approved on 2026-07-11; later slices not approved**
 
 This gate determines whether accepted ADR-003 is specified sufficiently for a minimal implementation. Merging the design documents does not authorize DocTypes.
 
@@ -30,13 +30,13 @@ Each slice requires independent approval and verification. Schema approval does 
 - [x] Campus fields, address behavior, and deferral of parent grouping approved in Slice B1.
 - [x] Academic Unit Type capabilities approved in Slice B2.
 - [x] Academic Unit fields and lifecycle approved in Slice B2.
-- [ ] Structure Version submission/effective-date rules approved.
-- [ ] Placement uniqueness and cycle prevention approved.
+- [x] Structure Version submission/effective-date rules approved in Slice B3.
+- [x] Placement uniqueness and cycle prevention approved in Slice B3.
 - [ ] Closure-table generation, integrity and recovery approved.
 - [ ] Standard mapping target allowlist/cardinality approved.
 - [ ] Academic ownership roles and primary-owner constraint approved.
 - [ ] Scope Grant semantics and Frappe role interaction approved.
-- [ ] Composite indexes and MariaDB concurrency strategy approved.
+- [x] B3 Structure/Placement composite constraints and MariaDB submission concurrency strategy approved; later-record constraints remain pending.
 - [x] Minimal Institution Manager/Viewer enforcement approved for Slice A; hierarchy scope remains pending.
 - [ ] Reorganization impact and scope-expansion review approved.
 - [ ] Audit events and idempotency approved.
@@ -46,7 +46,7 @@ Each slice requires independent approval and verification. Schema approval does 
 - [x] Slice A scope and exclusions approved in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md).
 - [x] Campus Slice B1 accepted through the [Campus proposal](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md).
 - [x] Slice B2 Academic Unit Type and Academic Unit accepted through the [B2 proposal](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md).
-- [ ] Slice B3 Structure Version and Unit Placement reviewed through the [B3 proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md).
+- [x] Slice B3 Structure Version and Unit Placement accepted through the [B3 proposal](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_PROPOSAL.md) and [acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md).
 
 ## Open decisions before approval
 
@@ -66,4 +66,4 @@ Product architecture, institutional administration, registrar/academic governanc
 
 ## Approval outcome
 
-The project owner approved Slice A, Campus Slice B1, and Academic Unit Slice B2 on 2026-07-11. Their exact authorizations are recorded in the [Slice A approval record](INSTITUTIONAL_SCHEMA_SLICE_A_APPROVAL.md), [Campus Slice B1 acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B1_CAMPUS_ACCEPTANCE.md), and [Slice B2 acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B2_ACADEMIC_UNIT_ACCEPTANCE.md). All unchecked items and all later slices remain design-only; Structure Version, Placement, Unit Closure, and Scope Grant remain separately gated.
+The project owner approved Slice A, Campus Slice B1, Academic Unit Slice B2, and Structure Version/Unit Placement Slice B3 on 2026-07-11. Their exact authorizations are recorded in their respective acceptance records, including the [B3 acceptance record](INSTITUTIONAL_SCHEMA_SLICE_B3_STRUCTURE_ACCEPTANCE.md). All unchecked items and later slices remain design-only; Unit Closure/materialization and Scope Grant remain separately gated.
