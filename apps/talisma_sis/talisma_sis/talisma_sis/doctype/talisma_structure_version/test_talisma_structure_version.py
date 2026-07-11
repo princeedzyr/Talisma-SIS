@@ -106,6 +106,12 @@ class TestTalismaStructureVersion(IntegrationTestCase):
 				"unique_talisma_structure_unit",
 			},
 		)
+		supersedes_unique = frappe.db.sql(
+			"""SELECT INDEX_NAME FROM information_schema.STATISTICS
+			WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='tabTalisma Structure Version'
+			AND COLUMN_NAME='supersedes' AND NON_UNIQUE=0"""
+		)
+		self.assertTrue(supersedes_unique)
 
 	def test_valid_to_is_optional_in_draft_but_required_for_submit(self):
 		institution = self.make_institution()

@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-07-11 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section", "structure_version", "institution", "status",
+  "execution_section", "started_on", "completed_on", "expected_unit_count", "closure_row_count",
+  "integrity_section", "source_fingerprint", "failure_code", "failure_summary"
+ ],
+ "fields": [
+  {"fieldname": "identity_section", "fieldtype": "Section Break", "label": "Identity"},
+  {"fieldname": "structure_version", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Structure Version", "options": "Talisma Structure Version", "read_only": 1, "reqd": 1, "search_index": 1},
+  {"fieldname": "institution", "fieldtype": "Link", "in_standard_filter": 1, "label": "Institution", "options": "Talisma Institution", "read_only": 1, "reqd": 1, "search_index": 1},
+  {"fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "in_standard_filter": 1, "label": "Status", "options": "Building\nReady\nFailed\nSuperseded", "read_only": 1, "reqd": 1},
+  {"fieldname": "execution_section", "fieldtype": "Section Break", "label": "Execution"},
+  {"fieldname": "started_on", "fieldtype": "Datetime", "label": "Started On", "read_only": 1, "reqd": 1},
+  {"fieldname": "completed_on", "fieldtype": "Datetime", "label": "Completed On", "read_only": 1},
+  {"fieldname": "expected_unit_count", "fieldtype": "Int", "label": "Expected Unit Count", "read_only": 1, "reqd": 1},
+  {"fieldname": "closure_row_count", "fieldtype": "Int", "label": "Closure Row Count", "read_only": 1},
+  {"fieldname": "integrity_section", "fieldtype": "Section Break", "label": "Integrity"},
+  {"fieldname": "source_fingerprint", "fieldtype": "Data", "label": "Source Fingerprint", "length": 64, "read_only": 1, "reqd": 1},
+  {"fieldname": "failure_code", "fieldtype": "Data", "label": "Failure Code", "read_only": 1},
+  {"fieldname": "failure_summary", "fieldtype": "Small Text", "label": "Failure Summary", "read_only": 1}
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Talisma SIS",
+ "name": "Talisma Closure Build",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [{"read": 1, "role": "System Manager"}],
+ "quick_entry": 0,
+ "search_fields": "structure_version,source_fingerprint",
+ "sort_field": "started_on",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

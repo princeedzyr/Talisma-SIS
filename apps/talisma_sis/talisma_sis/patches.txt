@@ -7,3 +7,5 @@
 talisma_sis.patches.v0_0.add_talisma_campus_unique_constraint
 talisma_sis.patches.v0_0.add_talisma_academic_unit_unique_constraint
 talisma_sis.patches.v0_0.add_talisma_structure_constraints
+talisma_sis.patches.v0_0.add_talisma_closure_constraints
+talisma_sis.patches.v0_0.ensure_talisma_structure_supersedes_unique
