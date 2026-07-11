@@ -10,6 +10,8 @@ Architecture Decision Records capture consequential choices, alternatives, and c
 
 Supporting evidence: [Frappe Education v16 Fit-Gap Report](FRAPPE_EDUCATION_V16_FIT_GAP_REPORT.md).
 
+Detailed domain specification: [Identity and Party Model](IDENTITY_AND_PARTY_MODEL.md).
+
 ## Lifecycle
 
 1. **Proposed:** Under review; no implementation authorization.
