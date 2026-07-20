@@ -1,0 +1,13 @@
+:root {
+	--talisma-navy: #12304a;
+	--talisma-blue: #246b9e;
+	--talisma-gold: #d9a441;
+	--talisma-surface: #f4f8fb;
+}
+
+body.talisma-sis-demo .navbar { border-bottom: 3px solid var(--talisma-gold); }
+.talisma-brand { display: inline-flex; align-items: center; gap: .5rem; margin-inline-end: 1rem; color: var(--talisma-navy); font-weight: 700; }
+.talisma-brand img { height: 28px; width: 28px; }
+body.talisma-sis-demo .widget.shortcut-widget-box { border-top: 3px solid var(--talisma-blue); }
+body.talisma-sis-demo .widget.shortcut-widget-box:hover { border-top-color: var(--talisma-gold); box-shadow: 0 8px 20px rgb(18 48 74 / 12%); }
+body.talisma-sis-demo .page-head { background: linear-gradient(90deg, var(--talisma-surface), transparent); }

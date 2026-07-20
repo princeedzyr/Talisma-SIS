@@ -23,6 +23,9 @@ app_license = "mit"
 
 # Includes in <head>
 # ------------------
+app_include_css = '/assets/talisma_sis/css/talisma_demo.css'
+app_include_js = '/assets/talisma_sis/js/talisma_demo.js'
+web_include_css = '/assets/talisma_sis/css/talisma_demo.css'
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/talisma_sis/css/talisma_sis.css"
