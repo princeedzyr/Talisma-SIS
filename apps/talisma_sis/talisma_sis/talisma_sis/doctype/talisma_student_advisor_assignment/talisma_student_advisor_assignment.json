@@ -1,0 +1,17 @@
+{
+ "autoname":"format:SAA-{#####}","doctype":"DocType","engine":"InnoDB",
+ "field_order":["student","advisor","advisor_type","program","academic_unit","primary_advisor","status","effective_from","effective_to","end_reason"],
+ "fields":[
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"advisor","fieldtype":"Link","label":"Advisor","options":"Instructor","reqd":1,"in_list_view":1},
+  {"fieldname":"advisor_type","fieldtype":"Select","label":"Advisor Type","options":"Academic\nFaculty\nInternational Student\nAthletic\nStudent Success","default":"Academic","reqd":1},
+  {"fieldname":"program","fieldtype":"Link","label":"Program","options":"Program"},
+  {"fieldname":"academic_unit","fieldtype":"Link","label":"Academic Unit","options":"Talisma Academic Unit"},
+  {"default":"0","fieldname":"primary_advisor","fieldtype":"Check","label":"Primary Advisor","in_list_view":1},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Active\nEnded","default":"Active","reqd":1},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"},
+  {"fieldname":"end_reason","fieldtype":"Small Text","label":"End Reason","depends_on":"eval:doc.status == 'Ended'"}
+ ],"module":"Talisma SIS","name":"Talisma Student Advisor Assignment","title_field":"advisor","track_changes":1,
+ "permissions":[{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},{"role":"Academics User","read":1,"write":1,"create":1,"report":1}]
+}

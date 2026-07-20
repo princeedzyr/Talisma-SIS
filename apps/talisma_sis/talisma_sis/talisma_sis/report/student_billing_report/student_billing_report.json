@@ -1,0 +1,13 @@
+{
+ "add_total_row": 1,
+ "disabled": 0,
+ "doctype": "Report",
+ "is_standard": "Yes",
+ "module": "Talisma SIS",
+ "name": "Student Billing Report",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Student Billing Report",
+ "report_type": "Script Report",
+ "roles": [{"role": "Academics User"}, {"role": "Accounts User"}, {"role": "Accounts Manager"}]
+}

@@ -1,0 +1,19 @@
+{
+ "doctype":"DocType",
+ "editable_grid":1,
+ "engine":"InnoDB",
+ "field_order":["previous_grade","new_grade","previous_score","new_score","changed_by","changed_on","reason"],
+ "fields":[
+  {"fieldname":"previous_grade","fieldtype":"Data","label":"Previous Grade","read_only":1,"in_list_view":1},
+  {"fieldname":"new_grade","fieldtype":"Data","label":"New Grade","read_only":1,"in_list_view":1},
+  {"fieldname":"previous_score","fieldtype":"Float","label":"Previous Score","read_only":1,"in_list_view":1},
+  {"fieldname":"new_score","fieldtype":"Float","label":"New Score","read_only":1,"in_list_view":1},
+  {"fieldname":"changed_by","fieldtype":"Link","label":"Changed By","options":"User","read_only":1,"in_list_view":1},
+  {"fieldname":"changed_on","fieldtype":"Datetime","label":"Changed On","read_only":1,"in_list_view":1},
+  {"fieldname":"reason","fieldtype":"Small Text","label":"Reason","read_only":1}
+ ],
+ "istable":1,
+ "module":"Talisma SIS",
+ "name":"Talisma Grade Change History",
+ "permissions":[]
+}

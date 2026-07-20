@@ -1,13 +1,13 @@
-# Talisma SIS Client Demo Script
+![alt text](image.png)# Talisma SIS Client Demo Script
 
 Use synthetic data only. The recommended walkthrough takes 10-12 minutes.
 
 ## Admissions operations
 
-1. Open **Admissions**.
+1. Open **Talisma Admissions**.
 2. Select **Applicants** and explain the Applied, Approved, Rejected, and Admitted stages.
 3. Open an approved applicant and point out Program, Academic Year, Academic Term, and Campus.
-4. Under **Admissions**, select **Admit and Create Student**.
+4. Under **Talisma Admissions**, select **Admit and Create Student**.
 5. Add an optional internal decision note and confirm the admission.
 6. Show the resulting Program Enrollment, including the student, program, term, and campus.
 7. Return to the applicant and show Decision Date, Student Record, and Program Enrollment.
@@ -20,11 +20,11 @@ Use another approved applicant only after deliberately resetting its scenario.
 
 ## Registrar operations
 
-1. Open **Registrar**.
+1. Open **Talisma Registrar**.
 2. Show the Students, Program Enrollments, Course Registrations, and Programs number cards.
 3. Open **Program Enrollments** and select Avery Johnson (`EDU-ENR-2026-00008`).
 4. Point out the Fall 2026 term, Main Campus, and registration summary.
-5. Under **Registrar**, select **Register Courses**.
+5. Under **Talisma Registrar**, select **Register Courses**.
 6. Select an available curriculum course and confirm registration.
 7. Use **View Course Registrations** to show the filtered registration list.
 8. Explain that only courses in the student's Program curriculum are available.

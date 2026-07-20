@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext", "education"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -23,9 +23,13 @@ app_license = "mit"
 
 # Includes in <head>
 # ------------------
-app_include_css = '/assets/talisma_sis/css/talisma_demo.css'
-app_include_js = '/assets/talisma_sis/js/talisma_demo.js'
-web_include_css = '/assets/talisma_sis/css/talisma_demo.css'
+app_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260719-25'
+app_include_js = '/assets/talisma_sis/js/talisma_demo.js?v=20260719-16'
+web_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260719-25'
+
+website_route_rules = [
+	{"from_route": "/student-documents", "to_route": "student_documents"},
+]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/talisma_sis/css/talisma_sis.css"
@@ -46,7 +50,129 @@ web_include_css = '/assets/talisma_sis/css/talisma_demo.css'
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Student Applicant": "public/js/student_applicant_demo.js",
+	"Student Admission": "public/js/admission_intake.js",
+	"Student": "public/js/student_demo.js",
+	"Student Group": "public/js/class_scheduling.js",
+	"Course Schedule": "public/js/course_schedule_legacy_redirect.js",
+	"Grading Scale": "public/js/grading_scale.js",
+	"Assessment Plan": "public/js/assessment_plan.js",
+	"Assessment Result": "public/js/assessment_result.js",
+	"Assessment Gradebook": "public/js/assessment_gradebook.js",
+	"Degree": "public/js/degree_demo.js",
+	"Program": "public/js/program_academics.js",
+	"Course Category": "public/js/course_category_demo.js",
+	"Course": "public/js/course_academics.js",
+	"Program Enrollment": "public/js/program_enrollment_demo.js",
+	"Student Report Generation Tool": "public/js/student_report_generation_tool_demo.js",
+}
+
+doctype_list_js = {
+	"Student Applicant": "public/js/student_applicant_list.js",
+}
+
+doc_events = {
+	"Student Admission": {
+		"validate": "talisma_sis.admissions.validate_admission_intake",
+	},
+	"Student Applicant": {
+		"validate": "talisma_sis.admissions.validate_student_application_intake",
+		"on_update": "talisma_sis.admissions.refresh_admission_capacity",
+		"after_delete": "talisma_sis.admissions.refresh_admission_capacity",
+	},
+	"Student": {
+		"validate": "talisma_sis.student_records.validate_student",
+		"on_update": [
+			"talisma_sis.student_records.capture_name_history",
+			"talisma_sis.admissions.sync_admitted_application",
+		],
+	},
+	"Program": {"validate": "talisma_sis.academics.validate_program"},
+	"Program Enrollment": {"validate": "talisma_sis.curriculum.validate_program_enrollment"},
+	"Course": {"validate": ["talisma_sis.us_academics.validate_course", "talisma_sis.academics.validate_course"]},
+	"Course Category": {"validate": "talisma_sis.academics.validate_course_category"},
+	"Course Enrollment": {
+		"validate": "talisma_sis.academics.validate_course_enrollment",
+		"on_update": "talisma_sis.academics.refresh_academic_standing_for_enrollment",
+		"after_delete": "talisma_sis.academics.refresh_academic_standing_for_enrollment",
+	},
+	"Assessment Result": {
+		"validate": "talisma_sis.assessment.validate_assessment_result",
+		"before_update_after_submit": "talisma_sis.assessment.capture_grade_change",
+		"on_submit": "talisma_sis.assessment.assessment_result_submitted",
+		"on_cancel": "talisma_sis.assessment.assessment_result_cancelled",
+	},
+	"Assessment Plan": {"validate": "talisma_sis.assessment.validate_assessment_plan"},
+	"Academic Term": {"validate": "talisma_sis.us_academics.validate_academic_term"},
+	"Grading Scale": {"validate": "talisma_sis.academics.validate_grading_scale"},
+	"Student Group": {
+		"before_validate": "talisma_sis.class_scheduling.before_validate_class_schedule",
+		"validate": ["talisma_sis.us_academics.validate_course_section", "talisma_sis.class_scheduling.validate_class_schedule"],
+	},
+	"Address": {"validate": "talisma_sis.student_records.validate_contact_dates"},
+	"Contact": {"validate": "talisma_sis.student_records.validate_contact_dates"},
+	"Talisma Student Identifier": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Status History": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Academic Program": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Advisor Assignment": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Hold": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Privacy Preference": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Classification History": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+		"on_update": "talisma_sis.student_records.sync_student_snapshot",
+		"after_delete": "talisma_sis.student_records.sync_student_snapshot",
+	},
+	"Talisma Student Name History": {
+		"validate": "talisma_sis.student_records.validate_effective_record",
+	},
+	"Talisma Curriculum Version": {
+		"validate": "talisma_sis.curriculum.validate_curriculum_version",
+		"on_update": "talisma_sis.curriculum.sync_program_curriculum",
+		"after_delete": "talisma_sis.curriculum.sync_program_curriculum",
+	},
+}
+
+permission_query_conditions = {
+	"Talisma Student Identifier": "talisma_sis.student_records.identifier_query_conditions",
+	"Talisma Student Document": "talisma_sis.student_documents.document_permission_query",
+	"Talisma Class Waitlist Entry": "talisma_sis.class_scheduling.waitlist_permission_query",
+}
+
+has_permission = {
+	"Talisma Student Identifier": "talisma_sis.student_records.identifier_has_permission",
+	"Talisma Student Document": "talisma_sis.student_documents.document_has_permission",
+	"Talisma Class Waitlist Entry": "talisma_sis.class_scheduling.waitlist_has_permission",
+}
+
+override_whitelisted_methods = {
+	"education.education.doctype.student_report_generation_tool.student_report_generation_tool.preview_report_card":
+		"talisma_sis.report_card.preview_report_card",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -88,8 +214,14 @@ web_include_css = '/assets/talisma_sis/css/talisma_demo.css'
 # Installation
 # ------------
 
-# before_install = "talisma_sis.install.before_install"
+before_install = "talisma_sis.install.before_install"
 # after_install = "talisma_sis.install.after_install"
+
+# Refuse schema migration on an unapproved upstream version tuple. This protects
+# durable academic records from accidental upgrades while the compatibility
+# matrix is intentionally narrow.
+before_migrate = ["talisma_sis.install.validate_runtime"]
+after_migrate = ["talisma_sis.demo.restore_demo_navigation_after_migrate"]
 
 # Uninstallation
 # ------------
@@ -209,7 +341,7 @@ web_include_css = '/assets/talisma_sis/css/talisma_demo.css'
 # Request Events
 # ----------------
 # before_request = ["talisma_sis.utils.before_request"]
-# after_request = ["talisma_sis.utils.after_request"]
+after_request = ["talisma_sis.demo.redirect_demo_desk"]
 
 # Job Events
 # ----------

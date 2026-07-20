@@ -1,13 +1,1891 @@
 :root {
-	--talisma-navy: #12304a;
-	--talisma-blue: #246b9e;
-	--talisma-gold: #d9a441;
-	--talisma-surface: #f4f8fb;
+	--talisma-navy: #102b4e;
+	--talisma-navy-dark: #081f3d;
+	--talisma-blue: #24486f;
+	--talisma-sky: #edf3f8;
+	--talisma-gold: #ffc629;
+	--talisma-gold-soft: #fff4cc;
+	--talisma-ink: #24364b;
+	--talisma-muted: #607086;
+	--talisma-surface: #f8f9fb;
+	--talisma-border: #8496aa;
+	--talisma-control-border: #778ba2;
+	--talisma-divider: #96a5b5;
 }
 
-body.talisma-sis-demo .navbar { border-bottom: 3px solid var(--talisma-gold); }
-.talisma-brand { display: inline-flex; align-items: center; gap: .5rem; margin-inline-end: 1rem; color: var(--talisma-navy); font-weight: 700; }
-.talisma-brand img { height: 28px; width: 28px; }
-body.talisma-sis-demo .widget.shortcut-widget-box { border-top: 3px solid var(--talisma-blue); }
-body.talisma-sis-demo .widget.shortcut-widget-box:hover { border-top-color: var(--talisma-gold); box-shadow: 0 8px 20px rgb(18 48 74 / 12%); }
+body.talisma-sis-demo {
+	--primary: var(--talisma-navy);
+	--primary-color: var(--talisma-navy);
+	--control-bg: #f4f6f8;
+	--fg-color: #fff;
+	min-height: 100vh;
+	background:
+		radial-gradient(circle at 10% 90%, rgb(16 43 78 / 5%), transparent 32%),
+		radial-gradient(circle at 92% 82%, rgb(255 198 41 / 5%), transparent 28%),
+		linear-gradient(180deg, #fafbfd 0%, #fff 48%, var(--talisma-surface) 100%);
+	color: var(--talisma-ink);
+}
+
+body.talisma-sis-demo .navbar {
+	border-top: 3px solid var(--talisma-gold);
+	border-bottom: 1px solid rgb(16 43 78 / 10%);
+	background: #fff;
+	box-shadow: 0 2px 12px rgb(16 43 78 / 6%);
+}
+
+/* Frappe v16 Desk shell. The stylesheet is app-scoped by hooks, so these
+   selectors do not depend on JavaScript adding a body class first. */
+.body-sidebar {
+	--sidebar-hover-color: rgb(255 255 255 / 11%);
+	--sidebar-active-color: var(--talisma-gold);
+	--sidebar-border-color: var(--talisma-gold);
+	border-right: 3px solid var(--talisma-gold) !important;
+	background: var(--talisma-navy) !important;
+}
+
+.body-sidebar .sidebar-header,
+.body-sidebar .body-sidebar-top,
+.body-sidebar .body-sidebar-bottom {
+	background: transparent;
+}
+
+.body-sidebar .sidebar-header .header-title {
+	color: #fff !important;
+	font-weight: 700;
+}
+
+.body-sidebar .sidebar-header .header-subtitle {
+	color: #d7e2ef !important;
+}
+
+.body-sidebar .standard-sidebar-item .item-anchor,
+.body-sidebar .standard-sidebar-item .sidebar-item-label,
+.body-sidebar .standard-sidebar-item .sidebar-item-icon,
+.body-sidebar .standard-sidebar-item .sidebar-item-suffix,
+.body-sidebar .collapse-sidebar-link,
+.body-sidebar .dropdown-navbar-user,
+.body-sidebar .avatar-name-email,
+.body-sidebar .avatar-name-email small {
+	color: #fff !important;
+}
+
+.body-sidebar .standard-sidebar-item .sidebar-item-icon svg,
+.body-sidebar .collapse-sidebar-link svg {
+	color: currentColor !important;
+	stroke: currentColor !important;
+}
+
+.body-sidebar .standard-sidebar-item:not(.active-sidebar):has(a:not(.section-break)):hover,
+.body-sidebar .dropdown-navbar-user:hover {
+	background: rgb(255 255 255 / 11%) !important;
+}
+
+.body-sidebar .standard-sidebar-item.active-sidebar {
+	background: var(--talisma-gold) !important;
+	box-shadow: 0 4px 12px rgb(8 31 61 / 24%);
+}
+
+.body-sidebar .standard-sidebar-item.active-sidebar .item-anchor,
+.body-sidebar .standard-sidebar-item.active-sidebar .sidebar-item-label,
+.body-sidebar .standard-sidebar-item.active-sidebar .sidebar-item-icon,
+.body-sidebar .standard-sidebar-item.active-sidebar .sidebar-item-suffix {
+	color: var(--talisma-navy-dark) !important;
+	font-weight: 700;
+}
+
+.body-sidebar .standard-sidebar-item .section-break .sidebar-item-label {
+	color: var(--talisma-gold) !important;
+	font-weight: 700;
+}
+
+.body-sidebar .divider {
+	border-color: rgb(255 255 255 / 32%) !important;
+}
+
+.body-sidebar .app-switcher-dropdown,
+.body-sidebar .sidebar-user-button {
+	border-color: rgb(255 255 255 / 30%) !important;
+}
+
+.main-section .page-head {
+	border-bottom: 2px solid var(--talisma-gold);
+	background: #fff !important;
+}
+
+.main-section .page-head .title-text,
+.main-section .page-head .breadcrumb-item,
+.main-section .page-head .breadcrumb-item a {
+	color: var(--talisma-navy) !important;
+}
+
+.workspace-container .widget.shortcut-widget-box,
+.workspace-container .shortcut-widget-box {
+	border-top: 3px solid var(--talisma-gold) !important;
+	box-shadow: 0 3px 10px rgb(16 43 78 / 6%);
+}
+
+.workspace-container .widget.links-widget-box,
+.workspace-container .links-widget-box {
+	border-left: 3px solid var(--talisma-gold) !important;
+	box-shadow: 0 3px 10px rgb(16 43 78 / 5%);
+}
+
+.workspace-container .widget-group-head .widget-group-title,
+.workspace-container .widget-title,
+.workspace-container .widget-head .widget-title {
+	color: var(--talisma-navy) !important;
+	font-weight: 700;
+}
+
+.workspace-container .widget.shortcut-widget-box:hover,
+.workspace-container .shortcut-widget-box:hover {
+	border-top-color: var(--talisma-navy) !important;
+	background: var(--talisma-gold-soft) !important;
+}
+
+/* Frappe constrains the complete workspace to --page-max-width on desktop.
+   Widen that parent only; Editor.js retains its native 12-column block grid. */
+@media (min-width: 992px) {
+	body.talisma-sis-demo:not(.full-width) [data-page-route="Workspaces"] .layout-main {
+		box-sizing: border-box;
+		width: calc(100% - 32px) !important;
+		max-width: 1440px !important;
+		margin-inline: auto;
+	}
+}
+
+/* Frappe v16 list views: a calm workspace surrounding one clear data card. */
+[data-page-route^="List/"] {
+	background: #f4f6f9;
+}
+
+[data-page-route^="List/"] .page-head {
+	box-shadow: 0 2px 10px rgb(16 43 78 / 6%);
+}
+
+[data-page-route^="List/"] .page-head .page-title {
+	border-left: 4px solid var(--talisma-gold);
+	padding-left: 12px;
+}
+
+[data-page-route^="List/"] .page-actions .btn-default,
+[data-page-route^="List/"] .page-actions .btn-secondary,
+[data-page-route^="List/"] .page-actions .dropdown-toggle {
+	border: 1px solid var(--talisma-border);
+	background: #fff;
+	color: var(--talisma-ink);
+	box-shadow: 0 1px 3px rgb(16 43 78 / 5%);
+}
+
+[data-page-route^="List/"] .page-actions .btn-default:hover,
+[data-page-route^="List/"] .page-actions .btn-secondary:hover,
+[data-page-route^="List/"] .page-actions .dropdown-toggle:hover {
+	border-color: #d49f00;
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+}
+
+[data-page-route^="List/"] .layout-main-section-wrapper {
+	padding: 18px 20px 0;
+}
+
+[data-page-route^="List/"] .layout-main-section {
+	overflow: hidden;
+	border: 1px solid var(--talisma-border);
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 8px 24px rgb(16 43 78 / 7%);
+}
+
+[data-page-route^="List/"] .page-form {
+	margin: 0;
+	padding: 14px 16px;
+	border-bottom: 1px solid var(--talisma-border);
+	background: #f9fafc;
+}
+
+[data-page-route^="List/"] .page-form .form-control,
+[data-page-route^="List/"] .page-form .control-input,
+[data-page-route^="List/"] .page-form .control-input-wrapper {
+	border: 1px solid var(--talisma-border);
+	background: #fff;
+}
+
+[data-page-route^="List/"] .frappe-list {
+	margin: 0;
+	padding: 12px 14px 0;
+}
+
+[data-page-route^="List/"] .list-row-container {
+	padding-inline: 4px;
+	border-radius: 8px;
+}
+
+[data-page-route^="List/"] .list-row-head {
+	height: 42px;
+	border: 0;
+	border-radius: 9px;
+	background: var(--talisma-navy) !important;
+	color: #fff !important;
+	box-shadow: 0 3px 10px rgb(16 43 78 / 16%);
+}
+
+[data-page-route^="List/"] .list-row-head.text-muted,
+[data-page-route^="List/"] .list-row-head .level-item,
+[data-page-route^="List/"] .list-row-head .list-header-meta {
+	color: #fff !important;
+	opacity: 1;
+}
+
+[data-page-route^="List/"] .list-row-head .level-right,
+[data-page-route^="List/"] .list-row-head:hover .level-right {
+	background: var(--talisma-navy) !important;
+	color: #fff;
+}
+
+[data-page-route^="List/"] .list-row-head a,
+[data-page-route^="List/"] .list-row-head .list-row-col,
+[data-page-route^="List/"] .list-row-head .list-subject,
+[data-page-route^="List/"] .list-row-head svg {
+	color: #fff !important;
+}
+
+[data-page-route^="List/"] .list-row:not(.list-row-head) {
+	min-height: 52px;
+	border-bottom-color: var(--talisma-divider);
+}
+
+[data-page-route^="List/"] .list-row:not(.list-row-head) .level-left {
+	padding-block: 13px;
+}
+
+[data-page-route^="List/"] .list-row:not(.list-row-head) .level-right {
+	padding-block: 13px;
+	background: #fff;
+	border-left-color: transparent;
+}
+
+[data-page-route^="List/"] .list-row-container:hover .list-row:not(.list-row-head),
+[data-page-route^="List/"] .list-row-container:hover .list-row:not(.list-row-head) .level-right {
+	background: var(--talisma-gold-soft) !important;
+}
+
+[data-page-route^="List/"] .list-row-container:hover .list-row:not(.list-row-head) .level-right {
+	box-shadow: -8px 0 12px var(--talisma-gold-soft);
+}
+
+[data-page-route^="List/"] .list-subject a {
+	color: var(--talisma-navy);
+	font-weight: 700;
+}
+
+[data-page-route^="List/"] .list-paging-area,
+[data-page-route^="List/"] .footnote-area {
+	margin-top: 10px;
+	padding: 12px 14px;
+	border-top-color: var(--talisma-border);
+	background: #f9fafc;
+}
+
+[data-page-route^="List/"] .list-paging-area .btn-paging.btn-info {
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+	font-weight: 700;
+}
+
+@media (max-width: 768px) {
+	[data-page-route^="List/"] .layout-main-section-wrapper {
+		padding: 10px 8px 0;
+	}
+
+	[data-page-route^="List/"] .layout-main-section {
+		border-radius: 10px;
+	}
+}
+
+/* Frappe v16 form views: a structured record canvas and profile summary. */
+[data-page-route^="Form/"] {
+	background: #f4f6f9;
+}
+
+[data-page-route^="Form/"] .page-head {
+	box-shadow: 0 2px 10px rgb(16 43 78 / 6%);
+}
+
+[data-page-route^="Form/"] .page-head .page-title {
+	border-left: 4px solid var(--talisma-gold);
+	padding-left: 12px;
+}
+
+[data-page-route^="Form/"] .page-actions .btn-default,
+[data-page-route^="Form/"] .page-actions .btn-secondary,
+[data-page-route^="Form/"] .page-actions .dropdown-toggle {
+	border: 1px solid var(--talisma-border);
+	background: #fff;
+	color: var(--talisma-ink);
+	box-shadow: 0 1px 3px rgb(16 43 78 / 5%);
+}
+
+[data-page-route^="Form/"] .page-actions .btn-default:hover,
+[data-page-route^="Form/"] .page-actions .btn-secondary:hover,
+[data-page-route^="Form/"] .page-actions .dropdown-toggle:hover {
+	border-color: #d49f00;
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+}
+
+[data-page-route^="Form/"] .layout-main-section-wrapper {
+	padding: 18px 20px 22px;
+}
+
+[data-page-route^="Form/"] .std-form-layout > .form-layout > .form-page,
+[data-page-route^="Form/"] .form-layout > .form-page {
+	overflow: hidden;
+	border: 1px solid var(--talisma-border);
+	border-radius: 14px 0 0 14px;
+	background: #fff;
+	box-shadow: 0 8px 24px rgb(16 43 78 / 7%);
+}
+
+[data-page-route^="Form/"] .form-tabs-list {
+	border-bottom: 1px solid var(--talisma-border);
+	border-radius: 14px 0 0 0;
+	background: #f9fafc;
+}
+
+[data-page-route^="Form/"] .form-tabs-list .nav-link {
+	color: var(--talisma-muted);
+	font-weight: 600;
+}
+
+[data-page-route^="Form/"] .form-tabs-list .nav-link:hover {
+	color: var(--talisma-navy);
+}
+
+[data-page-route^="Form/"] .form-tabs-list .nav-link.active {
+	border-bottom: 3px solid var(--talisma-gold);
+	background: transparent;
+	color: var(--talisma-navy);
+	font-weight: 750;
+	padding-bottom: 8px;
+}
+
+[data-page-route^="Form/"] .form-section.card-section,
+[data-page-route^="Form/"] .form-dashboard-section {
+	border-bottom-color: var(--talisma-border);
+	background: #fff;
+}
+
+[data-page-route^="Form/"] .form-section .section-head {
+	position: relative;
+	margin-top: 8px !important;
+	padding: 13px 16px 13px 20px;
+	border-radius: 8px;
+	background: linear-gradient(90deg, var(--talisma-gold-soft), #fff 70%);
+	color: var(--talisma-navy);
+	font-weight: 750;
+}
+
+[data-page-route^="Form/"] .form-section .section-head::before {
+	position: absolute;
+	inset: 9px auto 9px 8px;
+	width: 4px;
+	border-radius: 4px;
+	background: var(--talisma-gold);
+	content: "";
+}
+
+[data-page-route^="Form/"] .form-section .section-body {
+	padding-bottom: 14px;
+}
+
+[data-page-route^="Form/"] .control-label {
+	margin-bottom: 7px;
+	color: var(--talisma-navy);
+	font-weight: 650;
+}
+
+[data-page-route^="Form/"] .form-control,
+[data-page-route^="Form/"] .control-input,
+[data-page-route^="Form/"] .control-input-wrapper,
+[data-page-route^="Form/"] .awesomplete > input {
+	min-height: 36px;
+	border: 1px solid var(--talisma-control-border);
+	border-radius: 8px;
+	background: #f8fafc;
+	color: var(--talisma-ink);
+}
+
+[data-page-route^="Form/"] .form-control:hover,
+[data-page-route^="Form/"] .control-input:hover,
+[data-page-route^="Form/"] .control-input-wrapper:hover {
+	border-color: #647a92;
+}
+
+[data-page-route^="Form/"] .form-control:focus,
+[data-page-route^="Form/"] .control-input:focus-within,
+[data-page-route^="Form/"] .control-input-wrapper:focus-within,
+[data-page-route^="Form/"] .awesomplete > input:focus {
+	border-color: #d49f00;
+	background: #fff;
+	box-shadow: 0 0 0 3px rgb(255 198 41 / 22%);
+}
+
+[data-page-route^="Form/"] input[type="checkbox"] {
+	accent-color: var(--talisma-gold);
+}
+
+[data-page-route^="Form/"] .form-sidebar {
+	border: 1px solid var(--talisma-border);
+	border-left: 0;
+	border-radius: 0 14px 14px 0;
+	background: #f9fafc;
+	box-shadow: 8px 8px 24px rgb(16 43 78 / 6%);
+}
+
+[data-page-route^="Form/"] .form-sidebar .sidebar-image-section {
+	margin: 0;
+	padding: 22px 16px 18px;
+	border-bottom: 1px solid #d4a400;
+	border-radius: 0 14px 0 0;
+	background: linear-gradient(145deg, var(--talisma-gold-soft), #fff);
+}
+
+[data-page-route^="Form/"] .form-sidebar .sidebar-standard-image,
+[data-page-route^="Form/"] .form-sidebar .standard-image {
+	border: 3px solid var(--talisma-gold);
+	background: var(--talisma-navy) !important;
+	color: #fff !important;
+	box-shadow: 0 6px 16px rgb(16 43 78 / 18%);
+}
+
+[data-page-route^="Form/"] .form-sidebar .sidebar-section {
+	border-bottom-color: var(--talisma-border) !important;
+}
+
+[data-page-route^="Form/"] .form-sidebar .form-sidebar-items {
+	margin-block: 2px;
+	padding: 7px 8px;
+	border-radius: 8px;
+}
+
+[data-page-route^="Form/"] .form-sidebar .form-sidebar-items:hover {
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+}
+
+[data-page-route^="Form/"] .form-sidebar .form-sidebar-items:hover a,
+[data-page-route^="Form/"] .form-sidebar .form-sidebar-items:hover .icon {
+	color: var(--talisma-navy);
+	stroke: var(--talisma-navy);
+}
+
+@media (max-width: 992px) {
+	[data-page-route^="Form/"] .layout-main-section-wrapper {
+		padding: 10px 8px 14px;
+	}
+
+	[data-page-route^="Form/"] .std-form-layout > .form-layout > .form-page,
+	[data-page-route^="Form/"] .form-layout > .form-page {
+		border-radius: 10px;
+	}
+
+	[data-page-route^="Form/"] .form-sidebar {
+		border-left: 1px solid var(--talisma-border);
+		border-radius: 10px;
+	}
+}
+
+body.talisma-sis-demo .talisma-brand { display: inline-flex; align-items: center; gap: .5rem; margin-inline-end: 1rem; color: var(--talisma-navy); font-weight: 750; }
+body.talisma-sis-demo .talisma-brand img { width: 28px; height: 28px; }
+body.talisma-sis-demo .widget.shortcut-widget-box { border-top: 3px solid var(--talisma-gold); }
+body.talisma-sis-demo .widget.shortcut-widget-box:hover { border-top-color: var(--talisma-navy); box-shadow: 0 8px 20px rgb(18 48 74 / 12%); }
 body.talisma-sis-demo .page-head { background: linear-gradient(90deg, var(--talisma-surface), transparent); }
+
+/* University navigation and sidebar */
+body.talisma-sis-demo .navbar a,
+body.talisma-sis-demo .navbar .nav-link,
+body.talisma-sis-demo .page-head .breadcrumb a {
+	color: var(--talisma-navy);
+}
+
+body.talisma-sis-demo .desk-sidebar,
+body.talisma-sis-demo .layout-side-section {
+	border-right-color: var(--talisma-border);
+	background: #f7f8fa;
+}
+
+body.talisma-sis-demo .sidebar-item-container,
+body.talisma-sis-demo .sidebar-item-container .sidebar-item-label {
+	color: var(--talisma-ink);
+}
+
+body.talisma-sis-demo .sidebar-item-container:hover {
+	background: rgb(16 43 78 / 6%);
+}
+
+body.talisma-sis-demo .sidebar-item-container.selected,
+body.talisma-sis-demo .sidebar-item-container.active,
+body.talisma-sis-demo .sidebar-item-container[aria-current="page"] {
+	position: relative;
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+	font-weight: 650;
+}
+
+body.talisma-sis-demo .sidebar-item-container.selected::before,
+body.talisma-sis-demo .sidebar-item-container.active::before,
+body.talisma-sis-demo .sidebar-item-container[aria-current="page"]::before {
+	position: absolute;
+	inset: 5px auto 5px 0;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: var(--talisma-gold);
+	content: "";
+}
+
+/* Page hierarchy and tabs */
+body.talisma-sis-demo .page-title .title-text,
+body.talisma-sis-demo .page-title h1,
+body.talisma-sis-demo .section-head,
+body.talisma-sis-demo .form-section .section-head,
+body.talisma-sis-demo .widget-head .widget-title {
+	color: var(--talisma-navy);
+}
+
+body.talisma-sis-demo .form-tabs-list .nav-link.active,
+body.talisma-sis-demo .nav-tabs .nav-link.active {
+	border-bottom-color: var(--talisma-gold);
+	color: var(--talisma-navy);
+	font-weight: 650;
+}
+
+/* Buttons retain semantic red and green variants from Frappe. */
+body.talisma-sis-demo .btn-primary,
+body.talisma-sis-demo .primary-action,
+body.talisma-sis-demo .btn[data-label="Save"] {
+	border-color: var(--talisma-navy);
+	background: var(--talisma-navy);
+	color: #fff;
+}
+
+body.talisma-sis-demo .btn-primary:hover,
+body.talisma-sis-demo .primary-action:hover,
+body.talisma-sis-demo .btn[data-label="Save"]:hover {
+	border-color: var(--talisma-navy-dark);
+	background: var(--talisma-navy-dark);
+}
+
+body.talisma-sis-demo .btn-primary:focus-visible,
+body.talisma-sis-demo .primary-action:focus-visible,
+body.talisma-sis-demo .btn[data-label="Save"]:focus-visible {
+	outline: 3px solid rgb(255 198 41 / 45%);
+	outline-offset: 2px;
+}
+
+/* Calm form surfaces with a clear university-gold focus state. */
+body.talisma-sis-demo .form-control,
+body.talisma-sis-demo .awesomplete > input {
+	border-color: var(--talisma-border);
+}
+
+body.talisma-sis-demo .form-control:focus,
+body.talisma-sis-demo .control-input:focus-within,
+body.talisma-sis-demo .control-input-wrapper:focus-within,
+body.talisma-sis-demo .awesomplete > input:focus {
+	border-color: #d49f00;
+	box-shadow: 0 0 0 3px rgb(255 198 41 / 24%);
+}
+
+body.talisma-sis-demo input[type="checkbox"] {
+	accent-color: var(--talisma-navy);
+}
+
+body.talisma-sis-demo .dropdown-menu .dropdown-item:hover,
+body.talisma-sis-demo .awesomplete > ul > li:hover,
+body.talisma-sis-demo .awesomplete > ul > li[aria-selected="true"] {
+	background: var(--talisma-gold-soft);
+	color: var(--talisma-navy);
+}
+
+/* Cards and lists use gold as an accent, not as a status color. */
+body.talisma-sis-demo .widget.number-widget-box {
+	border-left: 3px solid var(--talisma-gold);
+}
+
+body.talisma-sis-demo .widget,
+body.talisma-sis-demo .form-dashboard-section,
+body.talisma-sis-demo .frappe-card {
+	border-color: var(--talisma-border);
+	box-shadow: 0 3px 12px rgb(16 43 78 / 5%);
+}
+
+body.talisma-sis-demo .list-row-container:hover .list-row:not(.list-row-head),
+body.talisma-sis-demo .grid-row:hover {
+	background: rgb(255 244 204 / 55%);
+}
+
+body.talisma-sis-demo a:not(.btn):not(.dropdown-item):not(.desktop-icon) {
+	text-decoration-color: rgb(16 43 78 / 30%);
+}
+
+body.talisma-sis-demo .talisma-desktop-home {
+	width: min(100%, 1320px);
+	margin: 0 auto;
+	padding: 58px 32px 42px;
+}
+
+.talisma-dashboard-header {
+	margin: 0 auto 40px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+	text-align: center;
+}
+
+.talisma-dashboard-header::after,
+.talisma-eyebrow,
+.talisma-term-pill,
+.talisma-summary-grid,
+.talisma-dashboard-lower {
+	display: none !important;
+}
+
+.talisma-dashboard-heading {
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+
+.talisma-dashboard-heading h1 {
+	margin: 0;
+	color: var(--talisma-navy);
+	font-size: clamp(30px, 3vw, 40px);
+	font-weight: 750;
+	letter-spacing: -.035em;
+}
+
+.talisma-dashboard-heading p {
+	margin: 10px 0 0;
+	color: var(--talisma-muted);
+	font-size: 17px;
+}
+
+body.talisma-sis-demo .talisma-module-grid,
+body.talisma-sis-demo :has(> a.desktop-icon[data-id="Admissions"]) {
+	display: grid !important;
+	grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+	gap: 22px !important;
+	width: 100% !important;
+	max-width: 1240px !important;
+	margin: 0 auto !important;
+	padding: 0 !important;
+}
+
+body.talisma-sis-demo .talisma-module-card,
+body.talisma-sis-demo a.desktop-icon[data-id] {
+	position: relative;
+	display: flex !important;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100% !important;
+	height: 220px !important;
+	min-width: 0;
+	margin: 0 !important;
+	padding: 24px 20px !important;
+	border: 1px solid rgb(12 45 72 / 10%);
+	border-radius: 12px;
+	background: rgb(255 255 255 / 94%);
+	box-shadow: 0 5px 16px rgb(12 45 72 / 7%);
+	text-align: center;
+	transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+body.talisma-sis-demo .talisma-module-card:hover,
+body.talisma-sis-demo a.desktop-icon[data-id]:hover {
+	transform: translateY(-5px);
+	border-color: rgb(23 107 156 / 28%);
+	box-shadow: 0 14px 30px rgb(12 45 72 / 12%);
+}
+
+body.talisma-sis-demo .talisma-module-card:focus-visible,
+body.talisma-sis-demo a.desktop-icon[data-id]:focus-visible {
+	outline: 3px solid rgb(23 107 156 / 45%);
+	outline-offset: 3px;
+}
+
+body.talisma-sis-demo .talisma-module-card::after { display: none; }
+
+body.talisma-sis-demo .talisma-module-card .icon-container,
+body.talisma-sis-demo a.desktop-icon[data-id] .icon-container {
+	flex: 0 0 auto;
+	width: 74px !important;
+	height: 74px !important;
+	margin: 0 0 18px !important;
+	border-radius: 18px;
+	box-shadow: 0 8px 20px rgb(12 45 72 / 13%);
+}
+
+body.talisma-sis-demo .talisma-module-card .app-icon,
+body.talisma-sis-demo a.desktop-icon[data-id] .app-icon {
+	width: 74px !important;
+	height: 74px !important;
+	border-radius: 18px;
+	object-fit: cover;
+}
+
+body.talisma-sis-demo .talisma-module-card .icon-caption,
+body.talisma-sis-demo a.desktop-icon[data-id] .icon-caption {
+	width: 100%;
+	margin: 0 !important;
+	padding: 0 !important;
+	text-align: center !important;
+}
+
+body.talisma-sis-demo .talisma-module-card .icon-title,
+body.talisma-sis-demo a.desktop-icon[data-id] .icon-title {
+	overflow: visible !important;
+	color: var(--talisma-ink);
+	font-size: 17px !important;
+	font-weight: 750;
+	line-height: 1.3;
+	text-overflow: clip !important;
+	white-space: normal !important;
+}
+
+.talisma-module-description {
+	display: -webkit-box;
+	overflow: hidden;
+	max-width: 220px;
+	margin-top: 9px;
+	color: var(--talisma-muted);
+	font-size: 12px;
+	line-height: 1.45;
+	text-align: center;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+@media (max-width: 900px) {
+	body.talisma-sis-demo .talisma-module-grid,
+	body.talisma-sis-demo :has(> a.desktop-icon[data-id="Admissions"]) {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	}
+}
+
+@media (max-width: 560px) {
+	body.talisma-sis-demo .talisma-desktop-home { padding: 34px 16px; }
+	.talisma-dashboard-header { margin-bottom: 28px; }
+	body.talisma-sis-demo .talisma-module-grid,
+	body.talisma-sis-demo :has(> a.desktop-icon[data-id="Admissions"]) {
+		grid-template-columns: 1fr !important;
+		gap: 14px !important;
+	}
+	body.talisma-sis-demo .talisma-module-card,
+	body.talisma-sis-demo a.desktop-icon[data-id] { height: 190px !important; }
+}
+
+/* Live Frappe v16 form routes are stored on the body, not the page container. */
+body[data-route^="Form/"] .layout-main-section-wrapper {
+	padding: 18px 20px 22px !important;
+	background: #f4f6f9;
+}
+
+body[data-route^="Form/"] .form-layout {
+	gap: 14px;
+}
+
+body[data-route^="Form/"] .form-page {
+	overflow: hidden;
+	border: 1px solid var(--talisma-border) !important;
+	border-radius: 14px !important;
+	background: #fff !important;
+	box-shadow: 0 8px 24px rgb(16 43 78 / 8%) !important;
+}
+
+body[data-route^="Form/"] .form-tabs-list {
+	border-bottom: 1px solid var(--talisma-border) !important;
+	border-radius: 14px 14px 0 0 !important;
+	background: #f8fafc !important;
+}
+
+body[data-route^="Form/"] .form-tabs-list .nav-link {
+	color: var(--talisma-muted) !important;
+	font-weight: 600;
+}
+
+body[data-route^="Form/"] .form-tabs-list .nav-link.active {
+	border-bottom: 3px solid var(--talisma-gold) !important;
+	color: var(--talisma-navy) !important;
+	font-weight: 750;
+	padding-bottom: 8px;
+}
+
+body[data-route^="Form/"] .form-section .section-head {
+	position: relative;
+	margin-top: 8px !important;
+	padding: 13px 16px 13px 22px !important;
+	border-radius: 8px;
+	background: linear-gradient(90deg, var(--talisma-gold-soft), #fff 72%) !important;
+	color: var(--talisma-navy) !important;
+	font-weight: 750 !important;
+}
+
+body[data-route^="Form/"] .form-section .section-head::before {
+	position: absolute;
+	inset: 9px auto 9px 8px;
+	width: 4px;
+	border-radius: 4px;
+	background: var(--talisma-gold);
+	content: "";
+}
+
+body[data-route^="Form/"] .control-label {
+	color: var(--talisma-navy) !important;
+	font-weight: 650 !important;
+}
+
+body[data-route^="Form/"] .form-control,
+body[data-route^="Form/"] .control-input,
+body[data-route^="Form/"] .control-input-wrapper,
+body[data-route^="Form/"] .awesomplete > input {
+	min-height: 36px;
+	border: 1px solid var(--talisma-control-border) !important;
+	border-radius: 8px !important;
+	background: #f8fafc !important;
+}
+
+body[data-route^="Form/"] .form-control:focus,
+body[data-route^="Form/"] .control-input:focus-within,
+body[data-route^="Form/"] .control-input-wrapper:focus-within,
+body[data-route^="Form/"] .awesomplete > input:focus {
+	border-color: #d49f00 !important;
+	background: #fff !important;
+	box-shadow: 0 0 0 3px rgb(255 198 41 / 24%) !important;
+}
+
+body[data-route^="Form/"] .form-sidebar {
+	overflow: hidden;
+	border: 1px solid var(--talisma-border) !important;
+	border-radius: 14px !important;
+	background: #f9fafc !important;
+	box-shadow: 0 8px 24px rgb(16 43 78 / 7%) !important;
+}
+
+body[data-route^="Form/"] .form-sidebar .sidebar-image-section {
+	margin: 0 !important;
+	padding: 22px 16px 18px !important;
+	border-bottom: 1px solid #d4a400 !important;
+	background: linear-gradient(145deg, var(--talisma-gold-soft), #fff) !important;
+}
+
+body[data-route^="Form/"] .form-sidebar .sidebar-standard-image,
+body[data-route^="Form/"] .form-sidebar .standard-image {
+	border: 3px solid var(--talisma-gold) !important;
+	background: var(--talisma-navy) !important;
+	color: #fff !important;
+	box-shadow: 0 6px 16px rgb(16 43 78 / 18%);
+}
+
+body[data-route^="Form/"] .form-sidebar .form-sidebar-items:hover {
+	border-radius: 8px;
+	background: var(--talisma-gold-soft) !important;
+	color: var(--talisma-navy) !important;
+}
+
+@media (max-width: 992px) {
+	body[data-route^="Form/"] .layout-main-section-wrapper {
+		padding: 10px 8px 14px !important;
+	}
+
+	body[data-route^="Form/"] .form-layout {
+		gap: 10px;
+	}
+}
+
+/* Main forms use more of wide displays; dialogs and grids keep native sizing. */
+@media (min-width: 992px) {
+	body[data-route^="Form/"] .page-container[data-page-route^="Form/"] .std-form-layout .section-head,
+	body[data-route^="Form/"] .page-container[data-page-route^="Form/"] .std-form-layout .section-body {
+		box-sizing: border-box;
+		width: calc(100% - 32px) !important;
+		max-width: 1200px !important;
+		margin-inline: auto !important;
+	}
+}
+
+/* Form alignment system: one card layer and a consistent 8px rhythm. */
+body[data-route^="Form/"] .layout-main-section.frappe-card {
+	overflow: visible;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+body[data-route^="Form/"] .form-wrapper,
+body[data-route^="Form/"] .std-form-layout,
+body[data-route^="Form/"] .form-layout,
+body[data-route^="Form/"] .form-page {
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+}
+
+body[data-route^="Form/"] .form-message-container.hidden {
+	display: none !important;
+}
+
+body[data-route^="Form/"] .form-tabs-list,
+body[data-route^="Form/"] .form-tabs {
+	height: 52px;
+	min-height: 52px;
+}
+
+body[data-route^="Form/"] .form-tabs {
+	align-items: stretch !important;
+	gap: 0;
+	padding-inline: 18px;
+	overflow-y: hidden;
+}
+
+body[data-route^="Form/"] .form-tabs .nav-item {
+	display: flex;
+	height: 52px;
+	margin: 0 !important;
+	align-items: stretch;
+}
+
+body[data-route^="Form/"] .form-tabs-list .form-tabs .nav-link,
+body[data-route^="Form/"] .form-tabs-list .form-tabs .nav-link.active {
+	display: flex;
+	height: 52px;
+	margin: 0 !important;
+	padding: 0 18px !important;
+	border: 0 !important;
+	border-bottom: 3px solid transparent !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	align-items: center;
+	justify-content: center;
+	line-height: 1.2;
+}
+
+body[data-route^="Form/"] .form-tabs-list .form-tabs .nav-link.active {
+	border-bottom-color: var(--talisma-gold) !important;
+}
+
+body[data-route^="Form/"] .form-tab-content {
+	margin-top: 0 !important;
+}
+
+body[data-route^="Form/"] .form-tab-content > .tab-pane {
+	padding-top: 0;
+}
+
+body[data-route^="Form/"] .form-section > .section-body:first-child,
+body[data-route^="Form/"] .form-section .section-body {
+	padding-top: 18px;
+	padding-bottom: 14px;
+}
+
+body[data-route^="Form/"] .form-column .form-group {
+	margin-bottom: 18px !important;
+}
+
+body[data-route^="Form/"] .form-column .form-group:last-child {
+	margin-bottom: 10px !important;
+}
+
+body[data-route^="Form/"] .control-label {
+	display: flex;
+	min-height: 20px;
+	margin-bottom: 6px !important;
+	align-items: center;
+	line-height: 20px;
+}
+
+body[data-route^="Form/"] .form-control,
+body[data-route^="Form/"] .control-input,
+body[data-route^="Form/"] .awesomplete > input {
+	height: 42px;
+	min-height: 42px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	line-height: 24px;
+}
+
+body[data-route^="Form/"] .form-sidebar {
+	height: fit-content;
+	margin: 18px 12px 22px 0 !important;
+	align-self: flex-start;
+}
+
+body[data-route^="Form/"] .form-footer {
+	max-width: none !important;
+	margin: 16px 0 0 !important;
+	padding: 18px !important;
+	border: 1px solid var(--talisma-border);
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 6px 18px rgb(16 43 78 / 6%);
+}
+
+body[data-route^="Form/"] .form-footer .comment-box {
+	margin-top: 0;
+}
+
+body[data-route^="Form/"] .form-footer .new-timeline {
+	margin-top: 18px;
+}
+
+@media (max-width: 992px) {
+	body[data-route^="Form/"] .form-sidebar {
+		margin: 10px 8px 14px !important;
+	}
+
+	body[data-route^="Form/"] .form-tabs {
+		padding-inline: 8px;
+	}
+
+	body[data-route^="Form/"] .form-tabs-list .form-tabs .nav-link,
+	body[data-route^="Form/"] .form-tabs-list .form-tabs .nav-link.active {
+		padding-inline: 12px !important;
+	}
+}
+
+/* Final control normalization: labels stay visible and controls have one border. */
+body[data-route^="Form/"] .form-tabs-list {
+	position: relative !important;
+	top: auto !important;
+	inset-block-start: auto !important;
+}
+
+body[data-route^="Form/"] .form-tabs-sticky-up,
+body[data-route^="Form/"] .form-tabs-sticky-down {
+	top: auto !important;
+}
+
+body[data-route^="Form/"] .form-tab-content {
+	position: relative;
+	margin: 0 !important;
+	padding: 0 !important;
+	overflow: visible;
+}
+
+body[data-route^="Form/"] .form-tab-content > .tab-pane.active > .form-section:first-of-type > .section-body {
+	padding-top: 24px !important;
+}
+
+body[data-route^="Form/"] .control-input-wrapper,
+body[data-route^="Form/"] .control-input:not(input):not(select):not(textarea) {
+	height: auto !important;
+	min-height: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	outline: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+body[data-route^="Form/"] .control-input-wrapper:hover,
+body[data-route^="Form/"] .control-input-wrapper:focus,
+body[data-route^="Form/"] .control-input-wrapper:focus-within,
+body[data-route^="Form/"] .control-input:not(input):not(select):not(textarea):hover,
+body[data-route^="Form/"] .control-input:not(input):not(select):not(textarea):focus-within {
+	border: 0 !important;
+	outline: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+body[data-route^="Form/"] .control-input .form-control,
+body[data-route^="Form/"] .control-input .input-with-feedback,
+body[data-route^="Form/"] .control-input .awesomplete > input,
+body[data-route^="Form/"] .control-input select,
+body[data-route^="Form/"] .control-input textarea {
+	box-sizing: border-box;
+	width: 100%;
+	border: 1px solid var(--talisma-control-border) !important;
+	border-radius: 8px !important;
+	outline: 0 !important;
+	background: #f8fafc !important;
+	box-shadow: none !important;
+}
+
+body[data-route^="Form/"] .control-input .form-control:focus,
+body[data-route^="Form/"] .control-input .input-with-feedback:focus,
+body[data-route^="Form/"] .control-input .awesomplete > input:focus,
+body[data-route^="Form/"] .control-input select:focus,
+body[data-route^="Form/"] .control-input textarea:focus {
+	border-color: #d49f00 !important;
+	outline: 0 !important;
+	background: #fff !important;
+	box-shadow: 0 0 0 3px rgb(255 198 41 / 22%) !important;
+}
+
+body[data-route^="Form/"] .like-disabled-input,
+body[data-route^="Form/"] .control-value {
+	box-sizing: border-box;
+	min-height: 42px;
+	padding: 8px 12px;
+	border: 1px solid var(--talisma-border) !important;
+	border-radius: 8px !important;
+	background: #f3f5f7 !important;
+	box-shadow: none !important;
+}
+
+body[data-route^="Form/"] .form-section .section-body .form-column {
+	padding-top: 0;
+}
+
+/* Contrast guardrails for Frappe utility classes inside branded surfaces. */
+.body-sidebar .sidebar-header .header-title,
+.body-sidebar .sidebar-header .header-title *,
+.body-sidebar .standard-sidebar-item:not(.active-sidebar) .item-anchor,
+.body-sidebar .standard-sidebar-item:not(.active-sidebar) .sidebar-item-label,
+.body-sidebar .standard-sidebar-item:not(.active-sidebar) .sidebar-item-suffix,
+.body-sidebar .collapse-sidebar-link,
+.body-sidebar .dropdown-navbar-user,
+.body-sidebar .avatar-name-email,
+.body-sidebar .avatar-name-email strong {
+	color: #fff !important;
+	opacity: 1 !important;
+}
+
+.body-sidebar .sidebar-header .header-subtitle,
+.body-sidebar .sidebar-header .header-subtitle *,
+.body-sidebar .avatar-name-email small,
+.body-sidebar .text-muted:not(.dropdown-item) {
+	color: #d7e2ef !important;
+	opacity: 1 !important;
+}
+
+.body-sidebar .sidebar-header svg,
+.body-sidebar .standard-sidebar-item:not(.active-sidebar) svg,
+.body-sidebar .collapse-sidebar-link svg,
+.body-sidebar .dropdown-navbar-user svg {
+	color: #fff !important;
+	stroke: currentColor !important;
+	opacity: 1 !important;
+}
+
+.body-sidebar .standard-sidebar-item.active-sidebar,
+.body-sidebar .standard-sidebar-item.active-sidebar * {
+	color: var(--talisma-navy-dark) !important;
+	opacity: 1 !important;
+}
+
+.body-sidebar .standard-sidebar-item.active-sidebar svg {
+	stroke: currentColor !important;
+}
+
+[data-page-route^="List/"] .list-row-head,
+[data-page-route^="List/"] .list-row-head.text-muted,
+[data-page-route^="List/"] .list-row-head * {
+	color: #fff !important;
+	opacity: 1 !important;
+}
+
+[data-page-route^="List/"] .list-row-head,
+[data-page-route^="List/"] .list-row-head:hover,
+[data-page-route^="List/"] .list-row-head .level-right,
+[data-page-route^="List/"] .list-row-head:hover .level-right {
+	background: var(--talisma-navy) !important;
+}
+
+[data-page-route^="List/"] .list-row-head svg,
+[data-page-route^="List/"] .list-row-head svg * {
+	color: #fff !important;
+	fill: none;
+	stroke: currentColor !important;
+	opacity: 1 !important;
+}
+
+[data-page-route^="List/"] .list-row-head input[type="checkbox"] {
+	accent-color: var(--talisma-gold);
+}
+
+body.talisma-sis-demo .btn-primary,
+body.talisma-sis-demo .btn-primary *,
+body.talisma-sis-demo .primary-action,
+body.talisma-sis-demo .primary-action *,
+body.talisma-sis-demo .btn[data-label="Save"],
+body.talisma-sis-demo .btn[data-label="Save"] * {
+	color: #fff !important;
+	opacity: 1 !important;
+}
+
+body.talisma-sis-demo .btn-primary svg,
+body.talisma-sis-demo .primary-action svg,
+body.talisma-sis-demo .btn[data-label="Save"] svg {
+	stroke: currentColor !important;
+}
+
+body.talisma-sis-demo .form-label,
+body.talisma-sis-demo .control-label,
+body.talisma-sis-demo .grid-heading-row,
+body.talisma-sis-demo .grid-heading-row *,
+body.talisma-sis-demo .page-title,
+body.talisma-sis-demo .page-title * {
+	color: var(--talisma-ink);
+}
+
+body.talisma-sis-demo input::placeholder,
+body.talisma-sis-demo textarea::placeholder {
+	color: #66758a !important;
+	opacity: 1;
+}
+
+body.talisma-sis-demo .like-disabled-input,
+body.talisma-sis-demo .control-value,
+body.talisma-sis-demo .main-section .text-muted:not(.list-row-head) {
+	color: #52647a !important;
+}
+
+/* Strong, large-display-friendly boundaries for controls and content panels. */
+body.talisma-sis-demo .form-control,
+body.talisma-sis-demo .input-with-feedback,
+body.talisma-sis-demo .awesomplete > input,
+body.talisma-sis-demo select,
+body.talisma-sis-demo textarea,
+body.talisma-sis-demo .control-input input:not([type="checkbox"]):not([type="radio"]) {
+	border-color: var(--talisma-control-border) !important;
+}
+
+body.talisma-sis-demo input[type="checkbox"],
+body.talisma-sis-demo input[type="radio"] {
+	border-color: #647a92 !important;
+	box-shadow: 0 0 0 1px #647a92;
+}
+
+body.talisma-sis-demo input[type="checkbox"]:checked,
+body.talisma-sis-demo input[type="radio"]:checked {
+	border-color: var(--talisma-navy) !important;
+	accent-color: var(--talisma-navy);
+	box-shadow: 0 0 0 1px var(--talisma-navy);
+}
+
+body.talisma-sis-demo input[type="checkbox"]:focus-visible,
+body.talisma-sis-demo input[type="radio"]:focus-visible {
+	outline: 3px solid rgb(255 198 41 / 45%);
+	outline-offset: 2px;
+}
+
+[data-page-route="Workspaces"] .shortcut-widget-box,
+[data-page-route="Workspaces"] .links-widget-box,
+[data-page-route="Workspaces"] .widget,
+body.talisma-sis-demo .frappe-card,
+body.talisma-sis-demo .form-tabs-list,
+body.talisma-sis-demo .form-dashboard-section,
+body.talisma-sis-demo .grid-heading-row,
+body.talisma-sis-demo .grid-row,
+body.talisma-sis-demo .dropdown-menu {
+	border-color: var(--talisma-border) !important;
+}
+
+/* Keep form sections visually continuous; inputs and the outer card provide structure. */
+body[data-route^="Form/"] .form-section,
+body[data-route^="Form/"] .form-section.card-section {
+	border-bottom: 0 !important;
+}
+
+body.talisma-sis-demo .list-row:not(.list-row-head),
+body.talisma-sis-demo .grid-row {
+	border-bottom-color: var(--talisma-divider) !important;
+}
+
+body.talisma-sis-demo .btn-default,
+body.talisma-sis-demo .btn-secondary,
+body.talisma-sis-demo .page-form,
+body.talisma-sis-demo .filter-section {
+	border-color: var(--talisma-border) !important;
+}
+
+/* List toolbar controls are button groups, not form controls. */
+[data-page-route^="List/"] .standard-filter-section .match-type-dropdown-btn,
+[data-page-route^="List/"] .filter-section .filter-button,
+[data-page-route^="List/"] .filter-section .filter-x-button,
+[data-page-route^="List/"] .filter-section .btn-order,
+[data-page-route^="List/"] .filter-section .sort-selector-button {
+	min-height: 30px;
+	border: 1px solid var(--talisma-control-border) !important;
+	background: #fff !important;
+	color: var(--talisma-ink) !important;
+	box-shadow: 0 1px 2px rgb(16 43 78 / 8%);
+}
+
+[data-page-route^="List/"] .standard-filter-section .input-group > input {
+	border-right: 0 !important;
+	border-radius: 7px 0 0 7px !important;
+}
+
+[data-page-route^="List/"] .standard-filter-section .match-type-dropdown-btn {
+	border-radius: 0 7px 7px 0 !important;
+}
+
+[data-page-route^="List/"] .filter-section .filter-button {
+	border-radius: 7px 0 0 7px !important;
+}
+
+[data-page-route^="List/"] .filter-section .filter-x-button {
+	border-left: 1px solid var(--talisma-divider) !important;
+	border-radius: 0 7px 7px 0 !important;
+}
+
+[data-page-route^="List/"] .filter-section .btn-order {
+	border-radius: 7px 0 0 7px !important;
+}
+
+[data-page-route^="List/"] .filter-section .sort-selector-button {
+	border-left: 1px solid var(--talisma-divider) !important;
+	border-radius: 0 7px 7px 0 !important;
+}
+
+[data-page-route^="List/"] .standard-filter-section .match-type-dropdown-btn:hover,
+[data-page-route^="List/"] .filter-section .filter-button:hover,
+[data-page-route^="List/"] .filter-section .filter-x-button:hover,
+[data-page-route^="List/"] .filter-section .btn-order:hover,
+[data-page-route^="List/"] .filter-section .sort-selector-button:hover {
+	border-color: var(--talisma-navy) !important;
+	background: #edf3f8 !important;
+}
+
+[data-page-route^="List/"] .standard-filter-section .match-type-dropdown-btn:focus-visible,
+[data-page-route^="List/"] .filter-section .filter-button:focus-visible,
+[data-page-route^="List/"] .filter-section .filter-x-button:focus-visible,
+[data-page-route^="List/"] .filter-section .btn-order:focus-visible,
+[data-page-route^="List/"] .filter-section .sort-selector-button:focus-visible {
+	position: relative;
+	z-index: 2;
+	outline: 3px solid rgb(255 198 41 / 45%);
+	outline-offset: 2px;
+}
+
+[data-page-route^="List/"] .standard-filter-section .match-type-dropdown-btn svg,
+[data-page-route^="List/"] .filter-section .filter-button svg,
+[data-page-route^="List/"] .filter-section .filter-x-button svg,
+[data-page-route^="List/"] .filter-section .btn-order svg,
+[data-page-route^="List/"] .filter-section .sort-selector-button svg {
+	color: var(--talisma-ink) !important;
+	stroke: currentColor !important;
+	opacity: 1 !important;
+}
+
+/* Dialogs keep one modal shell and borders only on interactive controls. */
+body.talisma-sis-demo .modal .form-layout {
+	gap: 0 !important;
+}
+
+body.talisma-sis-demo .modal .form-page {
+	overflow: visible;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+body.talisma-sis-demo .modal .form-section,
+body.talisma-sis-demo .modal .form-section.card-section,
+body.talisma-sis-demo .modal .section-body {
+	border: 0 !important;
+	background: transparent;
+	box-shadow: none !important;
+}
+
+body.talisma-sis-demo .modal .form-tabs-list {
+	border-radius: 0 !important;
+	background: transparent !important;
+}
+
+/* Editable child tables retain Frappe's compact native grid treatment. */
+body.talisma-sis-demo .form-grid .grid-heading-row {
+	border-bottom-color: var(--table-border-color) !important;
+}
+
+body.talisma-sis-demo .form-grid .grid-row {
+	border-color: var(--table-border-color) !important;
+	border-bottom-color: var(--table-border-color) !important;
+}
+
+body.talisma-sis-demo .form-grid .grid-row > .row .col,
+body.talisma-sis-demo .form-grid .grid-row > .dialog-assignment-row .col {
+	border-right-color: var(--table-border-color) !important;
+}
+
+body.talisma-sis-demo .form-grid .grid-body .editable-row .form-control,
+body.talisma-sis-demo .form-grid .grid-body .editable-row .input-with-feedback,
+body.talisma-sis-demo .form-grid .grid-body .editable-row .awesomplete > input,
+body.talisma-sis-demo .form-grid .grid-body .editable-row select,
+body.talisma-sis-demo .form-grid .grid-body .editable-row textarea,
+body.talisma-sis-demo .form-grid .grid-body .editable-row .ql-editor {
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+}
+
+body.talisma-sis-demo .form-grid .grid-body .editable-row .form-control:focus,
+body.talisma-sis-demo .form-grid .grid-body .editable-row .input-with-feedback:focus,
+body.talisma-sis-demo .form-grid .grid-body .editable-row textarea:focus,
+body.talisma-sis-demo .form-grid .grid-body .editable-row .ql-editor:focus {
+	box-shadow: inset 0 0 0 2px rgb(124 124 124 / 25%) !important;
+}
+
+body.talisma-sis-demo .form-grid input[type="checkbox"],
+body.talisma-sis-demo .form-grid input[type="radio"] {
+	border-color: var(--gray-500) !important;
+	box-shadow: none !important;
+}
+
+body.talisma-sis-demo .form-grid .btn-default,
+body.talisma-sis-demo .form-grid .btn-secondary {
+	border-color: var(--border-color) !important;
+}
+
+/* Admission Intake has a short form and should use the available card width. */
+@media (min-width: 1200px) {
+	body.talisma-sis-demo[data-route^="Form/Student Admission"]
+		.page-container
+		.std-form-layout
+		.form-section {
+		width: 100% !important;
+		max-width: none !important;
+	}
+
+	body.talisma-sis-demo[data-route^="Form/Student Admission"]
+		.page-container
+		.std-form-layout
+		.section-head,
+	body.talisma-sis-demo[data-route^="Form/Student Admission"]
+		.page-container
+		.std-form-layout
+		.section-body {
+		width: calc(100% - 48px) !important;
+		max-width: 1400px !important;
+	}
+
+	body.talisma-sis-demo[data-route^="Form/Student Admission"]
+		.page-container
+		.form-section[data-fieldname="section_break_5"]
+		.form-column {
+		width: 100% !important;
+		max-width: none !important;
+		flex: 0 0 100% !important;
+	}
+}
+
+/* Short full-page forms still occupy the usable workspace height. */
+body.talisma-sis-demo[data-route^="Form/"]
+	.page-container
+	.std-form-layout
+	> .form-layout
+	> .form-page {
+	min-height: calc(100vh - 92px) !important;
+	min-height: calc(100dvh - 92px) !important;
+}
+
+/* Student 360 linked-record views */
+body.talisma-sis-demo[data-route^="Form/Student/"] .form-section .section-body {
+	align-items: flex-start;
+}
+
+.talisma-360-actionbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin: 0 0 16px;
+	padding: 12px 14px;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--subtle-fg);
+	color: var(--text-muted);
+}
+
+.talisma-360-actionbar > span {
+	line-height: 1.45;
+}
+
+.talisma-360-actionbar > div {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.talisma-360-stats {
+	display: grid !important;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+	width: 100%;
+	margin: 0 0 16px;
+}
+
+.talisma-360-stats > div {
+	min-width: 0;
+	min-height: 88px;
+	padding: 14px 16px;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--card-bg);
+	box-shadow: 0 1px 2px rgb(15 35 58 / 5%);
+}
+
+.talisma-360-stats span {
+	display: block;
+	margin-bottom: 7px;
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-360-stats strong {
+	display: block;
+	color: var(--text-color);
+	font-size: var(--text-md);
+	font-weight: 600;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.talisma-degree-progress {
+	margin: 0 0 16px;
+	padding: 14px 16px;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--card-bg);
+}
+
+.talisma-degree-progress__label {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 10px;
+	color: var(--text-color);
+}
+
+.talisma-degree-progress__label span {
+	color: var(--text-muted);
+	font-size: var(--text-sm);
+}
+
+.talisma-degree-progress__track {
+	height: 10px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--subtle-fg);
+}
+
+.talisma-degree-progress__track span {
+	display: block;
+	height: 100%;
+	border-radius: inherit;
+	background: var(--primary);
+	transition: width 180ms ease;
+}
+
+.talisma-360-table-wrap {
+	width: 100%;
+	overflow-x: auto;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--card-bg);
+	box-shadow: 0 1px 2px rgb(15 35 58 / 5%);
+}
+
+.talisma-360-table {
+	width: 100%;
+	min-width: 720px;
+	margin: 0 !important;
+	background: var(--card-bg);
+}
+
+.talisma-360-table th {
+	padding: 11px 12px !important;
+	white-space: normal;
+	background: var(--subtle-fg);
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.talisma-360-table td {
+	padding: 12px !important;
+	vertical-align: middle !important;
+	color: var(--text-color);
+	line-height: 1.4;
+}
+
+.talisma-360-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.talisma-academic-profile-panel {
+	width: 100%;
+}
+
+.talisma-academic-profile-panel .talisma-360-actionbar {
+	margin-bottom: 12px;
+}
+
+.talisma-academic-profile-panel .talisma-360-table {
+	min-width: 660px;
+}
+
+.talisma-academic-profile-panel .talisma-360-table th:last-child,
+.talisma-academic-profile-panel .talisma-360-table td:last-child {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.talisma-academic-profile-panel .talisma-360-inline-actions {
+	min-width: 112px;
+}
+
+.talisma-enrollment-panel {
+	width: 100%;
+}
+
+.talisma-enrollment-panel .talisma-360-actionbar {
+	margin-bottom: 12px;
+}
+
+.talisma-enrollment-panel .talisma-360-table {
+	min-width: 680px;
+}
+
+.talisma-enrollment-panel .talisma-360-table th:first-child,
+.talisma-enrollment-panel .talisma-360-table td:first-child {
+	width: 28%;
+}
+
+.talisma-enrollment-panel .talisma-360-table th:last-child,
+.talisma-enrollment-panel .talisma-360-table td:last-child {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.talisma-enrollment-panel .talisma-360-inline-actions {
+	min-width: 0;
+	flex-wrap: nowrap;
+}
+
+.talisma-enrollment-panel .talisma-360-period {
+	min-width: 145px;
+}
+
+.talisma-360-status-summary {
+	display: flex;
+	min-width: 130px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+}
+
+.talisma-360-status-summary small,
+.talisma-360-readonly-state {
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-course-registration-panel {
+	width: 100%;
+}
+
+.talisma-course-registration-panel .talisma-360-actionbar {
+	margin-bottom: 12px;
+}
+
+.talisma-course-registration-panel .talisma-360-table {
+	min-width: 820px;
+}
+
+.talisma-course-registration-panel .talisma-360-table th:first-child,
+.talisma-course-registration-panel .talisma-360-table td:first-child {
+	width: 24%;
+}
+
+.talisma-course-registration-panel .talisma-360-table th:last-child,
+.talisma-course-registration-panel .talisma-360-table td:last-child {
+	width: 1%;
+}
+
+.talisma-course-registration-panel .talisma-360-inline-actions {
+	min-width: 72px;
+	flex-wrap: nowrap;
+}
+
+.talisma-360-detail-stack {
+	display: flex;
+	min-width: 125px;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.talisma-360-detail-stack small {
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-course-registration-panel .talisma-360-status-summary small strong {
+	color: var(--text-color);
+}
+
+.talisma-course-registration-panel .talisma-360-grade-points {
+	display: inline;
+	margin: 0 0 0 3px;
+}
+
+.talisma-dialog-record-summary {
+	display: flex;
+	margin: -4px 0 16px;
+	padding: 12px 14px;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--card-bg);
+	flex-direction: column;
+	gap: 3px;
+}
+
+.talisma-dialog-record-summary span,
+.talisma-dialog-record-summary small {
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-360-link {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--text-color);
+	font-weight: 600;
+	line-height: 1.4;
+	text-align: left;
+	text-decoration: underline;
+	text-decoration-color: transparent;
+}
+
+.talisma-360-link:hover {
+	color: var(--primary);
+	text-decoration-color: currentColor;
+}
+
+.talisma-360-identity {
+	display: flex;
+	min-width: 190px;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.talisma-360-identity small {
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-360-grade-points {
+	display: block;
+	margin-top: 3px;
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+}
+
+.talisma-360-inline-actions {
+	display: flex;
+	min-width: 190px;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.talisma-dialog-context {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 2px 12px;
+	margin-bottom: 16px;
+	padding: 12px 14px;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--subtle-fg);
+}
+
+.talisma-dialog-context span {
+	grid-row: 1 / span 2;
+	align-self: center;
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.talisma-dialog-context strong,
+.talisma-dialog-context small {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.talisma-dialog-context small {
+	color: var(--text-muted);
+}
+
+.talisma-360-empty {
+	width: 100%;
+	padding: 24px;
+	border: 1px dashed var(--border-color);
+	border-radius: var(--border-radius-md);
+	color: var(--text-muted);
+	text-align: center;
+}
+
+@media (max-width: 991px) {
+	.talisma-360-stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.talisma-360-actionbar {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}
+
+@media (max-width: 575px) {
+	.talisma-360-stats {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Academics derived read-only tables */
+.talisma-academics-table-wrap {
+	width: 100%;
+	overflow-x: auto;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius-md);
+	background: var(--card-bg);
+}
+
+.talisma-academics-table {
+	width: 100%;
+	min-width: 620px;
+	margin: 0 !important;
+}
+
+.talisma-academics-table th {
+	padding: 11px 14px !important;
+	background: var(--subtle-fg);
+	color: var(--text-muted);
+	font-size: var(--text-xs);
+	font-weight: 600;
+}
+
+.talisma-academics-table td {
+	padding: 12px 14px !important;
+	vertical-align: middle !important;
+}
+
+.talisma-academics-empty {
+	padding: 24px;
+	border: 1px dashed var(--border-color);
+	border-radius: var(--border-radius-md);
+	color: var(--text-muted);
+	text-align: center;
+}

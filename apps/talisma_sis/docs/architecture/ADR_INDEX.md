@@ -7,6 +7,7 @@ Architecture Decision Records capture consequential choices, alternatives, and c
 | [ADR-001](ADR-001-FRAPPE-EDUCATION-DEPENDENCY.md) | Frappe Education dependency strategy | Proposed |
 | [ADR-002](ADR-002-IDENTITY-AND-PARTY-MODEL.md) | Identity and party model | Accepted |
 | [ADR-003](ADR-003-INSTITUTIONAL-HIERARCHY.md) | Institutional and academic organization hierarchy | Accepted |
+| [ADR-004](ADR-004-BRYAN-UNIVERSITY-NEXT-BASELINE.md) | Frozen demo and isolated immutable Next baseline | Accepted |
 
 Supporting evidence: [Frappe Education v16 Fit-Gap Report](FRAPPE_EDUCATION_V16_FIT_GAP_REPORT.md).
 

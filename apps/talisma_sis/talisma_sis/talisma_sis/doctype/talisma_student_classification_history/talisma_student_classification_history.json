@@ -1,0 +1,20 @@
+{
+ "autoname":"format:SCH-{#####}","doctype":"DocType","engine":"InnoDB",
+ "field_order":["student","residency_classification","tuition_residency","student_type","academic_level","class_standing","admit_type","cohort","campus","academic_term","effective_from","effective_to","source"],
+ "fields":[
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"residency_classification","fieldtype":"Select","label":"Residency Classification","options":"In-State\nOut-of-State\nInternational\nUndetermined","reqd":1},
+  {"fieldname":"tuition_residency","fieldtype":"Select","label":"Tuition Residency","options":"Resident\nNon-Resident\nInternational\nExempt","reqd":1},
+  {"fieldname":"student_type","fieldtype":"Select","label":"Student Type","options":"First-Time\nTransfer\nReturning\nVisiting\nExchange\nNon-Degree","reqd":1},
+  {"fieldname":"academic_level","fieldtype":"Select","label":"Academic Level","options":"Undergraduate\nGraduate\nProfessional\nNon-Degree","reqd":1},
+  {"fieldname":"class_standing","fieldtype":"Select","label":"Class Standing","options":"Freshman\nSophomore\nJunior\nSenior\nGraduate","reqd":1},
+  {"fieldname":"admit_type","fieldtype":"Select","label":"Admit Type","options":"New First-Time\nTransfer\nReturning\nVisiting\nExchange","reqd":1},
+  {"fieldname":"cohort","fieldtype":"Data","label":"Cohort"},
+  {"fieldname":"campus","fieldtype":"Link","label":"Campus","options":"Talisma Campus"},
+  {"fieldname":"academic_term","fieldtype":"Link","label":"Academic Term","options":"Academic Term","reqd":1},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"},
+  {"fieldname":"source","fieldtype":"Select","label":"Source","options":"Admissions\nRegistrar\nSystem Migration","default":"Registrar"}
+ ],"module":"Talisma SIS","name":"Talisma Student Classification History","title_field":"student","track_changes":1,
+ "permissions":[{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},{"role":"Academics User","read":1,"write":1,"create":1,"report":1}]
+}

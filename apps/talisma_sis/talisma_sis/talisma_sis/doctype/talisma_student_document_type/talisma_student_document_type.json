@@ -1,0 +1,27 @@
+{
+ "actions": [],
+ "autoname": "field:document_name",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["document_name", "document_code", "description", "allowed_extensions", "max_file_size_mb", "requires_expiry_date", "active"],
+ "fields": [
+  {"fieldname":"document_name","fieldtype":"Data","label":"Document Name","reqd":1,"unique":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"document_code","fieldtype":"Data","label":"Document Code","reqd":1,"unique":1,"in_list_view":1},
+  {"fieldname":"description","fieldtype":"Small Text","label":"Description"},
+  {"default":"pdf,jpg,jpeg,png","fieldname":"allowed_extensions","fieldtype":"Data","label":"Allowed Extensions","description":"Comma-separated file extensions without dots."},
+  {"default":"10","fieldname":"max_file_size_mb","fieldtype":"Int","label":"Maximum File Size (MB)"},
+  {"default":"0","fieldname":"requires_expiry_date","fieldtype":"Check","label":"Requires Expiry Date"},
+  {"default":"1","fieldname":"active","fieldtype":"Check","label":"Active","in_list_view":1}
+ ],
+ "module": "Talisma SIS",
+ "name": "Talisma Student Document Type",
+ "permissions": [
+  {"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},
+  {"role":"Academics User","read":1,"write":1,"create":1,"report":1,"export":1},
+  {"role":"Student","read":1}
+ ],
+ "sort_field": "document_name",
+ "sort_order": "ASC",
+ "title_field": "document_name",
+ "track_changes": 1
+}

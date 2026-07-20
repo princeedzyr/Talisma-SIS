@@ -1,0 +1,6 @@
+{
+ "add_total_row": 1, "disabled": 0, "doctype": "Report", "is_standard": "Yes",
+ "module": "Talisma SIS", "name": "Program-wise Applications", "prepared_report": 0,
+ "ref_doctype": "Student Applicant", "report_name": "Program-wise Applications", "report_type": "Script Report",
+ "roles": [{"role": "Academics User"}, {"role": "System Manager"}]
+}

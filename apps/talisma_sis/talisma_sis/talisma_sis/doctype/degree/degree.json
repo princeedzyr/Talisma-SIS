@@ -1,0 +1,26 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:degree_name",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["degree_name", "degree_code", "programs_section", "programs_html"],
+ "fields": [
+  {"fieldname": "degree_name", "fieldtype": "Data", "in_global_search": 1, "in_list_view": 1, "label": "Degree Name", "reqd": 1},
+  {"fieldname": "degree_code", "fieldtype": "Data", "in_global_search": 1, "in_list_view": 1, "label": "Degree Code", "reqd": 1, "unique": 1},
+  {"fieldname": "programs_section", "fieldtype": "Section Break", "label": "Programs"},
+  {"fieldname": "programs_html", "fieldtype": "HTML", "label": "Programs", "read_only": 1}
+ ],
+ "module": "Talisma SIS",
+ "name": "Degree",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Academics User", "share": 1, "write": 1}
+ ],
+ "search_fields": "degree_code,degree_name",
+ "sort_field": "degree_name",
+ "sort_order": "ASC",
+ "title_field": "degree_name",
+ "track_changes": 1
+}

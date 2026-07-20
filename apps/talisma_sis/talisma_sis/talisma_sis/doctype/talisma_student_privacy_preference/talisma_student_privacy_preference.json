@@ -1,0 +1,17 @@
+{
+ "autoname":"format:FERPA-{#####}","doctype":"DocType","engine":"InnoDB",
+ "field_order":["student","ferpa_restriction","directory_information_consent","restriction_scope","effective_from","effective_to","consent_source","consent_document","verified_by","emergency_disclosure_permission"],
+ "fields":[
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"default":"0","fieldname":"ferpa_restriction","fieldtype":"Check","label":"FERPA Restriction","in_list_view":1},
+  {"fieldname":"directory_information_consent","fieldtype":"Select","label":"Directory Information Consent","options":"Not Recorded\nGranted\nRestricted\nRevoked","default":"Not Recorded","reqd":1},
+  {"fieldname":"restriction_scope","fieldtype":"Small Text","label":"Restriction Scope","depends_on":"eval:doc.ferpa_restriction == 1"},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"},
+  {"fieldname":"consent_source","fieldtype":"Select","label":"Consent Source","options":"Student Portal\nSigned Form\nRegistrar\nSystem Migration","default":"Registrar"},
+  {"fieldname":"consent_document","fieldtype":"Attach","label":"Consent Document"},
+  {"fieldname":"verified_by","fieldtype":"Link","label":"Verified By","options":"User","read_only":1},
+  {"default":"0","fieldname":"emergency_disclosure_permission","fieldtype":"Check","label":"Emergency Disclosure Permission"}
+ ],"module":"Talisma SIS","name":"Talisma Student Privacy Preference","title_field":"student","track_changes":1,
+ "permissions":[{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},{"role":"Academics User","read":1,"write":1,"create":1,"report":1}]
+}

@@ -1,0 +1,16 @@
+{
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["course", "course_name", "minimum_required_grade", "mandatory"],
+ "fields": [
+  {"fieldname": "course", "fieldtype": "Link", "in_list_view": 1, "label": "Course Code", "options": "Course", "reqd": 1},
+  {"fetch_from": "course.course_name", "fieldname": "course_name", "fieldtype": "Data", "in_list_view": 1, "label": "Course Name", "read_only": 1},
+  {"fieldname": "minimum_required_grade", "fieldtype": "Data", "in_list_view": 1, "label": "Minimum Required Grade"},
+  {"default": "1", "fieldname": "mandatory", "fieldtype": "Check", "in_list_view": 1, "label": "Mandatory"}
+ ],
+ "istable": 1,
+ "module": "Talisma SIS",
+ "name": "Talisma Course Prerequisite",
+ "permissions": []
+}

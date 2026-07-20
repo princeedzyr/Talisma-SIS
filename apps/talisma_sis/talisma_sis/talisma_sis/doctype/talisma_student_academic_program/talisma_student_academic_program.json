@@ -1,0 +1,23 @@
+{
+ "autoname":"format:SAP-{#####}","doctype":"DocType","engine":"InnoDB",
+ "field_order":["student","degree","program","affiliation_type","primary_program","program_version","catalog_year","academic_unit","campus","academic_level","start_term","expected_graduation_term","completion_term","status","effective_from","effective_to"],
+ "fields":[
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"degree","fieldtype":"Link","label":"Degree","options":"Degree","reqd":1},
+  {"fieldname":"program","fieldtype":"Link","label":"Program","options":"Program","reqd":1,"in_list_view":1},
+  {"fieldname":"affiliation_type","fieldtype":"Select","label":"Affiliation Type","options":"Primary Major\nSecondary Major\nMinor\nConcentration\nCertificate\nConcurrent Degree","reqd":1,"default":"Primary Major"},
+  {"default":"0","fieldname":"primary_program","fieldtype":"Check","label":"Primary Program","in_list_view":1},
+  {"fieldname":"program_version","fieldtype":"Link","label":"Curriculum Version","options":"Talisma Curriculum Version","reqd":1},
+  {"fieldname":"catalog_year","fieldtype":"Data","label":"Catalog Year","reqd":1},
+  {"fieldname":"academic_unit","fieldtype":"Link","label":"Academic Unit","options":"Talisma Academic Unit"},
+  {"fieldname":"campus","fieldtype":"Link","label":"Campus","options":"Talisma Campus"},
+  {"fieldname":"academic_level","fieldtype":"Select","label":"Academic Level","options":"Undergraduate\nGraduate\nProfessional\nNon-Degree","reqd":1},
+  {"fieldname":"start_term","fieldtype":"Link","label":"Start Term","options":"Academic Term","reqd":1},
+  {"fieldname":"expected_graduation_term","fieldtype":"Link","label":"Expected Graduation Term","options":"Academic Term"},
+  {"fieldname":"completion_term","fieldtype":"Link","label":"Completion Term","options":"Academic Term"},
+  {"fieldname":"status","fieldtype":"Select","label":"Status","options":"Planned\nActive\nCompleted\nWithdrawn\nChanged Program","default":"Active","reqd":1,"in_list_view":1},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"}
+ ],"module":"Talisma SIS","name":"Talisma Student Academic Program","title_field":"program","track_changes":1,
+ "permissions":[{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},{"role":"Academics User","read":1,"write":1,"create":1,"report":1}]
+}

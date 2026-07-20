@@ -1,0 +1,11 @@
+{
+ "doctype":"DocType","editable_grid":1,"engine":"InnoDB","istable":1,
+ "field_order":["period_type","days","start_time","end_time"],
+ "fields":[
+  {"default":"Lecture","fieldname":"period_type","fieldtype":"Select","label":"Period Type","options":"Lecture\nLaboratory\nSeminar\nDiscussion\nStudio\nOther","reqd":1,"in_list_view":1},
+  {"description":"Enter one or more days separated by commas, for example: Monday, Wednesday, Friday.","fieldname":"days","fieldtype":"Small Text","label":"Days","reqd":1,"in_list_view":1},
+  {"fieldname":"start_time","fieldtype":"Time","label":"Start Time","reqd":1,"in_list_view":1},
+  {"fieldname":"end_time","fieldtype":"Time","label":"End Time","reqd":1,"in_list_view":1}
+ ],
+ "module":"Talisma SIS","name":"Talisma Class Period","permissions":[]
+}

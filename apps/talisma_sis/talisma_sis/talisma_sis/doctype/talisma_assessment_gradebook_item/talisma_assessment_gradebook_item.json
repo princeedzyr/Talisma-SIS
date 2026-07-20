@@ -1,0 +1,18 @@
+{
+ "doctype":"DocType",
+ "editable_grid":1,
+ "engine":"InnoDB",
+ "field_order":["assessment","assessment_plan","assessment_result","weightage","student_score","weighted_score"],
+ "fields":[
+  {"fieldname":"assessment","fieldtype":"Data","label":"Assessment","read_only":1,"in_list_view":1,"columns":3},
+  {"fieldname":"assessment_plan","fieldtype":"Link","label":"Assessment Plan","options":"Assessment Plan","read_only":1},
+  {"fieldname":"assessment_result","fieldtype":"Link","label":"Assessment Result","options":"Assessment Result","read_only":1},
+  {"fieldname":"weightage","fieldtype":"Percent","label":"Weightage","read_only":1,"in_list_view":1,"columns":2},
+  {"fieldname":"student_score","fieldtype":"Percent","label":"Student Score","read_only":1,"in_list_view":1,"columns":2},
+  {"fieldname":"weighted_score","fieldtype":"Float","label":"Weighted Score","read_only":1,"in_list_view":1,"precision":"2","columns":2}
+ ],
+ "istable":1,
+ "module":"Talisma SIS",
+ "name":"Talisma Assessment Gradebook Item",
+ "permissions":[]
+}

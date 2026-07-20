@@ -1,0 +1,16 @@
+{
+ "autoname":"format:SNH-{#####}","doctype":"DocType","engine":"InnoDB",
+ "field_order":["student","first_name","middle_name","last_name","preferred_name","effective_from","effective_to","reason","source"],
+ "fields":[
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"first_name","fieldtype":"Data","label":"First Name","reqd":1},
+  {"fieldname":"middle_name","fieldtype":"Data","label":"Middle Name"},
+  {"fieldname":"last_name","fieldtype":"Data","label":"Last Name"},
+  {"fieldname":"preferred_name","fieldtype":"Data","label":"Preferred Name"},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"},
+  {"fieldname":"reason","fieldtype":"Data","label":"Reason","reqd":1},
+  {"fieldname":"source","fieldtype":"Select","label":"Source","options":"Student Request\nRegistrar\nLegal Documentation\nSystem Migration","default":"Registrar"}
+ ],"module":"Talisma SIS","name":"Talisma Student Name History","title_field":"student","track_changes":1,
+ "permissions":[{"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},{"role":"Academics User","read":1,"write":1,"create":1,"report":1}]
+}

@@ -1,0 +1,27 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:code",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": ["code", "program", "description", "courses_section", "courses"],
+ "fields": [
+  {"fieldname": "code", "fieldtype": "Data", "in_global_search": 1, "in_list_view": 1, "label": "Code", "reqd": 1, "unique": 1},
+  {"fieldname": "program", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Program", "options": "Program", "reqd": 1},
+  {"fieldname": "description", "fieldtype": "Small Text", "in_list_view": 1, "label": "Description", "reqd": 1},
+  {"fieldname": "courses_section", "fieldtype": "Section Break", "label": "Courses"},
+  {"fieldname": "courses", "fieldtype": "Table", "label": "Course", "options": "Program Course"}
+ ],
+ "module": "Talisma SIS",
+ "name": "Course Category",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "Academics User", "share": 1, "write": 1}
+ ],
+ "search_fields": "code,description,program",
+ "sort_field": "code",
+ "sort_order": "ASC",
+ "title_field": "description",
+ "track_changes": 1
+}

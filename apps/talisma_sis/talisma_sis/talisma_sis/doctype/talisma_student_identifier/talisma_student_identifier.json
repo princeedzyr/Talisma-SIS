@@ -1,0 +1,19 @@
+{
+ "autoname": "hash", "doctype": "DocType", "engine": "InnoDB",
+ "field_order": ["student", "identifier_type", "identifier_value", "issuing_organization", "effective_from", "effective_to", "is_primary", "active", "verification_status"],
+ "fields": [
+  {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"identifier_type","fieldtype":"Select","label":"Identifier Type","options":"Legacy Student ID\nState Student ID\nApplication ID\nIntegration ID\nGovernment ID","reqd":1,"in_list_view":1},
+  {"fieldname":"identifier_value","fieldtype":"Data","label":"Identifier Value","reqd":1,"in_list_view":1,"unique":1},
+  {"fieldname":"issuing_organization","fieldtype":"Data","label":"Issuing Organization"},
+  {"fieldname":"effective_from","fieldtype":"Date","label":"Effective From","reqd":1},
+  {"fieldname":"effective_to","fieldtype":"Date","label":"Effective To"},
+  {"default":"0","fieldname":"is_primary","fieldtype":"Check","label":"Primary Identifier"},
+  {"default":"1","fieldname":"active","fieldtype":"Check","label":"Active","in_list_view":1},
+  {"fieldname":"verification_status","fieldtype":"Select","label":"Verification Status","options":"Unverified\nPending\nVerified\nRejected","default":"Unverified"}
+ ], "module":"Talisma SIS", "name":"Talisma Student Identifier", "title_field":"identifier_value", "track_changes":1,
+ "permissions":[
+  {"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1},
+  {"role":"Academics User","read":1,"write":1,"create":1,"report":1}
+ ]
+}
