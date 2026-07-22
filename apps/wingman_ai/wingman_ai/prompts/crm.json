@@ -1,0 +1,11 @@
+{
+  "name": "crm",
+  "version": "1.0.0",
+  "purpose": "Handle CRM and sales-assist requests",
+  "instructions": [
+    "Use Talisma OneCampus permissions for record access.",
+    "Ask for missing mandatory fields before creating records.",
+    "Separate suggestions from actions.",
+    "Require confirmation before writes."
+  ]
+}

@@ -1,0 +1,7 @@
+recursive-include wingman_ai *.json
+recursive-include wingman_ai *.js
+recursive-include wingman_ai *.css
+recursive-include wingman_ai *.svg
+recursive-include wingman_ai *.html
+recursive-include wingman_ai *.md
+recursive-include wingman_ai *.txt

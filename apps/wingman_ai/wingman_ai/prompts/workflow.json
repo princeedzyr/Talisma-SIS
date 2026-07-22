@@ -1,0 +1,11 @@
+{
+  "name": "workflow",
+  "version": "1.0.0",
+  "purpose": "Generate safe Talisma OneCampus workflow proposals",
+  "instructions": [
+    "Collect the target DocType, states, transitions, roles, and approval rules.",
+    "Return a proposal before creating Workflow records.",
+    "Require confirmation before any write action."
+  ]
+}
+

@@ -521,6 +521,11 @@ def _enrollment_view(student_doc) -> dict:
 		for row in rows
 		if row.academic_term
 	}
+	campus_names = {
+		row.talisma_campus: frappe.db.get_value("Talisma Campus", row.talisma_campus, "campus_name")
+		for row in rows
+		if row.talisma_campus
+	}
 	records = []
 	for index, row in enumerate(rows):
 		program = programs.get(row.program) or {}
@@ -534,6 +539,7 @@ def _enrollment_view(student_doc) -> dict:
 			"program_name": program.get("program_name") or row.program,
 			"program_version": row.talisma_curriculum_version,
 			"campus": row.talisma_campus,
+			"campus_name": campus_names.get(row.talisma_campus) or row.talisma_campus,
 			"expected_start_date": term_starts.get(row.academic_term),
 			"student_start_date": row.enrollment_date,
 			"enrollment_status": status,
@@ -599,10 +605,29 @@ def _course_registration_view(student_doc) -> dict:
 				"talisma_campus",
 				"talisma_section_number",
 				"talisma_primary_instructor",
+				"student_group_name",
 			],
 			as_dict=True,
 		)
 		for name in section_names
+	}
+	campus_ids = {
+		section.get("talisma_campus")
+		for section in sections.values()
+		if section and section.get("talisma_campus")
+	}
+	campus_names = {
+		campus: frappe.db.get_value("Talisma Campus", campus, "campus_name")
+		for campus in campus_ids
+	}
+	instructor_ids = {
+		section.get("talisma_primary_instructor")
+		for section in sections.values()
+		if section and section.get("talisma_primary_instructor")
+	}
+	instructor_names = {
+		instructor: frappe.db.get_value("Instructor", instructor, "instructor_name")
+		for instructor in instructor_ids
 	}
 	grades = {
 		row.course: row.grade
@@ -627,8 +652,10 @@ def _course_registration_view(student_doc) -> dict:
 			"credit_hours": course.get("talisma_credit_hours"),
 			"effective_term": row.talisma_academic_term or course.get("talisma_effective_term"),
 			"instructor": section.get("talisma_primary_instructor"),
+			"instructor_name": instructor_names.get(section.get("talisma_primary_instructor")) or section.get("talisma_primary_instructor"),
 			"campus": section.get("talisma_campus"),
-			"section": section.get("talisma_section_number") or row.talisma_course_section,
+			"campus_name": campus_names.get(section.get("talisma_campus")) or section.get("talisma_campus"),
+			"section": section.get("student_group_name") or section.get("talisma_section_number") or row.talisma_course_section,
 			"course_section": row.talisma_course_section,
 			"registration_date": row.enrollment_date,
 			"attempt_number": row.talisma_attempt_number or 1,

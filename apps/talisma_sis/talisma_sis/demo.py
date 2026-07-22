@@ -21,6 +21,8 @@ from talisma_sis.admissions import configure_admission_intake, seed_demo_admissi
 
 
 DEMO_SITE = "demo.talisma.local"
+PRODUCT_NAME = "Talisma OneCampus"
+DEMO_CURRENCY = "USD"
 DEMO_MODULES = (
 	("Admissions", "Admissions", "graduation-cap"),
 	("Student Records", "Student Records", "users-round"),
@@ -224,11 +226,13 @@ def healthcheck() -> dict:
 	)
 	default_workspaces = sorted(
 		set(
-			frappe.get_all(
+			workspace
+			for workspace in frappe.get_all(
 				"User",
 				filters={"enabled": 1, "user_type": "System User"},
 				pluck="default_workspace",
 			)
+			if workspace
 		)
 	)
 	visible_icons = frappe.get_all(
@@ -678,6 +682,63 @@ def _required_apps() -> None:
 def _configure_student_finance() -> None:
 	"""Use Sales Invoice as the hidden accounting source for new student billing."""
 	frappe.db.set_single_value("Education Settings", "create_so", 0)
+	configure_usd_currency()
+
+
+def configure_usd_currency() -> dict[str, int]:
+	"""Use US dollars consistently for demo defaults and existing finance records.
+
+	The synthetic demo amounts are intentionally preserved; this changes their
+	currency designation rather than performing an exchange-rate conversion.
+	"""
+	if frappe.local.site != DEMO_SITE:
+		frappe.throw(f"Currency setup is restricted to {DEMO_SITE}.")
+
+	frappe.db.set_single_value("Global Defaults", "default_currency", DEMO_CURRENCY)
+	frappe.defaults.set_global_default("currency", DEMO_CURRENCY)
+
+	currency_fields = {
+		"Company": ("default_currency",),
+		"Account": ("account_currency",),
+		"Price List": ("currency",),
+		"Item Price": ("currency",),
+		"Sales Invoice": ("currency",),
+		"Purchase Invoice": ("currency",),
+		"Sales Order": ("currency",),
+		"Purchase Order": ("currency",),
+		"Quotation": ("currency",),
+		"Supplier Quotation": ("currency",),
+		"Delivery Note": ("currency",),
+		"POS Invoice": ("currency",),
+		"POS Profile": ("currency",),
+		"Payment Entry": ("paid_from_account_currency", "paid_to_account_currency"),
+		"Journal Entry Account": ("account_currency",),
+		"GL Entry": ("account_currency", "transaction_currency"),
+		"Fees": ("currency",),
+	}
+	updated = {}
+	for doctype, fieldnames in currency_fields.items():
+		if not frappe.db.exists("DocType", doctype):
+			continue
+		meta = frappe.get_meta(doctype)
+		for fieldname in fieldnames:
+			if not meta.has_field(fieldname):
+				continue
+			names = frappe.get_all(doctype, filters={fieldname: "INR"}, pluck="name")
+			for name in names:
+				frappe.db.set_value(
+					doctype,
+					name,
+					fieldname,
+					DEMO_CURRENCY,
+					update_modified=False,
+				)
+			if names:
+				updated[f"{doctype}.{fieldname}"] = len(names)
+
+	frappe.clear_cache()
+	frappe.db.commit()
+	return updated
 
 
 def _configure_gender_options() -> None:
@@ -1821,8 +1882,8 @@ def _configure_demo_branding() -> None:
 	logo = '/assets/talisma_sis/talisma-mark.svg'
 	frappe.db.set_single_value('Navbar Settings', 'app_logo', logo)
 	for fieldname, value in {
-		'app_name': DEMO_WORKSPACE_NAME,
-		'title_prefix': DEMO_WORKSPACE_NAME,
+		'app_name': PRODUCT_NAME,
+		'title_prefix': PRODUCT_NAME,
 		'app_logo': logo,
 		'favicon': logo,
 		'splash_image': logo,

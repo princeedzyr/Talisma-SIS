@@ -115,7 +115,7 @@ function make_quick_actions() {
 		<aside class="talisma-status-card">
 			<div class="talisma-status-icon">✓</div>
 			<div><span>Demo environment</span><h2>Ready for presentation</h2>
-			<p>Fall 2026 sample data is loaded. Access remains controlled by Frappe roles and permissions.</p></div>
+			<p>Fall 2026 sample data is loaded. Access remains controlled by your assigned roles and permissions.</p></div>
 		</aside>`,
 	);
 	section.querySelectorAll('[data-action]').forEach((button) => {
@@ -297,12 +297,12 @@ frappe.ready(() => {
 	if (!enforce_bryan_university_shell()) return;
 
 	document.body.classList.add('talisma-sis-demo');
-	if (!document.title.startsWith('Bryan University')) document.title = 'Bryan University | ' + document.title;
+	if (!document.title.startsWith('Talisma OneCampus')) document.title = 'Talisma OneCampus | ' + document.title;
 	const navbar = document.querySelector('.navbar .container');
 	if (navbar && !navbar.querySelector('.talisma-brand')) {
 		const brand = document.createElement('div');
 		brand.className = 'talisma-brand';
-		brand.innerHTML = '<img src="/assets/talisma_sis/talisma-mark.svg" alt=""><span>Bryan University</span>';
+		brand.innerHTML = '<img src="/assets/talisma_sis/talisma-mark.svg" alt=""><span>Talisma OneCampus</span>';
 		navbar.prepend(brand);
 	}
 

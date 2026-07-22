@@ -1933,3 +1933,10 @@ body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-shared,
 body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-stats-likes {
 	display: none !important;
 }
+
+/* Student portraits belong only to the Student profile. Other records retain
+   their sidebar identity and audit details without a decorative avatar. */
+body.talisma-sis-demo[data-route^="Form/"]:not([data-route^="Form/Student/"])
+	.form-sidebar .sidebar-image-section {
+	display: none !important;
+}

@@ -87,15 +87,25 @@ def _configure_program_curriculum_layout() -> None:
 
 @frappe.whitelist()
 def get_program_curriculum_requirements(program: str) -> dict:
-	"""Return the selected curriculum and its requirements for a Program view."""
+	"""Return the default or latest linked curriculum for a Program view."""
 	program_doc = frappe.get_doc("Program", program)
 	program_doc.check_permission("read")
 	version_name = program_doc.get("talisma_default_curriculum_version")
+	is_default = bool(version_name)
 	if not version_name:
-		return {"version": None, "requirements": []}
+		version_name = frappe.db.get_value(
+			"Talisma Curriculum Version",
+			{"program": program},
+			"name",
+			order_by="modified desc, creation desc",
+		)
+	if not version_name:
+		return {"version": None, "requirements": [], "is_default": False}
 
 	version = frappe.get_doc("Talisma Curriculum Version", version_name)
 	version.check_permission("read")
+	if version.program != program:
+		return {"version": None, "requirements": [], "is_default": False}
 	requirements = sorted(
 		(
 			{
@@ -118,6 +128,7 @@ def get_program_curriculum_requirements(program: str) -> dict:
 			"status": version.status,
 		},
 		"requirements": requirements,
+		"is_default": is_default,
 	}
 
 

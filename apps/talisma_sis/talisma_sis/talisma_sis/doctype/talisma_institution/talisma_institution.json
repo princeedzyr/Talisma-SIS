@@ -51,7 +51,7 @@
    "search_index": 1
   },
   {
-   "description": "Informational only. ERPNext Company remains authoritative for legal and accounting identity.",
+   "description": "Informational only. The linked company remains authoritative for legal and accounting identity.",
    "fieldname": "legal_name",
    "fieldtype": "Data",
    "label": "Legal Name"

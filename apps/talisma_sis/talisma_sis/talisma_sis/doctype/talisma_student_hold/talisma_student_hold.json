@@ -1,8 +1,9 @@
 {
  "autoname":"format:HOLD-{#####}","doctype":"DocType","engine":"InnoDB",
- "field_order":["student","hold_type","reason","owning_department","effective_from","effective_to","status","blocks_section","blocks_registration","blocks_transcript","blocks_graduation","blocks_financial_activity","release_section","released_by","released_on","release_comments"],
+ "field_order":["student","source_group_hold","hold_type","reason","owning_department","effective_from","effective_to","status","blocks_section","blocks_registration","blocks_transcript","blocks_graduation","blocks_financial_activity","release_section","released_by","released_on","release_comments"],
  "fields":[
   {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"source_group_hold","fieldtype":"Link","label":"Source Group Hold","options":"Talisma Student Group Hold","read_only":1,"in_standard_filter":1},
   {"fieldname":"hold_type","fieldtype":"Select","label":"Hold Type","options":"Advising\nFinancial\nRegistrar\nDisciplinary\nHealth\nInternational Student\nOther","reqd":1,"in_list_view":1},
   {"fieldname":"reason","fieldtype":"Small Text","label":"Hold Reason","reqd":1},
   {"fieldname":"owning_department","fieldtype":"Link","label":"Owning Department","options":"Department"},

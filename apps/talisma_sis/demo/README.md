@@ -7,6 +7,7 @@ This directory defines the isolated client-demo environment. It uses the
 - ERPNext `v16.26.2`
 - Frappe Education `v16.0.1`
 - the current `talisma_sis` app
+- the `wingman_ai` overlay app
 
 The exact ERPNext and Education Git commits are recorded in `apps.json`.
 The implemented US higher-education features and explicit regulatory boundaries
@@ -56,9 +57,22 @@ Site creation, application installation, and demo data loading are deliberately
 separate operations. This keeps startup repeatable and prevents accidental
 seeding of another site.
 
+Install the local application layer after the standard ERPNext and Education
+apps are present:
+
+```powershell
+docker compose `
+  --project-name talisma-demo `
+  -f compose.yaml `
+  -f overrides/compose.mariadb.yaml `
+  -f overrides/compose.redis.yaml `
+  -f apps/talisma_sis/demo/compose.override.yaml `
+  exec -T backend bash -lc "bench --site demo.talisma.local install-app talisma_sis; bench --site demo.talisma.local install-app wingman_ai; bench --site demo.talisma.local execute talisma_sis.demo.restore_demo_navigation_after_migrate; bench --site demo.talisma.local clear-cache"
+```
+
 ## Load the synthetic demo dataset
 
-After installing `erpnext`, `education`, and `talisma_sis` on the demo site,
+After installing `erpnext`, `education`, `talisma_sis`, and `wingman_ai` on the demo site,
 run:
 
 ```powershell

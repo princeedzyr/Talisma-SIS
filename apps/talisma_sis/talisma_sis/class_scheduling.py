@@ -324,6 +324,13 @@ def before_validate_class_schedule(doc, method=None) -> None:
 	_sync_compatibility_group(doc)
 
 
+def before_validate_student_group(doc, method=None) -> None:
+	"""Populate readable member names before Education's legacy validator runs."""
+	for row in doc.get("students") or []:
+		if row.student and not row.student_name:
+			row.student_name = frappe.db.get_value("Student", row.student, "student_name") or row.student
+
+
 def validate_student_group(doc, method=None) -> None:
 	"""Keep Student Group dedicated to cohort membership, not class scheduling."""
 	if doc.flags.get("ignore_validate"):

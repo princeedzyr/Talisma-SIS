@@ -28,7 +28,7 @@ function render_curriculum_requirements(frm) {
 		callback(r) {
 			const data = r.message || {};
 			if (!data.version) {
-				wrapper.html(empty_state(__('No published Default Curriculum Version is selected for this Program.')));
+				wrapper.html(empty_state(__('No Curriculum Version is linked to this Program.')));
 				return;
 			}
 			wrapper.html(curriculum_table(data));
@@ -46,7 +46,7 @@ function curriculum_table(data) {
 	const heading = `
 		<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap: 8px;">
 			<div>
-				<div class="text-muted small">${__('Selected Curriculum Version')}</div>
+				<div class="text-muted small">${data.is_default ? __('Selected Default Curriculum Version') : __('Linked Curriculum Version')}</div>
 				<div class="font-weight-bold">${esc(version.version_label || version.name)}</div>
 			</div>
 			<div class="text-muted small">${esc(version.catalog_year)} · ${esc(version.status)}</div>

@@ -1,7 +1,7 @@
 app_name = "talisma_sis"
-app_title = "Talisma SIS"
+app_title = "Talisma OneCampus"
 app_publisher = "Talisma"
-app_description = "Student Information System built on ERPNext"
+app_description = "Unified Student Information System"
 app_email = "princeebinezer58@gmail.com"
 app_license = "mit"
 
@@ -23,7 +23,7 @@ required_apps = ["erpnext", "education"]
 
 # Includes in <head>
 # ------------------
-app_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260720-32'
+app_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260722-33'
 app_include_js = '/assets/talisma_sis/js/talisma_demo.js?v=20260721-3'
 web_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260719-25'
 
@@ -138,7 +138,10 @@ doc_events = {
 		"before_validate": "talisma_sis.class_scheduling.before_validate_class_schedule",
 		"validate": "talisma_sis.class_scheduling.validate_class_schedule",
 	},
-	"Student Group": {"validate": "talisma_sis.class_scheduling.validate_student_group"},
+	"Student Group": {
+		"before_validate": "talisma_sis.class_scheduling.before_validate_student_group",
+		"validate": "talisma_sis.class_scheduling.validate_student_group",
+	},
 	"Address": {"validate": "talisma_sis.student_records.validate_contact_dates"},
 	"Contact": {"validate": "talisma_sis.student_records.validate_contact_dates"},
 	"Talisma Student Identifier": {
