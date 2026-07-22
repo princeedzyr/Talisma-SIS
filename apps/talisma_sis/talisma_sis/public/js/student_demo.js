@@ -8,6 +8,9 @@ frappe.ui.form.on('Student', {
 	onload: sync_student_identity,
 	refresh(frm) {
 		sync_student_identity(frm);
+		frm.remove_custom_button(__('Accounting Ledger'));
+		set_student_lifecycle_indicator(frm);
+		add_student_lifecycle_action(frm);
 		if (
 			frappe.boot?.sitename !== 'demo.talisma.local' ||
 			frm.is_new() ||
@@ -32,6 +35,23 @@ function sync_student_identity(frm) {
 	if (student_number) {
 		student_number.set_value(frm.is_new() ? __('Assigned when saved') : frm.doc.name);
 	}
+}
+
+function set_student_lifecycle_indicator(frm) {
+	if (frm.is_new() || !frm.doc.talisma_record_status) return;
+	const status = frm.doc.talisma_record_status;
+	const colors = {
+		Applicant: 'gray', Admitted: 'blue', Enrolled: 'blue', Active: 'green',
+		'Leave of Absence': 'orange', Withdrawn: 'gray', Suspended: 'orange',
+		Dismissed: 'red', Graduated: 'green', Deceased: 'gray',
+	};
+	frm.page.set_indicator(__(status), colors[status] || 'gray');
+}
+
+function add_student_lifecycle_action(frm) {
+	frm.remove_custom_button(__('Change Student Status'));
+	if (frm.is_new() || !frappe.user_roles.some((role) => ['System Manager', 'Academics User'].includes(role))) return;
+	frm.add_custom_button(__('Change Student Status'), () => open_student_status_dialog(frm));
 }
 
 function load_student_360(frm) {
@@ -60,9 +80,6 @@ function set_360_loading(frm) {
 		'talisma_fee_structure_html',
 		'talisma_fee_details_html',
 		'talisma_payment_summary_html',
-		'talisma_payment_history_html',
-		'talisma_scholarships_html',
-		'talisma_waivers_html',
 		'talisma_refunds_html',
 		'talisma_profile_overview_html',
 		'talisma_advisor_assignments_html',
@@ -78,7 +95,7 @@ function set_360_loading(frm) {
 function render_student_records(frm, records) {
 	const summary = records.summary || {};
 	set_html(frm, 'talisma_profile_overview_html', stat_grid([
-		['Record Status', status_badge(summary.record_status)],
+		['Student Lifecycle Status', status_badge(summary.record_status)],
 		['Primary Program', summary.primary_program],
 		['Academic Level', summary.academic_level],
 		['Primary Advisor', summary.advisor],
@@ -91,10 +108,10 @@ function render_student_records(frm, records) {
 			action_button('add-advisor', __('Add Advisor'), 'primary'),
 		])
 		+ data_table(
-			['Advisor', 'Assignment Scope', 'Status', 'Effective Dates', 'Role', 'Actions'],
+			['Advisor', 'Status', 'Effective Dates', 'Role', 'Actions'],
 			(records.advisors || []).map((row) => [
 				`<div class="talisma-360-identity"><strong>${escape_html(text_value(row.advisor_name))}</strong><small>${escape_html(text_value(row.advisor_type))}</small></div>`,
-				advisor_scope(row), status_badge(row.status),
+				status_badge(row.status),
 				`${date_value(row.effective_from)} &ndash; ${date_value(row.effective_to)}`,
 				row.primary_advisor ? status_badge('Primary') : status_badge('Supporting'),
 				inline_actions([
@@ -161,12 +178,16 @@ function render_student_records(frm, records) {
 			__('No student documents have been assigned.'),
 		));
 	set_html(frm, 'talisma_status_history_html',
-		`<div class="talisma-academic-profile-panel">${action_bar(__('Effective-dated lifecycle changes for this student.'), [])
+		`<div class="talisma-academic-profile-panel">${action_bar(__('Effective-dated lifecycle changes for this student.'), [
+			action_button('change-student-status', __('Change Student Status'), 'primary'),
+		])
 		+ data_table(
-			['Status', 'Reason', 'Academic Term', 'Effective From', 'Effective To', 'Source'],
+			['Previous Status', 'Current Status', 'Reason', 'Effective From', 'Effective To', 'Source', 'Changed By', 'Timestamp', 'Actions'],
 			(records.statuses || []).map((row) => [
-				record_link('Talisma Student Status History', row.name, row.status), text_value(row.reason),
-				text_value(row.academic_term), date_value(row.effective_from), date_value(row.effective_to), text_value(row.source),
+				status_badge(row.previous_status), status_badge(row.status),
+				text_value(row.reason), date_value(row.effective_from), date_value(row.effective_to),
+				text_value(row.source), text_value(row.changed_by), datetime_value(row.transition_timestamp || row.creation),
+				record_action_button('edit-status-history', __('Edit'), row.name),
 			]),
 			__('No status history found.'),
 		)}</div>`);
@@ -307,9 +328,6 @@ function render_finance(frm, finance) {
 			'talisma_fee_structure_html',
 			'talisma_fee_details_html',
 			'talisma_payment_summary_html',
-			'talisma_payment_history_html',
-			'talisma_scholarships_html',
-			'talisma_waivers_html',
 			'talisma_refunds_html',
 		].forEach((fieldname) => set_html(frm, fieldname, restricted_html()));
 		return;
@@ -318,17 +336,9 @@ function render_finance(frm, finance) {
 	set_html(
 		frm,
 		'talisma_payment_summary_html',
-		action_bar(
-			__('Live values from submitted billing, payment, refund, and accounting records.'),
-			[
-				action_button('student-account-statement', __('Account Statement'), 'primary'),
-				action_button('student-billing-report', __('Billing Report')),
-			],
-		) + stat_grid([
+		stat_grid([
 			['Total Charges', money(summary.total_charges, summary.currency)],
 			['Total Payments', money(summary.total_payments, summary.currency)],
-			['Total Scholarships', money(summary.total_scholarships, summary.currency)],
-			['Total Waivers', money(summary.total_waivers, summary.currency)],
 			['Total Refunds', money(summary.total_refunds, summary.currency)],
 			['Outstanding Balance', money(summary.outstanding_balance, summary.currency)],
 			['Last Payment Date', date_value(summary.last_payment_date)],
@@ -338,11 +348,7 @@ function render_finance(frm, finance) {
 	set_html(
 		frm,
 		'talisma_fee_structure_html',
-		action_bar(
-			__('Billing Statements are backed by ERPNext accounting records.'),
-			[action_button('student-billing-report', __('Open Billing Statements'))],
-		) +
-			data_table(
+		data_table(
 				['Billing Statement', 'Program', 'Academic Period', 'Posting Date', 'Due Date', 'Status', 'Billed Amount', 'Outstanding Balance'],
 				(finance.billing_statements || []).filter((row) => !row.is_refund).map((row) => [
 					`<strong>${escape_html(text_value(row.name))}</strong>`,
@@ -354,11 +360,10 @@ function render_finance(frm, finance) {
 				__('No Billing Statements found.'),
 			) +
 			data_table(
-				['Billing Statement', 'Fee Category', 'Description', 'Amount', 'Scholarship Adjustment', 'Waiver Adjustment', 'Net Charge'],
+				['Billing Statement', 'Fee Category', 'Description', 'Amount', 'Net Charge'],
 				(finance.billing_components || []).filter((row) => !row.is_refund).map((row) => [
 					escape_html(text_value(row.billing_statement)), escape_html(text_value(row.fee_category)),
 					escape_html(text_value(row.description)), money(row.amount, row.currency),
-					money(row.scholarship_adjustment, row.currency), money(row.waiver_adjustment, row.currency),
 					money(row.net_charge, row.currency),
 				]),
 				__('No billed charge components found.'),
@@ -367,9 +372,7 @@ function render_finance(frm, finance) {
 	set_html(
 		frm,
 		'talisma_fee_details_html',
-		action_bar(__('Receipts and allocations from submitted Student Payments.'), [
-			action_button('student-payment-report', __('Payment Report')),
-		]) + data_table(
+		data_table(
 			['Payment Date', 'Payment Method', 'Reference Number', 'Amount Paid', 'Receipt Number', 'Status'],
 			(finance.student_payments || []).filter((row) => row.payment_type !== 'Pay').map((row) => [
 				date_value(row.payment_date), escape_html(text_value(row.payment_method)),
@@ -378,37 +381,6 @@ function render_finance(frm, finance) {
 			]),
 			__('No Student Payments found.'),
 		),
-	);
-	set_html(
-		frm,
-		'talisma_payment_history_html',
-		data_table(
-			['Date', 'Description', 'Activity', 'Charge', 'Credit', 'Balance'],
-			(finance.account_activity || []).map((row) => [
-				date_value(row.date), escape_html(text_value(row.description)), status_badge(row.activity_type),
-				row.charge ? money(row.charge, row.currency) : '—',
-				row.credit ? money(row.credit, row.currency) : '—', money(row.balance, row.currency),
-			]),
-			__('No account activity found.'),
-		),
-	);
-	set_html(
-		frm,
-		'talisma_scholarships_html',
-		data_table(
-			['Date', 'Billing Statement', 'Fee Category', 'Description', 'Amount', 'Source'],
-			(finance.scholarships || []).map((row) => [
-				date_value(row.posting_date), escape_html(text_value(row.billing_statement)),
-				escape_html(text_value(row.fee_category)), escape_html(text_value(row.description)),
-				money(row.amount, row.currency), escape_html(text_value(row.source)),
-			]),
-			__('No scholarship adjustments found.'),
-		),
-	);
-	set_html(
-		frm,
-		'talisma_waivers_html',
-		empty_html(__('No waiver adjustments found. Waivers remain an accounting-backed extension point; no separate balance is maintained.')),
 	);
 	set_html(
 		frm,
@@ -434,16 +406,14 @@ function bind_360_actions(frm) {
 				frappe.set_route('Form', doctype, name);
 			} else if (action === 'open-document-record') {
 				open_student_document_record_dialog(frm, name);
+			} else if (action === 'change-student-status') {
+				open_student_status_dialog(frm);
+			} else if (action === 'edit-status-history') {
+				open_status_history_dialog(frm, name);
 			} else if (action === 'new-enrollment') {
 				open_program_enrollment_dialog(frm);
 			} else if (action === 'edit-enrollment') {
 				open_program_enrollment_dialog(frm, name);
-			} else if (action === 'student-account-statement') {
-				open_student_finance_report('Student Account Statement', frm.doc.name);
-			} else if (action === 'student-billing-report') {
-				open_student_finance_report('Student Billing Report', frm.doc.name);
-			} else if (action === 'student-payment-report') {
-				open_student_finance_report('Student Payment Report', frm.doc.name);
 			} else if (action === 'register-courses') {
 				open_student_registration_dialog(frm);
 			} else if (action === 'course-actions') {
@@ -481,9 +451,97 @@ function bind_360_actions(frm) {
 	);
 }
 
-function open_student_finance_report(report_name, student) {
-	frappe.route_options = { student };
-	frappe.set_route('query-report', report_name);
+function open_student_status_dialog(frm) {
+	frappe.call({
+		method: 'talisma_sis.lifecycle.get_allowed_transitions',
+		args: { student: frm.doc.name },
+		callback(r) {
+			const response = r.message || {};
+			if (!(response.allowed_statuses || []).length) {
+				frappe.msgprint(__('No lifecycle transitions are available from {0}.', [response.current_status || __('the current status')]));
+				return;
+			}
+			const dialog = new frappe.ui.Dialog({
+				title: __('Change Student Status'),
+				fields: [
+					{ fieldtype: 'HTML', options: student_context_html(frm) },
+					{ fieldname: 'current_status', label: __('Current Status'), fieldtype: 'Data', read_only: 1, default: response.current_status },
+					{ fieldname: 'new_status', label: __('New Status'), fieldtype: 'Select', options: response.allowed_statuses, reqd: 1 },
+					{ fieldname: 'effective_from', label: __('Effective From'), fieldtype: 'Date', default: frappe.datetime.get_today(), reqd: 1 },
+					{ fieldname: 'reason', label: __('Reason'), fieldtype: 'Data', reqd: 1 },
+					{ fieldname: 'comments', label: __('Comments'), fieldtype: 'Small Text' },
+				],
+				primary_action_label: __('Change Status'),
+				primary_action(values) {
+					frappe.call({
+						method: 'talisma_sis.lifecycle.change_student_status',
+						args: { student: frm.doc.name, ...values },
+						freeze: true,
+						freeze_message: __('Changing Student status...'),
+						callback(result) {
+							if (!result.message) return;
+							dialog.hide();
+							frappe.show_alert({ message: __('Student status changed to {0}', [result.message.status]), indicator: 'green' });
+							frm.reload_doc();
+						},
+					});
+				},
+			});
+			dialog.show();
+		},
+	});
+}
+
+function open_status_history_dialog(frm, recordName) {
+	frappe.call({
+		method: 'talisma_sis.lifecycle.get_status_history_record',
+		args: { record: recordName },
+		freeze: true,
+		freeze_message: __('Loading Student history...'),
+		callback(r) {
+			if (!r.message) return;
+			const row = r.message;
+			const dialog = new frappe.ui.Dialog({
+				title: __('Edit Student History'),
+				size: 'large',
+				fields: [
+					{ fieldtype: 'HTML', options: student_context_html(frm) },
+					{ fieldtype: 'Section Break', label: __('Lifecycle Transition') },
+					{ fieldname: 'previous_status', label: __('Previous Status'), fieldtype: 'Data', read_only: 1 },
+					{ fieldtype: 'Column Break' },
+					{ fieldname: 'status', label: __('Current Status'), fieldtype: 'Data', read_only: 1 },
+					{ fieldtype: 'Section Break' },
+					{ fieldname: 'effective_from', label: __('Effective From'), fieldtype: 'Date', read_only: 1 },
+					{ fieldname: 'source', label: __('Source'), fieldtype: 'Data', read_only: 1 },
+					{ fieldtype: 'Column Break' },
+					{ fieldname: 'effective_to', label: __('Effective To'), fieldtype: 'Date', read_only: 1 },
+					{ fieldname: 'changed_by', label: __('Changed By'), fieldtype: 'Data', read_only: 1 },
+					{ fieldtype: 'Section Break', label: __('Record Details') },
+					{ fieldname: 'reason', label: __('Reason'), fieldtype: 'Data', reqd: 1 },
+					{ fieldname: 'comments', label: __('Comments'), fieldtype: 'Small Text' },
+					{ fieldtype: 'Column Break' },
+					{ fieldname: 'transition_timestamp', label: __('Timestamp'), fieldtype: 'Datetime', read_only: 1 },
+				],
+				primary_action_label: __('Save Changes'),
+				primary_action(values) {
+					frappe.call({
+						method: 'talisma_sis.lifecycle.update_status_history_record',
+						args: { record: recordName, reason: values.reason, comments: values.comments },
+						freeze: true,
+						freeze_message: __('Saving Student history...'),
+						callback(result) {
+							if (!result.message) return;
+							dialog.hide();
+							frappe.show_alert({ message: __('Student history updated'), indicator: 'green' });
+							load_student_360(frm);
+						},
+					});
+				},
+			});
+			dialog.show();
+			dialog.set_values(row);
+		},
+	});
 }
 
 function with_student_action_context(frm, callback) {
@@ -513,17 +571,6 @@ function open_advisor_dialog(frm, assignmentName = null) {
 				{ fieldtype: 'HTML', options: student_context_html(frm) },
 				{ fieldname: 'advisor', label: __('Advisor'), fieldtype: 'Link', options: 'Instructor', reqd: 1, default: row.advisor },
 				{ fieldname: 'advisor_type', label: __('Advisor Type'), fieldtype: 'Select', options: ['Academic', 'Faculty', 'International Student', 'Athletic', 'Student Success'], reqd: 1, default: row.advisor_type || 'Academic' },
-				{
-					fieldname: 'program', label: __('Program'), fieldtype: 'Link', options: 'Program', default: row.program || context.program,
-					onchange() {
-						const program = dialog.get_value('program');
-						if (!program) return;
-						frappe.db.get_value('Program', program, 'talisma_academic_unit').then((r) => {
-							dialog.set_value('academic_unit', r.message?.talisma_academic_unit || null);
-						});
-					},
-				},
-				{ fieldname: 'academic_unit', label: __('Academic Unit'), fieldtype: 'Link', options: 'Talisma Academic Unit', default: row.academic_unit },
 				{ fieldname: 'primary_advisor', label: __('Primary Advisor'), fieldtype: 'Check', default: row.primary_advisor ?? 1 },
 				{ fieldname: 'status', label: __('Status'), fieldtype: 'Select', options: ['Active', 'Ended'], reqd: 1, default: row.status || 'Active' },
 				{ fieldname: 'effective_from', label: __('Effective From'), fieldtype: 'Date', reqd: 1, default: row.effective_from || context.today },
@@ -850,7 +897,7 @@ function open_swap_section_dialog(frm, enrollmentName) {
 			const options = (r.message?.sections || [])
 				.filter((section) => section.course === row.course_code && section.name !== row.course_section && !section.registered)
 				.map((section) => ({
-					label: `${section.course} &middot; CRN ${section.talisma_crn} &middot; ${section.talisma_meeting_days || ''} ${section.talisma_start_time || ''}`,
+					label: section_registration_label(section),
 					value: section.name,
 				}));
 			if (!options.length) {
@@ -981,9 +1028,15 @@ function registration_section_options(sections) {
 	return (sections || [])
 		.filter((section) => !section.registered)
 		.map((section) => ({
-			label: `${section.course} · CRN ${section.talisma_crn} · ${section.talisma_meeting_days || ''} ${section.talisma_start_time || ''}`,
+			label: section_registration_label(section),
 			value: section.name,
 		}));
+}
+
+function section_registration_label(section) {
+	const schedule = section.meeting_summary
+		|| [section.talisma_meeting_days, section.talisma_start_time].filter(Boolean).join(' ');
+	return [section.course, `CRN ${section.talisma_crn}`, schedule].filter(Boolean).join(' · ');
 }
 
 function set_html(frm, fieldname, html) {
@@ -1149,6 +1202,10 @@ function money(value, currency) {
 
 function date_value(value) {
 	return value ? frappe.datetime.str_to_user(value) : '—';
+}
+
+function datetime_value(value) {
+	return value ? frappe.format(value, { fieldtype: 'Datetime' }) : '—';
 }
 
 function text_value(value) {

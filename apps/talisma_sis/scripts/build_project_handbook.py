@@ -546,7 +546,7 @@ def add_main_content(doc):
 	page_break(doc)
 	add_heading(doc, "12. US academic logic", 1)
 	add_heading(doc, "12.1 Course validation", 2)
-	add_bullets(doc, ["Credit Hours must be greater than zero.", "Subject Code and Catalog Number are required for the US catalog on the demo site."])
+	add_bullets(doc, ["Course Code, Course Name, and Course Type are required.", "Credit Hours must be greater than zero."])
 	add_heading(doc, "12.2 Academic-term chronology", 2)
 	add_p(doc, "All milestones are required and must be chronological:")
 	add_steps(doc, ["Registration opens", "Term starts", "Add/drop deadline", "Census date", "Withdrawal deadline", "Term ends", "Grades due"])

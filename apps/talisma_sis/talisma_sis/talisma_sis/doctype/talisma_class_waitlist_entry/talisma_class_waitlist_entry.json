@@ -2,12 +2,14 @@
  "autoname":"format:WAIT-{#####}","doctype":"DocType","engine":"InnoDB",
  "field_order":["class_schedule","student","program_enrollment","course","academic_term","position","status","joined_on","promoted_on"],
  "fields":[
-  {"fieldname":"class_schedule","fieldtype":"Link","label":"Class Schedule","options":"Student Group","reqd":1,"in_list_view":1,"in_standard_filter":1},
+  {"fieldname":"class_schedule","fieldtype":"Link","label":"Class Section","options":"Talisma Class Section","reqd":1,"in_list_view":1,"in_standard_filter":1},
   {"fieldname":"student","fieldtype":"Link","label":"Student","options":"Student","reqd":1,"in_list_view":1,"in_standard_filter":1},
   {"fieldname":"program_enrollment","fieldtype":"Link","label":"Program Enrollment","options":"Program Enrollment","reqd":1},
   {"fieldname":"course","fieldtype":"Link","label":"Course","options":"Course","reqd":1},
   {"fieldname":"academic_term","fieldtype":"Link","label":"Academic Term","options":"Academic Term","reqd":1},
   {"fieldname":"position","fieldtype":"Int","label":"Position","reqd":1,"in_list_view":1},
+  {"default":"Waiting","fieldname":"status","fieldtype":"Select","label":"Status","options":"Waiting\nPromoted\nRemoved","reqd":1,"in_list_view":1},
+  {"default":"Waiting","fieldname":"status","fieldtype":"Select","label":"Status","options":"Waiting\nPromoted\nRemoved","reqd":1,"in_list_view":1},
   {"default":"Waiting","fieldname":"status","fieldtype":"Select","label":"Status","options":"Waiting\nPromoted\nRemoved","reqd":1,"in_list_view":1},
   {"default":"Now","fieldname":"joined_on","fieldtype":"Datetime","label":"Joined On","reqd":1},
   {"fieldname":"promoted_on","fieldtype":"Datetime","label":"Promoted On","read_only":1}

@@ -274,6 +274,14 @@ body.talisma-sis-demo .navbar {
 	box-shadow: -8px 0 12px var(--talisma-gold-soft);
 }
 
+/* List views retain the modified timestamp, but omit social comment/like controls. */
+[data-page-route^="List/"] .list-liked-by-me,
+[data-page-route^="List/"] .comment-count,
+[data-page-route^="List/"] .comment-count + .mx-2,
+[data-page-route^="List/"] .list-row-like {
+	display: none !important;
+}
+
 [data-page-route^="List/"] .list-subject a {
 	color: var(--talisma-navy);
 	font-weight: 700;
@@ -943,6 +951,15 @@ body[data-route^="Form/"] .form-tabs {
 	min-height: 52px;
 }
 
+/* Relationships remain available to backend logic, but are not a user-facing SIS tab. */
+body.talisma-sis-demo .form-tabs .nav-link[data-fieldname="connections_tab"],
+body.talisma-sis-demo .form-tabs .nav-link[href="#connections_tab"],
+body.talisma-sis-demo .form-tab-content > #connections_tab,
+body.talisma-sis-demo .form-tab-content > [data-fieldname="connections_tab"],
+body.talisma-sis-demo .form-page[data-fieldname="connections_tab"] {
+	display: none !important;
+}
+
 body[data-route^="Form/"] .form-tabs {
 	align-items: stretch !important;
 	gap: 0;
@@ -1025,7 +1042,7 @@ body[data-route^="Form/"] .form-sidebar {
 body[data-route^="Form/"] .form-footer {
 	max-width: none !important;
 	margin: 16px 0 0 !important;
-	padding: 18px !important;
+	padding: 10px 18px 14px !important;
 	border: 1px solid var(--talisma-border);
 	border-radius: 14px;
 	background: #fff;
@@ -1037,7 +1054,16 @@ body[data-route^="Form/"] .form-footer .comment-box {
 }
 
 body[data-route^="Form/"] .form-footer .new-timeline {
-	margin-top: 18px;
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+}
+
+body[data-route^="Form/"] .form-footer .new-timeline .activity-title {
+	min-height: 44px;
+}
+
+body[data-route^="Form/"] .form-footer .new-timeline .timeline-items:last-child .timeline-item:last-child {
+	margin-bottom: 0 !important;
 }
 
 @media (max-width: 992px) {
@@ -1888,4 +1914,22 @@ body.talisma-sis-demo[data-route^="Form/Student/"] .form-section .section-body {
 	border-radius: var(--border-radius-md);
 	color: var(--text-muted);
 	text-align: center;
+}
+/* Comments are intentionally disabled across Desk forms; retain Activity history. */
+.form-footer > .after-save > .comment-box {
+	display: none !important;
+}
+
+/* Remove form-timeline composition actions, including New Email, on every Desk form. */
+.form-footer .new-timeline .timeline-actions {
+	display: none !important;
+}
+
+/* Keep Desk form sidebars focused on record identity and audit information. */
+body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-assignments,
+body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-attachments,
+body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-tags,
+body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-shared,
+body.talisma-sis-demo[data-route^="Form/"] .form-sidebar .form-stats-likes {
+	display: none !important;
 }

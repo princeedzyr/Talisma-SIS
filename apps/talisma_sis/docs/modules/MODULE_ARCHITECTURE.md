@@ -53,7 +53,7 @@ DocType names marked **candidate** describe architectural records, not approved 
 
 **Business capabilities:** student profile; institutional identifiers; names and contacts; guardians/emergency contacts; demographic data; academic career/status; residency; privacy restrictions; holds; service indicators; documents; status history; duplicate resolution.
 
-**Primary DocTypes:** Education `Student`, `Guardian`, `Student Guardian`, `Student Category`, `Student Language`, `Student Log`; Frappe `User`, `Contact`, `Address`, `File`; ERPNext `Customer` only as a billing party; candidates `Student Academic Career`, `Student Status History`, `Student Hold`, `Privacy Restriction`, and `External Identifier`.
+**Primary DocTypes:** Education `Student`, `Guardian`, `Student Guardian`, `Student Language`, `Student Log`; Frappe `User`, `Contact`, `Address`, `File`; ERPNext `Customer` only as a billing party; candidates `Student Academic Career`, `Student Status History`, `Student Hold`, `Privacy Restriction`, and `External Identifier`.
 
 **Related ERPNext modules:** Setup, Contacts, Accounts/Selling.
 

@@ -1,5 +1,6 @@
 frappe.ui.form.on('Degree', {
 	refresh(frm) {
+		show_degree_name(frm);
 		if (frm.is_new()) {
 			render_degree_programs(frm, []);
 			return;
@@ -11,6 +12,15 @@ frappe.ui.form.on('Degree', {
 		});
 	},
 });
+
+function show_degree_name(frm) {
+	// Saved field-based document names are hidden by Frappe. Keep the degree's
+	// institutional name visible while preventing it from diverging from the ID.
+	frm.set_df_property('degree_name', 'read_only', !frm.is_new());
+	frm.set_df_property('degree_name', 'hidden', 0);
+	frm.toggle_display('degree_name', true);
+	frm.get_field('degree_name')?.$wrapper?.show();
+}
 
 function render_degree_programs(frm, programs) {
 	const wrapper = frm.fields_dict.programs_html?.$wrapper;

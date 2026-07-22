@@ -10,6 +10,7 @@
  ],
  "fields": [
   {
+   "columns": 3,
    "fieldname": "family_member_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -17,6 +18,7 @@
    "reqd": 1
   },
   {
+   "columns": 2,
    "fieldname": "relation",
    "fieldtype": "Select",
    "in_list_view": 1,

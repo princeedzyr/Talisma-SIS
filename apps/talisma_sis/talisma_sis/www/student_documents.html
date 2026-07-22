@@ -11,7 +11,6 @@
 		{% if document.document_file %}<p><a href="{{ document.document_file }}" target="_blank" rel="noopener">View uploaded document</a></p>{% endif %}
 		{% if document.status != "Waived" %}<div class="upload-area">
 			<input type="file" class="form-control document-file" accept="{% for ext in document.allowed_extensions.split(',') %}.{{ ext.strip().lstrip('.') }}{% if not loop.last %},{% endif %}{% endfor %}">
-			{% if document.requires_expiry_date %}<label>Expiry Date<input type="date" class="form-control document-expiry" required></label>{% endif %}
 			<button type="button" class="btn btn-primary upload-student-document">{{ "Replace Document" if document.document_file else "Upload Document" }}</button>
 			<small>Allowed: {{ document.allowed_extensions }} &middot; Maximum {{ document.max_file_size_mb }} MB</small>
 		</div>{% endif %}

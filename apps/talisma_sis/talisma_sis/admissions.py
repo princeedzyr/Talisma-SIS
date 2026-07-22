@@ -716,6 +716,10 @@ def sync_admitted_application(doc, method=None) -> None:
 		},
 		update_modified=False,
 	)
+	from talisma_sis.lifecycle import record_application_admission
+
+	application = frappe.get_doc("Student Applicant", doc.student_applicant)
+	record_application_admission(doc.name, application)
 
 
 def seed_demo_admission_intake() -> None:
@@ -905,7 +909,6 @@ def _get_or_create_program_enrollment(applicant, student):
 				"doctype": "Program Enrollment",
 				"student": student.name,
 				"student_name": student.student_name,
-				"student_category": applicant.student_category,
 				"program": applicant.program,
 				"academic_year": applicant.academic_year,
 				"academic_term": applicant.academic_term,

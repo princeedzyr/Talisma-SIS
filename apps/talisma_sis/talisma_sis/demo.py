@@ -8,14 +8,14 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.translate import get_all_translations
-from frappe.utils import getdate
+from frappe.utils import getdate, slug
 
-from talisma_sis.academics import configure_academics, seed_demo_course_categories
+from talisma_sis.academics import configure_academic_year, configure_academics, seed_demo_course_categories
 from talisma_sis.curriculum import configure_curriculum, seed_demo_curricula
 from talisma_sis.student_360 import configure_student_360
 from talisma_sis.student_records import configure_student_records, seed_demo_student_records
 from talisma_sis.student_documents import configure_student_documents
-from talisma_sis.class_scheduling import configure_class_scheduling
+from talisma_sis.class_scheduling import configure_class_scheduling, configure_cohort_ui, ensure_cohort_filter_field
 from talisma_sis.assessment import configure_assessment
 from talisma_sis.admissions import configure_admission_intake, seed_demo_admission_intake
 
@@ -51,6 +51,72 @@ DEMO_WORKSPACE_NAME = "Bryan University"
 LEGACY_DEMO_WORKSPACE_NAME = "Talisma University"
 MISSPELLED_DEMO_WORKSPACE_NAME = "Bryne University"
 DEMO_WORKSPACE_ROUTE = "/desk/bryan-university"
+BRYAN_SIDEBAR_SECTIONS = (
+	("Home", (("Home", "Workspace", DEMO_WORKSPACE_NAME),)),
+	("Admissions", (
+		("Admission Intake", "DocType", "Student Admission"),
+		("Student Application", "DocType", "Student Applicant"),
+	)),
+	("Student Management", (
+		("Student", "DocType", "Student"),
+		("Student Groups", "DocType", "Student Group"),
+		("Document Type", "DocType", "Talisma Student Document Type"),
+	)),
+	("Academics", (
+		("Academic Year", "DocType", "Academic Year"),
+		("Academic Term", "DocType", "Academic Term"),
+		("Degree", "DocType", "Degree"),
+		("Program", "DocType", "Program"),
+		("Curriculum Version", "DocType", "Talisma Curriculum Version"),
+		("Course", "DocType", "Course"),
+		("Class Scheduling", "DocType", "Talisma Class Section"),
+	)),
+	("Assessment", (
+		("Assessment Plan", "DocType", "Assessment Plan"),
+		("Assessment Criteria", "DocType", "Assessment Criteria"),
+		("Assessment Group", "DocType", "Assessment Group"),
+		("Assessment Result", "DocType", "Assessment Result"),
+		("Assessment Gradebook", "DocType", "Assessment Gradebook"),
+		("Grading Scale", "DocType", "Grading Scale"),
+	)),
+	("Finance", (
+		("Fee Category", "DocType", "Fee Category"),
+		("Fee Structure", "DocType", "Fee Structure"),
+		("Fee Schedule", "DocType", "Fee Schedule"),
+		("Student Billing", "Report", "Student Billing Report"),
+		("Student Payments", "Report", "Student Payment Report"),
+		("Refunds", "Report", "Refund Report"),
+	)),
+	("Attendance", (
+		("Student Attendance", "DocType", "Student Attendance"),
+		("Student Leave Application", "DocType", "Student Leave Application"),
+	)),
+	("Tools", (
+		("Program Enrollment Tool", "DocType", "Program Enrollment Tool"),
+		("Student Group Creation Tool", "DocType", "Student Group Creation Tool"),
+		("Student Attendance Tool", "DocType", "Student Attendance Tool"),
+		("Student Report Generation Tool", "DocType", "Student Report Generation Tool"),
+		("Assessment Result Tool", "DocType", "Assessment Result Tool"),
+		("Course Scheduling Tool", "DocType", "Course Scheduling Tool"),
+	)),
+	("Setup", (
+		("Campus", "DocType", "Talisma Campus"),
+		("Institution", "DocType", "Talisma Institution"),
+		("Unit Closure", "DocType", "Talisma Unit Closure"),
+	)),
+	("Reports", (
+		("Course-wise Assessment", "Report", "Course wise Assessment Report"),
+		("Final Assessment Grades", "Report", "Final Assessment Grades"),
+		("Monthly Attendance", "Report", "Student Monthly Attendance Sheet"),
+		("Student Contacts", "Report", "Student and Guardian Contact Details"),
+		("Outstanding Balances", "Report", "Outstanding Balance Report"),
+		("Program Fee Collection", "Report", "Program Fee Collection Report"),
+		("Admission Intakes", "Report", "Admission Intake Report"),
+		("Program Capacity", "Report", "Program Capacity Report"),
+		("Program Applications", "Report", "Program-wise Applications"),
+		("Seat Availability", "Report", "Seat Availability Report"),
+	)),
+)
 GENDER_OPTIONS = ("Male", "Female", "Others", "Prefer not to say")
 DEMO_GRADING_SCALE_NAME = "Talisma US Letter Grades"
 DEMO_GRADING_INTERVALS = (
@@ -65,17 +131,57 @@ DEMO_GRADING_INTERVALS = (
 
 
 def redirect_demo_desk(response, request) -> None:
-	"""Send authenticated demo users from the Desk root to the university workspace."""
-	if (
-		frappe.local.site != DEMO_SITE
-		or frappe.session.user == "Guest"
-		or request.path.rstrip("/") != "/desk"
-	):
+	"""Keep authenticated demo users inside the Bryan University Desk shell."""
+	if frappe.local.site != DEMO_SITE or frappe.session.user == "Guest":
+		return
+
+	path = request.path.rstrip("/") or "/"
+	if path != "/desk" and not path.startswith("/desk/"):
+		return
+	workspace_routes = {f"/desk/{route}" for route in _exclusive_workspace_routes()}
+	if path != "/desk" and path not in workspace_routes:
 		return
 
 	response.status_code = 302
 	response.headers["Location"] = DEMO_WORKSPACE_ROUTE
 	response.set_data(b"")
+
+
+def _exclusive_workspace_routes() -> list[str]:
+	"""Return workspace slugs that do not collide with legitimate DocType routes."""
+	doctype_routes = {slug(name) for name in frappe.get_all("DocType", pluck="name")}
+	return [
+		slug(name)
+		for name in frappe.get_all("Workspace", pluck="name")
+		if name != DEMO_WORKSPACE_NAME and slug(name) not in doctype_routes
+	]
+
+
+def enforce_bryan_university_boot(bootinfo) -> None:
+	"""Expose only Bryan University navigation in the demo user's Desk boot payload."""
+	if frappe.local.site != DEMO_SITE or frappe.session.user == "Guest":
+		return
+
+	workspace_routes = _exclusive_workspace_routes()
+	bootinfo.talisma_workspace_routes = workspace_routes
+	bootinfo.talisma_workspace_route = DEMO_WORKSPACE_ROUTE
+
+	sidebars = getattr(bootinfo, "workspace_sidebar_item", {}) or {}
+	bryan_sidebar = sidebars.get(DEMO_WORKSPACE_NAME.lower())
+	bootinfo.workspace_sidebar_item = (
+		{DEMO_WORKSPACE_NAME.lower(): bryan_sidebar} if bryan_sidebar else {}
+	)
+
+	bootinfo.desktop_icons = [
+		icon for icon in (getattr(bootinfo, "desktop_icons", []) or [])
+		if icon.get("label") == DEMO_WORKSPACE_NAME
+	]
+	workspaces = getattr(bootinfo, "workspaces", None)
+	if workspaces and getattr(workspaces, "pages", None):
+		workspaces.pages = [
+			page for page in workspaces.pages
+			if page.get("name") == DEMO_WORKSPACE_NAME or page.get("label") == DEMO_WORKSPACE_NAME
+		]
 
 
 @frappe.whitelist()
@@ -142,6 +248,15 @@ def healthcheck() -> dict:
 	student_field_order = [field.fieldname for field in student_meta.fields]
 	applicant_meta = frappe.get_meta("Student Applicant")
 	admission_meta = frappe.get_meta("Student Admission")
+	academic_term_meta = frappe.get_meta("Academic Term")
+	academic_term_field_order = [field.fieldname for field in academic_term_meta.fields]
+	course_meta = frappe.get_meta("Course")
+	course_field_order = [field.fieldname for field in course_meta.fields]
+	class_schedule_meta = frappe.get_meta("Talisma Class Section")
+	class_schedule_field_order = [field.fieldname for field in class_schedule_meta.fields]
+	class_period_meta = frappe.get_meta("Talisma Class Period")
+	assessment_result_meta = frappe.get_meta("Assessment Result")
+	assessment_result_field_order = [field.fieldname for field in assessment_result_meta.fields]
 	family_member_meta = frappe.get_meta("Talisma Family Member")
 	grading_interval_meta = frappe.get_meta("Grading Scale Interval")
 	admission_program_meta = frappe.get_meta("Student Admission Program")
@@ -167,15 +282,15 @@ def healthcheck() -> dict:
 	checks = {
 		"workspace_exists": bool(frappe.db.exists("Workspace", DEMO_WORKSPACE_NAME)),
 		"sidebar_exists": bool(frappe.db.exists("Workspace Sidebar", DEMO_WORKSPACE_NAME)),
-		"module_desktop_icons": visible_icons == [item[0] for item in DEMO_MODULES],
-		"no_redundant_university_icon": DEMO_WORKSPACE_NAME not in visible_icons,
-		"module_sidebars": all(
-			frappe.db.exists("Workspace Sidebar", label) for label, _, _ in DEMO_MODULES
-		),
-		"module_artwork": all(
-			frappe.db.get_value("Desktop Icon", label, "logo_url") == DEMO_MODULE_ART[label]
-			for label, _, _ in DEMO_MODULES
-		),
+		"module_desktop_icons": visible_icons == [DEMO_WORKSPACE_NAME],
+		"no_redundant_university_icon": visible_icons == [DEMO_WORKSPACE_NAME],
+		"module_sidebars": bool(frappe.db.exists("Workspace Sidebar", DEMO_WORKSPACE_NAME)),
+		"module_artwork": frappe.db.get_value(
+			"Desktop Icon", DEMO_WORKSPACE_NAME, "logo_url"
+		) == "/assets/talisma_sis/talisma-mark.svg",
+		"bryan_workspace_only": frappe.get_all(
+			"Workspace", filters={"is_hidden": 0}, pluck="name"
+		) == [DEMO_WORKSPACE_NAME],
 		"admissions_sidebar_order": admissions_sidebar_links[:2]
 		== [
 			("Admission Intake", "Student Admission"),
@@ -238,8 +353,8 @@ def healthcheck() -> dict:
 		"student_academic_history_layout": (
 			student_meta.get_field("talisma_status_history_section").label == "Student History"
 			and student_meta.get_field("talisma_student_history_tab").label == "Documents"
-			and student_field_order.index("talisma_advisor_assignments_html")
-			< student_field_order.index("talisma_status_history_section")
+			and student_field_order.index("talisma_status_history_section")
+			< student_field_order.index("talisma_advisor_assignments_section")
 			< student_field_order.index("talisma_academic_standing_section")
 		),
 		"gender_options": set(gender_values) == set(GENDER_OPTIONS),
@@ -260,9 +375,25 @@ def healthcheck() -> dict:
 		"applicant_classification_layout": (
 			applicant_meta.get_field("talisma_campus").insert_after == "last_name"
 			and applicant_meta.get_field("talisma_decision_section").insert_after == "paid"
-			and applicant_meta.get_field("talisma_residency").insert_after == "student_category"
+			and applicant_meta.get_field("talisma_residency").insert_after == "student_email_id"
 			and applicant_meta.get_field("talisma_deposit_status").insert_after
 			== "talisma_admit_type"
+		),
+		"student_category_removed": (
+			("Student Category", "Student Category") not in student_management_links
+			and all(
+				frappe.get_meta(doctype).get_field("student_category").hidden
+				for doctype in (
+					"Student Applicant",
+					"Program Enrollment",
+					"Student Group",
+					"Fee Structure",
+					"Fee Schedule",
+					"Fees",
+					"Program Fee",
+					"Program Enrollment Tool Student",
+				)
+			)
 		),
 		"student_academic_layout": (
 			student_meta.get_field("talisma_academic_level").insert_after
@@ -303,17 +434,111 @@ def healthcheck() -> dict:
 			and student_management_links.index(("Document Type", "Talisma Student Document Type"))
 			> student_management_links.index(("Student", "Student"))
 		),
-		"academics_navigation_order": academics_sidebar_links[:8]
+		"academics_navigation_order": academics_sidebar_links[:7]
 		== [
 			("Academic Year", "Academic Year"),
 			("Academic Term", "Academic Term"),
 			("Degree", "Degree"),
 			("Program", "Program"),
-			("Course Category", "Course Category"),
+			("Curriculum Version", "Talisma Curriculum Version"),
 			("Course", "Course"),
-			("Topic", "Topic"),
-			("Class Scheduling", "Student Group"),
+			("Class Scheduling", "Talisma Class Section"),
 		],
+		"academic_term_chronological_layout": all(
+			academic_term_field_order.index(left) < academic_term_field_order.index(right)
+			for left, right in (
+				("academic_year", "column_break_jhzu"),
+				("column_break_jhzu", "term_name"),
+				("term_name", "talisma_term_timeline_section"),
+				("talisma_term_timeline_section", "talisma_registration_opens"),
+				("talisma_registration_opens", "term_start_date"),
+				("term_start_date", "talisma_add_drop_deadline"),
+				("talisma_add_drop_deadline", "talisma_term_timeline_column_2"),
+				("talisma_term_timeline_column_2", "talisma_withdrawal_deadline"),
+				("talisma_withdrawal_deadline", "term_end_date"),
+				("term_end_date", "talisma_grades_due"),
+			)
+		),
+		"course_compact_layout": all(
+			course_field_order.index(left) < course_field_order.index(right)
+			for left, right in (
+				("talisma_course_information_section", "talisma_course_code"),
+				("talisma_course_code", "column_break_tflc"),
+				("column_break_tflc", "talisma_course_name"),
+				("talisma_course_name", "talisma_course_details_section"),
+				("talisma_credit_hours", "talisma_course_level"),
+				("talisma_course_level", "talisma_course_details_column_2"),
+				("talisma_course_details_column_2", "talisma_hours"),
+				("talisma_hours", "talisma_course_type"),
+				("talisma_course_type", "talisma_retake_section"),
+				("talisma_retake_section", "talisma_repeatable"),
+				("talisma_repeatable", "talisma_retake_values_section"),
+				("talisma_retake_values_section", "talisma_max_retake_attempts"),
+				("talisma_max_retake_attempts", "talisma_retake_column_2"),
+				("talisma_retake_column_2", "talisma_gpa_attempt_policy"),
+				("talisma_gpa_attempt_policy", "talisma_prerequisites_section"),
+				("talisma_prerequisites_section", "talisma_prerequisites"),
+			)
+		),
+		"class_schedule_compact_layout": all(
+			class_schedule_field_order.index(left) < class_schedule_field_order.index(right)
+			for left, right in (
+				("section_details", "student_group_name"),
+				("academic_year", "program"),
+				("program", "details_column_2"),
+				("details_column_2", "academic_term"),
+				("academic_term", "course"),
+				("course", "talisma_academic_unit"),
+				("talisma_academic_unit", "section_identifiers"),
+				("section_identifiers", "talisma_crn"),
+				("talisma_crn", "talisma_campus"),
+				("talisma_campus", "talisma_section_status"),
+				("talisma_section_status", "identifiers_column_2"),
+				("identifiers_column_2", "talisma_section_number"),
+				("talisma_section_number", "talisma_delivery_method"),
+				("talisma_delivery_method", "disabled"),
+				("disabled", "schedule_section"),
+				("schedule_section", "talisma_class_start_date"),
+				("talisma_class_start_date", "talisma_room"),
+				("talisma_room", "talisma_weekly_contact_hours"),
+				("talisma_weekly_contact_hours", "schedule_column_2"),
+				("schedule_column_2", "talisma_class_end_date"),
+				("talisma_class_end_date", "talisma_primary_instructor"),
+				("talisma_primary_instructor", "talisma_assigned_credit_hours"),
+				("talisma_assigned_credit_hours", "talisma_periods_section"),
+				("talisma_capacity_section", "max_strength"),
+				("max_strength", "talisma_allow_waitlist"),
+				("talisma_allow_waitlist", "talisma_waitlist_capacity"),
+				("talisma_waitlist_capacity", "capacity_column_2"),
+				("capacity_column_2", "talisma_registered_students"),
+				("talisma_registered_students", "talisma_available_seats"),
+				("talisma_available_seats", "talisma_waitlisted_students"),
+				("talisma_waitlisted_students", "talisma_remaining_waitlist_seats"),
+				("talisma_remaining_waitlist_seats", "roster_section"),
+			)
+		) and class_schedule_meta.get_field("talisma_academic_unit").hidden,
+		"class_period_weekday_selector": (
+			class_period_meta.get_field("days").fieldtype == "MultiSelect"
+			and class_period_meta.get_field("days").options == "\n".join(
+				("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+			)
+		),
+		"assessment_result_compact_layout": (
+			all(
+				assessment_result_field_order.index(left) < assessment_result_field_order.index(right)
+				for left, right in (
+					("section_break_8", "maximum_score"),
+					("maximum_score", "total_score"),
+					("total_score", "talisma_percentage"),
+					("talisma_percentage", "column_break_11"),
+					("column_break_11", "grade"),
+					("grade", "talisma_grade_points"),
+					("talisma_grade_points", "talisma_result_status"),
+					("talisma_result_status", "section_break_13"),
+				)
+			)
+			and assessment_result_meta.get_field("section_break_8").label == "Score & Grade Summary"
+		),
 		"finance_navigation": finance_sidebar_links
 		== [
 			("Fee Category", "Fee Category"),
@@ -321,10 +546,7 @@ def healthcheck() -> dict:
 			("Fee Schedule", "Fee Schedule"),
 			("Student Billing", "Student Billing Report"),
 			("Student Payments", "Student Payment Report"),
-			("Scholarships", "Scholarship Report"),
-			("Waivers", "Waiver Report"),
 			("Refunds", "Refund Report"),
-			("Student Account", "Student"),
 		],
 		"default_workspace": default_workspaces == [DEMO_WORKSPACE_NAME],
 	}
@@ -379,6 +601,7 @@ def setup() -> dict[str, int]:
 	_configure_gender_options()
 	_remove_obsolete_demo_fields()
 	_create_integration_fields()
+	_remove_student_category_ui()
 	configure_class_scheduling()
 	configure_academics()
 	configure_assessment()
@@ -387,6 +610,7 @@ def setup() -> dict[str, int]:
 	configure_student_records()
 	configure_student_360()
 	_configure_compact_form_layouts()
+	_configure_academic_term_ui()
 	foundation = _create_institutional_foundation()
 	calendar = _create_academic_calendar()
 	_create_education_catalog(foundation["academic_unit"], calendar["academic_term"])
@@ -436,6 +660,11 @@ def restore_demo_navigation_after_migrate() -> None:
 	"""Restore generated demo navigation removed by Frappe's orphan cleanup."""
 	if frappe.local.site != DEMO_SITE or not frappe.db.exists("Workspace", DEMO_WORKSPACE_NAME):
 		return
+	ensure_cohort_filter_field()
+	configure_cohort_ui()
+	configure_academic_year()
+	_configure_academic_term_ui()
+	_remove_student_category_ui()
 	_create_demo_workspaces()
 	_configure_demo_desktop_icons()
 
@@ -479,6 +708,52 @@ def _remove_obsolete_demo_fields() -> None:
 		if custom_field:
 			frappe.delete_doc("Custom Field", custom_field, ignore_permissions=True)
 			frappe.clear_cache(doctype=doctype)
+
+
+def _remove_student_category_ui() -> None:
+	"""Remove the legacy Education category concept from the SIS user experience.
+
+	The standard fields remain in the database for Education app compatibility, but
+	they are neither editable nor exposed as filters/list columns in this SIS.
+	"""
+	category_doctypes = (
+		"Student Applicant",
+		"Program Enrollment",
+		"Student Group",
+		"Fee Structure",
+		"Fee Schedule",
+		"Fees",
+		"Program Fee",
+		"Program Enrollment Tool Student",
+	)
+	for doctype in category_doctypes:
+		if not frappe.get_meta(doctype).get_field("student_category"):
+			continue
+		for prop, value in (
+			("hidden", 1),
+			("reqd", 0),
+			("in_list_view", 0),
+			("in_standard_filter", 0),
+		):
+			make_property_setter(doctype, "student_category", prop, value, "Check")
+		frappe.clear_cache(doctype=doctype)
+
+	residency_field = frappe.db.exists(
+		"Custom Field",
+		{"dt": "Student Applicant", "fieldname": "talisma_residency"},
+	)
+	if residency_field:
+		frappe.db.set_value(
+			"Custom Field", residency_field, "insert_after", "student_email_id"
+		)
+		frappe.clear_cache(doctype="Student Applicant")
+
+	for web_form_field in frappe.get_all(
+		"Web Form Field",
+		filters={"fieldname": "student_category"},
+		pluck="name",
+	):
+		frappe.db.set_value("Web Form Field", web_form_field, "hidden", 1)
 
 
 def _create_integration_fields() -> None:
@@ -537,7 +812,7 @@ def _create_integration_fields() -> None:
 					"options": "New First-Time\nTransfer\nReturning\nVisiting\nExchange",
 				},
 				{
-					**_field("talisma_residency", "Residency Classification", "Select", "", "student_category"),
+					**_field("talisma_residency", "Residency Classification", "Select", "", "student_email_id"),
 					"options": "In-State\nOut-of-State\nInternational\nUndetermined",
 				},
 				{
@@ -590,6 +865,7 @@ def _create_integration_fields() -> None:
 				_field("talisma_academic_unit", "Academic Unit", "Link", "Talisma Academic Unit", "program_name"),
 			],
 			"Course": [
+				_field("talisma_course_information_section", "Course Information", "Section Break", "", "course_name"),
 				_field("talisma_academic_unit", "Academic Unit", "Link", "Talisma Academic Unit", "course_name"),
 				_field("talisma_subject_code", "Subject Code", "Data", "", "talisma_academic_unit"),
 				_field("talisma_catalog_number", "Catalog Number", "Data", "", "talisma_subject_code"),
@@ -610,40 +886,24 @@ def _create_integration_fields() -> None:
 					**_field("talisma_repeatable", "Repeatable for Credit", "Check", "", "talisma_effective_term"),
 					"default": 0,
 				},
+				_field("talisma_course_configuration_section", "Academic Configuration", "Section Break", "", "talisma_course_type"),
+				_field("talisma_course_configuration_column_2", "", "Column Break", "", "talisma_effective_term"),
+				_field("talisma_retake_column_2", "", "Column Break", "", "talisma_max_retake_attempts"),
 			],
 			"Academic Term": [
+				_field("talisma_term_timeline_section", "Term Timeline", "Section Break", "", "term_name"),
 				_field("talisma_registration_opens", "Registration Opens", "Date", "", "term_end_date"),
 				_field("talisma_add_drop_deadline", "Add/Drop Deadline", "Date", "", "talisma_registration_opens"),
-				_field("talisma_census_date", "Census Date", "Date", "", "talisma_add_drop_deadline"),
-				_field("talisma_withdrawal_deadline", "Withdrawal Deadline", "Date", "", "talisma_census_date"),
+				{
+					**_field("talisma_census_date", "Census Date", "Date", "", "talisma_add_drop_deadline"),
+					"hidden": 1,
+				},
+				_field("talisma_term_timeline_column_2", "", "Column Break", "", "talisma_add_drop_deadline"),
+				_field("talisma_withdrawal_deadline", "Withdrawal Deadline", "Date", "", "talisma_term_timeline_column_2"),
 				_field("talisma_grades_due", "Grades Due", "Date", "", "talisma_withdrawal_deadline"),
 			],
-			"Student Group": [
-				{
-					**_field("talisma_crn", "CRN", "Data", "", "student_group_name"),
-					"unique": 1,
-					"in_list_view": 1,
-				},
-				_field("talisma_section_number", "Section", "Data", "", "talisma_crn"),
-				_field("talisma_campus", "Campus", "Link", "Talisma Campus", "talisma_section_number"),
-				{
-					**_field("talisma_delivery_method", "Delivery Method", "Select", "", "talisma_campus"),
-					"options": "In Person\nOnline\nHybrid\nHyFlex",
-				},
-				{
-					**_field("talisma_section_status", "Section Status", "Select", "", "talisma_delivery_method"),
-					"options": "Open\nClosed\nCancelled",
-					"default": "Open",
-				},
-				_field("talisma_waitlist_capacity", "Waitlist Capacity", "Int", "", "max_strength"),
-				_field("talisma_meeting_days", "Meeting Days", "Data", "", "talisma_waitlist_capacity"),
-				_field("talisma_start_time", "Start Time", "Time", "", "talisma_meeting_days"),
-				_field("talisma_end_time", "End Time", "Time", "", "talisma_start_time"),
-				_field("talisma_room", "Room", "Link", "Room", "talisma_end_time"),
-				_field("talisma_primary_instructor", "Primary Instructor", "Link", "Instructor", "talisma_room"),
-			],
 			"Course Enrollment": [
-				_field("talisma_course_section", "Course Section / CRN", "Link", "Student Group", "course"),
+				_field("talisma_course_section", "Course Section / CRN", "Link", "Talisma Class Section", "course"),
 			],
 			"Instructor": [
 				_field("talisma_academic_unit", "Academic Unit", "Link", "Talisma Academic Unit", "instructor_name"),
@@ -716,6 +976,73 @@ def _set_compact_field_order(doctype: str, regions: list[tuple[str, str, list[st
 def _configure_compact_form_layouts() -> None:
 	"""Keep related fields on the same visual row without uneven column gaps."""
 	_set_compact_field_order(
+		"Course",
+		[
+			(
+				"course_name",
+				"assessment_tab",
+				[
+					"talisma_course_information_section",
+					"talisma_course_code",
+					"column_break_tflc",
+					"talisma_course_name",
+					"talisma_course_details_section",
+					"talisma_credit_hours",
+					"talisma_course_level",
+					"talisma_course_details_column_2",
+					"talisma_hours",
+					"talisma_course_type",
+					"talisma_retake_section",
+					"talisma_repeatable",
+					"talisma_retake_values_section",
+					"talisma_max_retake_attempts",
+					"talisma_retake_column_2",
+					"talisma_gpa_attempt_policy",
+					"talisma_prerequisites_section",
+					"talisma_prerequisites",
+					"course_name",
+					"talisma_academic_unit",
+					"talisma_program",
+					"department",
+					"hero_image",
+					"default_grading_scale",
+					"talisma_subject_code",
+					"talisma_catalog_number",
+					"talisma_course_configuration_section",
+					"talisma_grading_basis",
+					"talisma_effective_term",
+					"talisma_course_configuration_column_2",
+					"description",
+					"talisma_course_details_column_3",
+					"section_break_6",
+					"topics",
+				],
+			),
+		],
+	)
+	_set_compact_field_order(
+		"Academic Term",
+		[
+			(
+				"academic_year",
+				"title",
+				[
+					"academic_year",
+					"column_break_jhzu",
+					"term_name",
+					"talisma_term_timeline_section",
+					"talisma_registration_opens",
+					"term_start_date",
+					"talisma_add_drop_deadline",
+					"talisma_term_timeline_column_2",
+					"talisma_withdrawal_deadline",
+					"term_end_date",
+					"talisma_grades_due",
+				],
+			),
+		],
+	)
+	_set_compact_field_order(
 		"Student Applicant",
 		[
 			(
@@ -742,7 +1069,6 @@ def _configure_compact_form_layouts() -> None:
 					"talisma_application_fee",
 					"talisma_applicant_classification_section",
 					"student_email_id",
-					"student_category",
 					"talisma_residency",
 					"talisma_applicant_classification_column_2",
 					"talisma_admit_type",
@@ -786,6 +1112,32 @@ def _configure_compact_form_layouts() -> None:
 			),
 		],
 	)
+
+
+def _configure_academic_term_ui() -> None:
+	"""Use the explicit term name and keep Census Date out of the form."""
+	make_property_setter(
+		"Academic Term", "talisma_census_date", "hidden", 1, "Check"
+	)
+	make_property_setter(
+		"Academic Term", "talisma_census_date", "reqd", 0, "Check"
+	)
+	make_property_setter(
+		"Academic Term", None, "title_field", "term_name", "Data", for_doctype=True
+	)
+
+	for row in frappe.get_all("Academic Term", fields=["name", "term_name"]):
+		desired_name = (row.term_name or "").strip()
+		if not desired_name:
+			continue
+		target_name = row.name
+		if row.name != desired_name and not frappe.db.exists("Academic Term", desired_name):
+			frappe.rename_doc("Academic Term", row.name, desired_name, force=True)
+			target_name = desired_name
+		frappe.db.set_value(
+			"Academic Term", target_name, "title", desired_name, update_modified=False
+		)
+	frappe.clear_cache(doctype="Academic Term")
 
 
 def _field(fieldname: str, label: str, fieldtype: str, options: str, insert_after: str) -> dict:
@@ -891,7 +1243,6 @@ def _create_academic_calendar() -> dict[str, str]:
 		term_end_date="2026-12-18",
 		talisma_registration_opens="2026-04-01",
 		talisma_add_drop_deadline="2026-09-01",
-		talisma_census_date="2026-09-04",
 		talisma_withdrawal_deadline="2026-11-06",
 		talisma_grades_due="2026-12-23",
 	)
@@ -901,7 +1252,6 @@ def _create_academic_calendar() -> dict[str, str]:
 		{
 			"talisma_registration_opens": "2026-04-01",
 			"talisma_add_drop_deadline": "2026-09-01",
-			"talisma_census_date": "2026-09-04",
 			"talisma_withdrawal_deadline": "2026-11-06",
 			"talisma_grades_due": "2026-12-23",
 		},
@@ -1026,27 +1376,40 @@ def _create_us_course_sections(campus: str, calendar: dict[str, str]) -> None:
 		("10003", "001", "Database Systems", "TR", "11:30:00", "12:45:00", room_a, "Dr. Elena Rodriguez"),
 		("10004", "001", "Software Engineering", "MWF", "13:00:00", "13:50:00", room_b, "Dr. Maya Chen"),
 	)
+	term_dates = frappe.db.get_value(
+		"Academic Term", calendar["academic_term"], ["term_start_date", "term_end_date"], as_dict=True
+	)
+	meeting_days = {
+		"MWF": "Monday, Wednesday, Friday",
+		"TR": "Tuesday, Thursday",
+	}
 	for crn, section_number, course, days, start_time, end_time, room, instructor in sections:
 		section = _ensure(
-			"Student Group",
+			"Talisma Class Section",
 			None,
 			filters={"talisma_crn": crn},
 			student_group_name=f"Fall 2026 {course} {section_number}",
 			academic_year=calendar["academic_year"],
 			academic_term=calendar["academic_term"],
-			group_based_on="Course",
 			program="Bachelor of Science in Computer Science",
 			course=course,
+			talisma_academic_unit=frappe.db.get_value("Course", course, "talisma_academic_unit"),
 			max_strength=30,
 			talisma_crn=crn,
 			talisma_section_number=section_number,
 			talisma_campus=campus,
 			talisma_delivery_method="In Person",
 			talisma_section_status="Open",
+			talisma_allow_waitlist=1,
 			talisma_waitlist_capacity=5,
-			talisma_meeting_days=days,
-			talisma_start_time=start_time,
-			talisma_end_time=end_time,
+			talisma_class_start_date=term_dates.term_start_date,
+			talisma_class_end_date=term_dates.term_end_date,
+			talisma_periods=[{
+				"period_type": "Lecture",
+				"days": meeting_days[days],
+				"start_time": start_time,
+				"end_time": end_time,
+			}],
 			talisma_room=room,
 			talisma_primary_instructor=frappe.db.get_value(
 				"Instructor", {"instructor_name": instructor}, "name"
@@ -1057,6 +1420,7 @@ def _create_us_course_sections(campus: str, calendar: dict[str, str]) -> None:
 			None,
 			filters={"student_group": section, "schedule_date": "2026-08-24"},
 			student_group=section,
+			talisma_class_section=section,
 			course=course,
 			instructor=frappe.db.get_value("Instructor", {"instructor_name": instructor}, "name"),
 			room=room,
@@ -1175,11 +1539,11 @@ def _create_demo_assessment_results(calendar: dict[str, str]) -> None:
 	student = frappe.db.get_value(
 		"Student", {"student_email_id": "avery.johnson@example.edu"}, "name"
 	)
-	section = frappe.db.get_value("Student Group", {"talisma_crn": "10001"}, "name")
+	section = frappe.db.get_value("Talisma Class Section", {"talisma_crn": "10001"}, "name")
 	if not student or not section:
 		frappe.throw("Avery and CRN 10001 are required before creating report-card data.")
 
-	section_doc = frappe.get_doc("Student Group", section)
+	section_doc = frappe.get_doc("Talisma Class Section", section)
 	if student not in {row.student for row in section_doc.students}:
 		section_doc.append("students", {"student": student, "active": 1})
 		section_doc.save(ignore_permissions=True)
@@ -1250,6 +1614,7 @@ def _create_demo_assessment_results(calendar: dict[str, str]) -> None:
 		plan = frappe.get_doc({
 			"doctype": "Assessment Plan",
 			"student_group": section,
+			"talisma_class_section": section,
 			"assessment_name": "CS 101 Final Examination",
 			"assessment_group": leaf,
 			"grading_scale": grading_scale,
@@ -1280,6 +1645,49 @@ def _create_demo_assessment_results(calendar: dict[str, str]) -> None:
 			"comment": "Excellent mastery of foundational computing concepts.",
 		}).insert(ignore_permissions=True)
 		result.submit()
+
+
+def add_demo_students_to_assessment_plan(
+	assessment_plan: str = "EDU-ASP-2026-00001",
+) -> dict[str, object]:
+	"""Add enrolled demo students to an assessment plan's class for bulk scoring."""
+	if not frappe.db.exists("Assessment Plan", assessment_plan):
+		frappe.throw(f"Assessment Plan {assessment_plan} does not exist.")
+
+	class_section = frappe.db.get_value("Assessment Plan", assessment_plan, "talisma_class_section")
+	if not class_section:
+		class_section = frappe.db.get_value("Assessment Plan", assessment_plan, "student_group")
+	if not class_section:
+		frappe.throw(f"Assessment Plan {assessment_plan} does not have a Class Section.")
+
+	demo_emails = (
+		"alex.carter@example.edu",
+		"priya.shah@example.edu",
+		"noah.williams@example.edu",
+		"sofia.martinez@example.edu",
+		"ethan.brown@example.edu",
+		"mia.davis@example.edu",
+	)
+	group = frappe.get_doc("Talisma Class Section", class_section)
+	existing_students = {row.student for row in group.students}
+	added_students = []
+
+	for email in demo_emails:
+		student = frappe.db.get_value("Student", {"student_email_id": email}, "name")
+		if student and student not in existing_students:
+			group.append("students", {"student": student, "active": 1})
+			existing_students.add(student)
+			added_students.append(student)
+
+	if added_students:
+		group.save(ignore_permissions=True)
+
+	return {
+		"assessment_plan": assessment_plan,
+		"class_section": class_section,
+		"added_students": added_students,
+		"total_students": len(group.students),
+	}
 
 
 def _create_demo_workspaces() -> None:
@@ -1327,10 +1735,8 @@ def _create_demo_workspaces() -> None:
 			('Academic Terms', 'Academic Term', 'Purple'),
 			('Degrees', 'Degree', 'Blue'),
 			('Programs', 'Program', 'Green'),
-			('Course Categories', 'Course Category', 'Orange'),
 			('Courses', 'Course', 'Blue'),
-			('Topics', 'Topic', 'Purple'),
-			('Class Scheduling', 'Student Group', 'Green'),
+			('Class Scheduling', 'Talisma Class Section', 'Green'),
 		],
 	)
 	_create_workspace(
@@ -1338,8 +1744,7 @@ def _create_demo_workspaces() -> None:
 		'presentation',
 		[
 			('Faculty', 'Instructor', 'Blue'),
-			('Course Sections', 'Student Group', 'Green'),
-			('Course Schedules', 'Course Schedule', 'Orange'),
+			('Course Sections', 'Talisma Class Section', 'Green'),
 			('Rooms', 'Room', 'Grey'),
 		],
 	)
@@ -1450,6 +1855,9 @@ def _configure_demo_branding() -> None:
 			DEMO_WORKSPACE_NAME,
 			{'label': DEMO_WORKSPACE_NAME, 'title': DEMO_WORKSPACE_NAME, 'is_hidden': 0},
 		)
+		for workspace in frappe.get_all('Workspace', pluck='name'):
+			if workspace != DEMO_WORKSPACE_NAME:
+				frappe.db.set_value('Workspace', workspace, 'is_hidden', 1)
 
 	users = frappe.get_all(
 		'User',
@@ -1460,34 +1868,74 @@ def _configure_demo_branding() -> None:
 		frappe.db.set_value('User', user, 'default_workspace', DEMO_WORKSPACE_NAME)
 
 
+def _configure_bryan_university_sidebar() -> None:
+	"""Create the one authoritative sidebar used by every demo Desk route."""
+	existing = frappe.db.exists('Workspace Sidebar', DEMO_WORKSPACE_NAME)
+	sidebar = (
+		frappe.get_doc('Workspace Sidebar', existing)
+		if existing
+		else frappe.get_doc({'doctype': 'Workspace Sidebar', 'name': DEMO_WORKSPACE_NAME})
+	)
+	sidebar.update({
+		'title': DEMO_WORKSPACE_NAME,
+		'module': 'Education',
+		'header_icon': 'graduation-cap',
+		'standard': 0,
+		'app': None,
+	})
+	sidebar.set('items', [])
+	for section_label, links in BRYAN_SIDEBAR_SECTIONS:
+		if section_label != 'Home':
+			sidebar.append('items', {
+				'type': 'Section Break',
+				'label': section_label,
+				'collapsible': 1,
+				'keep_closed': 0,
+			})
+		for label, link_type, link_to in links:
+			sidebar.append('items', {
+				'type': 'Link',
+				'label': label,
+				'icon': 'home' if label == 'Home' else None,
+				'child': int(section_label != 'Home'),
+				'link_type': link_type,
+				'link_to': link_to,
+			})
+	if existing:
+		sidebar.save(ignore_permissions=True)
+	else:
+		sidebar.insert(ignore_permissions=True)
+
+
 def _configure_demo_desktop_icons() -> None:
-	_configure_education_sidebar()
+	_configure_bryan_university_sidebar()
+	_configure_demo_branding()
 	icons = frappe.get_all('Desktop Icon', fields=['name'])
 	for icon in icons:
 		frappe.db.set_value('Desktop Icon', icon.name, 'hidden', 1)
 
-	for index, (label, workspace, icon) in enumerate(DEMO_MODULES, start=1):
-		_create_module_sidebar(label, workspace, icon)
-		values = {
-			'label': label,
-			'icon_type': 'Link',
-			'link_type': 'Workspace Sidebar',
-			'link_to': label,
-			'icon': icon,
-			'logo_url': DEMO_MODULE_ART[label],
-			'icon_image': None,
-			'bg_color': 'blue',
-			'idx': index,
-			'hidden': 0,
-			'standard': 1,
-			'app': 'talisma_sis',
-			'restrict_removal': 1,
-		}
-		existing = frappe.db.exists('Desktop Icon', label)
-		if existing:
-			frappe.db.set_value('Desktop Icon', existing, values)
-		else:
-			frappe.get_doc({'doctype': 'Desktop Icon', **values}).insert(ignore_permissions=True)
+	values = {
+		'label': DEMO_WORKSPACE_NAME,
+		'icon_type': 'Link',
+		'link_type': 'Workspace Sidebar',
+		'link_to': DEMO_WORKSPACE_NAME,
+		'icon': 'graduation-cap',
+		'logo_url': '/assets/talisma_sis/talisma-mark.svg',
+		'icon_image': None,
+		'bg_color': 'blue',
+		'idx': 1,
+		'hidden': 0,
+		'standard': 0,
+		'app': None,
+		'restrict_removal': 1,
+	}
+	existing = frappe.db.exists('Desktop Icon', DEMO_WORKSPACE_NAME)
+	if existing:
+		frappe.db.set_value('Desktop Icon', existing, values)
+	else:
+		frappe.get_doc({'doctype': 'Desktop Icon', 'name': DEMO_WORKSPACE_NAME, **values}).insert(
+			ignore_permissions=True
+		)
 
 	frappe.cache.delete_key('desktop_icons')
 	frappe.cache.delete_key('bootinfo')
@@ -1584,10 +2032,9 @@ def _configure_education_sidebar() -> None:
 			('Academic Term', 'Academic Term'),
 			('Degree', 'Degree'),
 			('Program', 'Program'),
-			('Course Category', 'Course Category'),
+			('Curriculum Version', 'Talisma Curriculum Version'),
 			('Course', 'Course'),
-			('Topic', 'Topic'),
-			('Class Scheduling', 'Student Group'),
+			('Class Scheduling', 'Talisma Class Section'),
 		):
 			item = next(
 				(
@@ -1618,8 +2065,10 @@ def _configure_education_sidebar() -> None:
 				'Guardian',
 				'Student Batch Name',
 				'Student Log',
+				'Student Group',
 				'Program Enrollment',
 				'Course Enrollment',
+				'Student Category',
 			}
 		)
 	]
@@ -1655,6 +2104,22 @@ def _configure_education_sidebar() -> None:
 			})
 		student_record_item.label = 'Student'
 		student_record_item.child = 1
+		cohort_item = next(
+			(
+				item
+				for item in sidebar.items
+				if item.link_type == 'DocType' and item.link_to == 'Student Group'
+			),
+			None,
+		)
+		if not cohort_item:
+			cohort_item = sidebar.append('items', {
+				'type': 'Link',
+				'link_type': 'DocType',
+				'link_to': 'Student Group',
+			})
+		cohort_item.label = 'Student Groups'
+		cohort_item.child = 1
 		document_type_item = next(
 			(
 				item
@@ -1674,19 +2139,12 @@ def _configure_education_sidebar() -> None:
 		document_type_item.child = 1
 		ordered_items = [
 			item for item in ordered_items
-			if item not in (student_record_item, document_type_item)
+			if item not in (student_record_item, cohort_item, document_type_item)
 		]
 		student_management_index = ordered_items.index(student_management_section)
 		ordered_items.insert(student_management_index + 1, student_record_item)
-		student_category_index = next(
-			(
-				index
-				for index, item in enumerate(ordered_items)
-				if item.link_type == 'DocType' and item.link_to == 'Student Category'
-			),
-			student_management_index + 1,
-		)
-		ordered_items.insert(student_category_index + 1, document_type_item)
+		ordered_items.insert(student_management_index + 2, cohort_item)
+		ordered_items.insert(student_management_index + 3, document_type_item)
 	if academics_section:
 		academics_index = ordered_items.index(academics_section)
 		existing_academics_children = []
@@ -1702,34 +2160,99 @@ def _configure_education_sidebar() -> None:
 		academics_index = ordered_items.index(academics_section)
 		ordered_items[academics_index + 1:academics_index + 1] = academics_links
 	assessment_section = next(
-		(item for item in ordered_items if item.type == 'Section Break' and item.label == 'Assessment'),
+		(
+			item
+			for item in ordered_items
+			if item.type == 'Section Break' and item.label in {'Assessment', 'Assessment & Grades'}
+		),
 		None,
 	)
 	if assessment_section:
-		gradebook_item = next(
-			(item for item in sidebar.items if item.link_type == 'DocType' and item.link_to == 'Assessment Gradebook'),
-			None,
-		)
-		if not gradebook_item:
-			gradebook_item = sidebar.append('items', {
-				'type': 'Link',
-				'label': 'Assessment Gradebook',
-				'child': 1,
-				'link_type': 'DocType',
-				'link_to': 'Assessment Gradebook',
-			})
-		gradebook_item.label = 'Assessment Gradebook'
-		gradebook_item.child = 1
-		ordered_items = [item for item in ordered_items if item is not gradebook_item]
-		result_index = next(
-			(
-				index
-				for index, item in enumerate(ordered_items)
-				if item.link_type == 'DocType' and item.link_to == 'Assessment Result'
-			),
-			ordered_items.index(assessment_section),
-		)
-		ordered_items.insert(result_index + 1, gradebook_item)
+		assessment_section.label = 'Assessment'
+		assessment_links = []
+		for label, link_to in (
+			('Assessment Plan', 'Assessment Plan'),
+			('Assessment Criteria', 'Assessment Criteria'),
+			('Assessment Group', 'Assessment Group'),
+			('Assessment Result', 'Assessment Result'),
+			('Assessment Gradebook', 'Assessment Gradebook'),
+			('Grading Scale', 'Grading Scale'),
+		):
+			item = next(
+				(
+					row
+					for row in sidebar.items
+					if row.link_type == 'DocType' and row.link_to == link_to
+				),
+				None,
+			)
+			if not item:
+				item = sidebar.append('items', {
+					'type': 'Link',
+					'child': 1,
+					'link_type': 'DocType',
+					'link_to': link_to,
+				})
+			item.label = label
+			item.child = 1
+			assessment_links.append(item)
+		assessment_index = ordered_items.index(assessment_section)
+		existing_assessment_children = []
+		for item in ordered_items[assessment_index + 1:]:
+			if not item.child:
+				break
+			existing_assessment_children.append(item)
+		ordered_items = [
+			item
+			for item in ordered_items
+			if item not in existing_assessment_children and item not in assessment_links
+		]
+		assessment_index = ordered_items.index(assessment_section)
+		ordered_items[assessment_index + 1:assessment_index + 1] = assessment_links
+	tools_section = next(
+		(item for item in ordered_items if item.type == 'Section Break' and item.label == 'Tools'),
+		None,
+	)
+	if tools_section:
+		tool_links = []
+		for label, link_to in (
+			('Program Enrollment Tool', 'Program Enrollment Tool'),
+			('Student Group Creation Tool', 'Student Group Creation Tool'),
+			('Student Attendance Tool', 'Student Attendance Tool'),
+			('Student Report Generation Tool', 'Student Report Generation Tool'),
+			('Assessment Result Tool', 'Assessment Result Tool'),
+			('Course Scheduling Tool', 'Course Scheduling Tool'),
+		):
+			item = next(
+				(
+					row
+					for row in sidebar.items
+					if row.link_type == 'DocType' and row.link_to == link_to
+				),
+				None,
+			)
+			if not item:
+				item = sidebar.append('items', {
+					'type': 'Link',
+					'link_type': 'DocType',
+					'link_to': link_to,
+				})
+			item.label = label
+			item.child = 1
+			tool_links.append(item)
+		tools_index = ordered_items.index(tools_section)
+		existing_tool_children = []
+		for item in ordered_items[tools_index + 1:]:
+			if not item.child:
+				break
+			existing_tool_children.append(item)
+		ordered_items = [
+			item
+			for item in ordered_items
+			if item not in existing_tool_children and item not in tool_links
+		]
+		tools_index = ordered_items.index(tools_section)
+		ordered_items[tools_index + 1:tools_index + 1] = tool_links
 	finance_section = next(
 		(
 			item

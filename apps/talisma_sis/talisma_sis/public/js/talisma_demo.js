@@ -9,6 +9,10 @@ const TALISMA_MODULES = {
 	Reports: 'Generate reports and gain insights.',
 };
 
+// Keep internal compatibility names out of the business-facing Desk UI.
+frappe._messages['Talisma Curriculum Version'] = 'Curriculum Version';
+frappe._messages['Talisma Class Section'] = 'Class Section';
+
 const TALISMA_ACTIONS = [
 	['New Applicant', 'Create and review an admission application', ['List', 'Student Applicant']],
 	['Find a Student', 'Open the central student record', ['List', 'Student']],
@@ -25,6 +29,40 @@ if (TALISMA_SITES.has(frappe.boot?.sitename)) {
 
 function is_talisma_desktop() {
 	return window.location.pathname.replace(/\/$/, '') === '/desk';
+}
+
+function enforce_bryan_university_shell() {
+	const path = window.location.pathname.replace(/\/$/, '');
+	const workspace_routes = new Set(frappe.boot?.talisma_workspace_routes || []);
+	const workspace_slug = path.startsWith('/desk/') ? path.slice(6).split('/')[0] : '';
+	if (
+		path === '/desk' ||
+		(workspace_routes.has(workspace_slug) && workspace_slug !== 'bryan-university')
+	) {
+		window.location.replace(TALISMA_WORKSPACE_ROUTE);
+		return false;
+	}
+
+	const sidebars = frappe.boot?.workspace_sidebar_item || {};
+	Object.keys(sidebars).forEach((key) => {
+		if (key !== 'bryan university') delete sidebars[key];
+	});
+	window.localStorage.removeItem('sidebar_item_map');
+	const sidebar = frappe.app?.sidebar;
+	if (
+		sidebar &&
+		sidebars['bryan university'] &&
+		sidebar.sidebar_title !== 'Bryan University'
+	) {
+		sidebar.setup('Bryan University');
+	}
+	return true;
+}
+
+function schedule_bryan_university_shell() {
+	window.setTimeout(enforce_bryan_university_shell, 0);
+	window.setTimeout(enforce_bryan_university_shell, 120);
+	window.setTimeout(enforce_bryan_university_shell, 450);
 }
 
 function create_element(class_name, html) {
@@ -210,12 +248,53 @@ function move_to_horizontal_field(event) {
 	}
 }
 
+let new_email_cleanup_scheduled = false;
+
+function schedule_new_email_cleanup() {
+	if (new_email_cleanup_scheduled) return;
+	new_email_cleanup_scheduled = true;
+	window.requestAnimationFrame(() => {
+		new_email_cleanup_scheduled = false;
+		const translated_label = typeof __ === 'function' ? __('New Email') : 'New Email';
+		document
+			.querySelectorAll('.form-footer .timeline-actions .action-btn')
+			.forEach((button) => {
+				const label = (button.textContent || '')
+					.replace(/^\s*\+\s*/, '')
+					.replace(/\s+/g, ' ')
+					.trim();
+				if (label === 'New Email' || label === translated_label) button.remove();
+			});
+	});
+}
+
+let connections_cleanup_scheduled = false;
+
+function schedule_connections_cleanup() {
+	if (connections_cleanup_scheduled) return;
+	connections_cleanup_scheduled = true;
+	window.requestAnimationFrame(() => {
+		connections_cleanup_scheduled = false;
+		const links = document.querySelectorAll(
+			'.form-tabs .nav-link[data-fieldname="connections_tab"], .form-tabs .nav-link[href="#connections_tab"]',
+		);
+		links.forEach((link) => {
+			if (link.classList.contains('active')) {
+				const replacement = [...link.closest('.form-tabs')?.querySelectorAll('.nav-link') || []]
+					.find((candidate) => candidate !== link && candidate.getClientRects().length > 0);
+				replacement?.click();
+			}
+			(link.closest('.nav-item') || link).remove();
+		});
+		document.querySelectorAll(
+			'.form-tab-content > #connections_tab, .form-tab-content > [data-fieldname="connections_tab"], .form-page[data-fieldname="connections_tab"]',
+		).forEach((panel) => panel.remove());
+	});
+}
+
 frappe.ready(() => {
 	if (!TALISMA_SITES.has(frappe.boot?.sitename)) return;
-	if (is_talisma_desktop()) {
-		window.location.replace(TALISMA_WORKSPACE_ROUTE);
-		return;
-	}
+	if (!enforce_bryan_university_shell()) return;
 
 	document.body.classList.add('talisma-sis-demo');
 	if (!document.title.startsWith('Bryan University')) document.title = 'Bryan University | ' + document.title;
@@ -233,13 +312,24 @@ frappe.ready(() => {
 	});
 	document.addEventListener('keydown', move_to_horizontal_field);
 
+	schedule_new_email_cleanup();
+	schedule_connections_cleanup();
 	schedule_talisma_dashboard();
+	schedule_bryan_university_shell();
 	align_university_workspace_to_top();
 	frappe.router?.on('change', () => {
+		if (!enforce_bryan_university_shell()) return;
+		schedule_new_email_cleanup();
+		schedule_connections_cleanup();
 		schedule_talisma_dashboard();
+		schedule_bryan_university_shell();
 		align_university_workspace_to_top();
 	});
-	new MutationObserver(schedule_talisma_dashboard).observe(document.body, {
+	new MutationObserver(() => {
+		schedule_new_email_cleanup();
+		schedule_connections_cleanup();
+		schedule_talisma_dashboard();
+	}).observe(document.body, {
 		childList: true,
 		subtree: true,
 	});

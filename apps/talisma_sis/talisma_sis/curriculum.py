@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import json
+
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import flt, getdate, now_datetime, today
 
 
@@ -23,6 +26,12 @@ def configure_curriculum() -> None:
 					options="Talisma Curriculum Version",
 					read_only=1,
 				),
+				_field(
+					"talisma_curriculum_requirements_html",
+					"Curriculum Requirements",
+					"HTML",
+					"section_break_courses",
+				),
 			],
 			"Program Enrollment": [
 				_field(
@@ -36,8 +45,80 @@ def configure_curriculum() -> None:
 				),
 			],
 		},
-		update=False,
+		update=True,
 	)
+	_configure_program_curriculum_layout()
+
+
+def _configure_program_curriculum_layout() -> None:
+	"""Use the published curriculum as the Program's single course source."""
+	for fieldname, prop, value, prop_type in (
+		("department", "hidden", 1, "Check"),
+		("department", "in_list_view", 0, "Check"),
+		("department", "in_standard_filter", 0, "Check"),
+		("courses", "hidden", 1, "Check"),
+		("section_break_courses", "label", "Curriculum Requirements", "Data"),
+	):
+		make_property_setter("Program", fieldname, prop, value, prop_type)
+
+	preferred_order = [
+		"talisma_program_code",
+		"program_abbreviation",
+		"talisma_academic_unit",
+		"column_break_3",
+		"program_name",
+		"talisma_degree",
+		"talisma_default_curriculum_version",
+		"section_break_courses",
+		"talisma_curriculum_requirements_html",
+	]
+	current_order = [field.fieldname for field in frappe.get_meta("Program").fields]
+	remaining = [fieldname for fieldname in current_order if fieldname not in preferred_order]
+	make_property_setter(
+		"Program",
+		None,
+		"field_order",
+		json.dumps(preferred_order + remaining),
+		"Data",
+		for_doctype=True,
+	)
+	frappe.clear_cache(doctype="Program")
+
+
+@frappe.whitelist()
+def get_program_curriculum_requirements(program: str) -> dict:
+	"""Return the selected curriculum and its requirements for a Program view."""
+	program_doc = frappe.get_doc("Program", program)
+	program_doc.check_permission("read")
+	version_name = program_doc.get("talisma_default_curriculum_version")
+	if not version_name:
+		return {"version": None, "requirements": []}
+
+	version = frappe.get_doc("Talisma Curriculum Version", version_name)
+	version.check_permission("read")
+	requirements = sorted(
+		(
+			{
+				"sequence": row.sequence,
+				"requirement_code": row.requirement_code,
+				"requirement_name": row.requirement_name,
+				"requirement_type": row.requirement_type,
+				"course": row.course,
+				"active": bool(row.active),
+			}
+			for row in version.requirements
+		),
+		key=lambda row: (row["sequence"] or 0, row["requirement_code"] or ""),
+	)
+	return {
+		"version": {
+			"name": version.name,
+			"version_label": version.version_label,
+			"catalog_year": version.catalog_year,
+			"status": version.status,
+		},
+		"requirements": requirements,
+	}
 
 
 def _field(fieldname, label, fieldtype, insert_after="", options="", **values):

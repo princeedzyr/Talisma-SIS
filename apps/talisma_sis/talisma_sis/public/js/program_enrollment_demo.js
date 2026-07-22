@@ -90,7 +90,11 @@ function open_registration_dialog(frm) {
 						fieldtype: 'MultiCheck',
 						columns: 1,
 						options: available.map((section) => ({
-							label: `${section.course} · CRN ${section.talisma_crn} · ${section.talisma_meeting_days} ${section.talisma_start_time}`,
+							label: [
+								section.course,
+								`CRN ${section.talisma_crn}`,
+								section.meeting_summary || [section.talisma_meeting_days, section.talisma_start_time].filter(Boolean).join(' '),
+							].filter(Boolean).join(' · '),
 							value: section.name,
 						})),
 					},

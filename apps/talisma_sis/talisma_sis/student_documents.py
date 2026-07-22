@@ -21,7 +21,6 @@ def configure_student_documents() -> None:
 			"description": "Passport, driver's license, or another government-issued photo ID.",
 			"allowed_extensions": "pdf,jpg,jpeg,png",
 			"max_file_size_mb": 10,
-			"requires_expiry_date": 1,
 		},
 		{
 			"document_name": "Official Transcript",
@@ -29,7 +28,6 @@ def configure_student_documents() -> None:
 			"description": "Official transcript from the previously attended institution.",
 			"allowed_extensions": "pdf",
 			"max_file_size_mb": 15,
-			"requires_expiry_date": 0,
 		},
 	):
 		if frappe.db.exists("Talisma Student Document Type", values["document_name"]):
@@ -219,8 +217,6 @@ def upload_student_document(document: str, file_url: str, expiry_date: str | Non
 		frappe.throw(_("The uploaded file could not be verified."), frappe.PermissionError)
 	document_type = frappe.get_doc("Talisma Student Document Type", doc.document_type)
 	_validate_file(file_doc, document_type)
-	if document_type.requires_expiry_date and not expiry_date:
-		frappe.throw(_("Expiry Date is required for this document."))
 	frappe.db.set_value(
 		"File",
 		file_doc.name,
@@ -259,7 +255,7 @@ def portal_documents(student: str) -> list[dict]:
 		placeholder = frappe.db.get_value(
 			"Talisma Student Document Type",
 			row.document_type,
-			["description", "allowed_extensions", "max_file_size_mb", "requires_expiry_date"],
+			["description", "allowed_extensions", "max_file_size_mb"],
 			as_dict=True,
 		) or {}
 		row.update(placeholder)

@@ -10,6 +10,15 @@ from talisma_sis.demo import DEMO_SITE
 
 
 MAX_COURSES_PER_TERM = 5
+MEETING_DAY_ORDER = (
+	"Sunday",
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+)
 
 
 def healthcheck() -> dict:
@@ -106,7 +115,6 @@ def get_section_options(program_enrollment: str, academic_term: str | None = Non
 	summary = get_registration_summary(program_enrollment)
 	allowed_courses = {row["course"] for row in summary["courses"]}
 	section_filters = {
-		"group_based_on": "Course",
 		"program": summary["program"],
 		"academic_year": summary["academic_year"],
 		"disabled": 0,
@@ -115,7 +123,7 @@ def get_section_options(program_enrollment: str, academic_term: str | None = Non
 	offered_terms = list(dict.fromkeys(
 		row.academic_term
 		for row in frappe.get_all(
-			"Student Group",
+			"Talisma Class Section",
 			filters=section_filters,
 			fields=["academic_term", "course"],
 			order_by="academic_term",
@@ -145,7 +153,7 @@ def get_section_options(program_enrollment: str, academic_term: str | None = Non
 	if not selected_term:
 		return {**summary, "academic_term": None, "terms": terms, "sections": []}
 	sections = frappe.get_all(
-		"Student Group",
+		"Talisma Class Section",
 		filters={
 			**section_filters,
 			"academic_term": selected_term,
@@ -156,15 +164,13 @@ def get_section_options(program_enrollment: str, academic_term: str | None = Non
 			"talisma_crn",
 			"talisma_section_number",
 			"talisma_delivery_method",
-			"talisma_meeting_days",
-			"talisma_start_time",
-			"talisma_end_time",
 			"talisma_room",
 			"talisma_primary_instructor",
 			"max_strength",
 		],
 		order_by="course, talisma_section_number",
 	)
+	_add_period_summaries(sections)
 	registered = {
 		row.talisma_course_section: row.name
 		for row in frappe.get_all(
@@ -193,6 +199,77 @@ def get_section_options(program_enrollment: str, academic_term: str | None = Non
 	}
 
 
+def _add_period_summaries(sections: list) -> None:
+	"""Attach display-only schedule values without querying removed legacy columns."""
+	section_names = [section.name for section in sections]
+	if not section_names:
+		return
+
+	periods_by_section = {name: [] for name in section_names}
+	for period in frappe.get_all(
+		"Talisma Class Period",
+		filters={
+			"parent": ("in", section_names),
+			"parenttype": "Talisma Class Section",
+			"parentfield": "talisma_periods",
+		},
+		fields=["parent", "days", "start_time", "end_time", "idx"],
+		order_by="parent, idx",
+	):
+		periods_by_section[period.parent].append(period)
+
+	for section in sections:
+		periods = periods_by_section.get(section.name, [])
+		days = {
+			day
+			for period in periods
+			for day in _meeting_days(period.days)
+		}
+		section.talisma_meeting_days = ", ".join(
+			day for day in MEETING_DAY_ORDER if day in days
+		)
+		section.talisma_start_time = periods[0].start_time if periods else None
+		section.talisma_end_time = periods[0].end_time if periods else None
+		section.meeting_summary = "; ".join(_period_summary(period) for period in periods)
+
+
+def _meeting_days(value: str | None) -> set[str]:
+	"""Read both current comma/newline values and legacy single-letter day codes."""
+	raw = (value or "").strip()
+	if not raw:
+		return set()
+	if "," not in raw and "\n" not in raw and raw.upper() == raw:
+		codes = {
+			"U": "Sunday",
+			"M": "Monday",
+			"T": "Tuesday",
+			"W": "Wednesday",
+			"R": "Thursday",
+			"F": "Friday",
+			"S": "Saturday",
+		}
+		return {codes[code] for code in raw if code in codes}
+	return {
+		part.strip()
+		for part in raw.replace("\n", ",").split(",")
+		if part.strip() in MEETING_DAY_ORDER
+	}
+
+
+def _period_summary(period) -> str:
+	days = ", ".join(day for day in MEETING_DAY_ORDER if day in _meeting_days(period.days))
+	start = _display_time(period.start_time)
+	end = _display_time(period.end_time)
+	return f"{days} {start}-{end}".strip()
+
+
+def _display_time(value) -> str:
+	if value is None:
+		return ""
+	text = str(value)
+	return text[:-3] if len(text) == 8 and text.endswith(":00") else text
+
+
 @frappe.whitelist()
 def register_sections(program_enrollment: str, sections: list[str] | str) -> dict:
 	"""Register a student into open sections without duplicating course records."""
@@ -210,7 +287,7 @@ def register_sections(program_enrollment: str, sections: list[str] | str) -> dic
 	linked = []
 	waitlisted = []
 	for section_name in selected:
-		section = frappe.get_doc("Student Group", section_name)
+		section = frappe.get_doc("Talisma Class Section", section_name)
 		_validate_section_for_enrollment(section, enrollment, allowed_courses)
 		existing_name = frappe.db.get_value(
 			"Course Enrollment",
@@ -399,7 +476,7 @@ def swap_course_section(student: str, course_enrollment: str, new_section: str) 
 	enrollment = frappe.get_doc("Program Enrollment", doc.program_enrollment)
 	_authorize_registration(enrollment)
 	from talisma_sis.curriculum import allowed_curriculum_courses
-	section = frappe.get_doc("Student Group", new_section)
+	section = frappe.get_doc("Talisma Class Section", new_section)
 	_validate_section_for_enrollment(section, enrollment, allowed_curriculum_courses(enrollment))
 	if section.course != doc.course:
 		frappe.throw(_("The new section must be for {0}.").format(frappe.bold(doc.course)))
@@ -446,7 +523,7 @@ def us_section_acceptance_test() -> dict:
 		{"student": "EDU-STU-2026-00008", "program": "Bachelor of Science in Computer Science"},
 		"name",
 	)
-	section = frappe.db.get_value("Student Group", {"talisma_crn": "10001"}, "name")
+	section = frappe.db.get_value("Talisma Class Section", {"talisma_crn": "10001"}, "name")
 	before = frappe.db.count("Course Enrollment", {"program_enrollment": enrollment})
 	first = register_sections(enrollment, [section])
 	after_first = frappe.db.count("Course Enrollment", {"program_enrollment": enrollment})
@@ -480,7 +557,7 @@ def _authorize_registration(enrollment) -> None:
 
 
 def _validate_section_for_enrollment(section, enrollment, allowed_courses: set[str]) -> None:
-	if section.group_based_on != "Course" or section.course not in allowed_courses:
+	if section.course not in allowed_courses:
 		frappe.throw(_("Section {0} is not part of this program.").format(section.name))
 	if section.program != enrollment.program or section.academic_year != enrollment.academic_year:
 		frappe.throw(_("Section {0} is not offered for this program and academic year.").format(section.name))
@@ -496,9 +573,9 @@ def _add_student_to_section(section, student: str) -> None:
 
 
 def _remove_student_from_section(section_name: str | None, student: str) -> None:
-	if not section_name or not frappe.db.exists("Student Group", section_name):
+	if not section_name or not frappe.db.exists("Talisma Class Section", section_name):
 		return
-	section = frappe.get_doc("Student Group", section_name)
+	section = frappe.get_doc("Talisma Class Section", section_name)
 	changed = False
 	for row in section.students:
 		if row.student == student and row.active:

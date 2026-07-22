@@ -2,12 +2,13 @@
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
- "field_order": ["course", "course_name", "minimum_required_grade", "mandatory"],
+ "field_order": ["course_code", "course", "course_name", "minimum_required_grade", "mandatory"],
  "fields": [
-  {"fieldname": "course", "fieldtype": "Link", "in_list_view": 1, "label": "Course Code", "options": "Course", "reqd": 1},
-  {"fetch_from": "course.course_name", "fieldname": "course_name", "fieldtype": "Data", "in_list_view": 1, "label": "Course Name", "read_only": 1},
-  {"fieldname": "minimum_required_grade", "fieldtype": "Data", "in_list_view": 1, "label": "Minimum Required Grade"},
-  {"default": "1", "fieldname": "mandatory", "fieldtype": "Check", "in_list_view": 1, "label": "Mandatory"}
+  {"columns": 2, "fetch_from": "course.talisma_course_code", "fieldname": "course_code", "fieldtype": "Data", "in_list_view": 1, "label": "Course Code", "read_only": 1},
+  {"columns": 4, "fieldname": "course", "fieldtype": "Link", "in_list_view": 1, "label": "Course Name", "options": "Course", "reqd": 1},
+  {"fetch_from": "course.course_name", "fieldname": "course_name", "fieldtype": "Data", "hidden": 1, "label": "Course Name", "read_only": 1},
+  {"columns": 3, "fieldname": "minimum_required_grade", "fieldtype": "Data", "in_list_view": 1, "label": "Minimum Grade"},
+  {"columns": 1, "default": "1", "fieldname": "mandatory", "fieldtype": "Check", "in_list_view": 1, "label": "Required"}
  ],
  "istable": 1,
  "module": "Talisma SIS",

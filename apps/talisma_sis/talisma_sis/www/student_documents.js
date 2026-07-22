@@ -5,7 +5,6 @@ frappe.ready(() => {
 			const file = card.querySelector('.document-file').files[0];
 			const expiry = card.querySelector('.document-expiry')?.value || null;
 			if (!file) return frappe.msgprint(__('Choose a document to upload.'));
-			if (card.querySelector('.document-expiry') && !expiry) return frappe.msgprint(__('Enter the document expiry date.'));
 			button.disabled = true;
 			button.textContent = __('Uploading...');
 			try {

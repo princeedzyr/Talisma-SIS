@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
@@ -16,12 +18,14 @@ def configure_assessment() -> None:
 	create_custom_fields(
 		{
 			"Assessment Plan Criteria": [
-				_field("talisma_weightage", "Weightage", "Percent", insert_after="assessment_criteria", read_only=1, in_list_view=1),
+				_field("talisma_weightage", "Weightage", "Percent", insert_after="assessment_criteria", in_list_view=1),
 			],
 			"Assessment Plan": [
+				_field("talisma_class_section", "Class Section", "Link", "Talisma Class Section", "student_group", reqd=1, in_list_view=1),
 				_field("talisma_course_grade_weightage", "Course Grade Weightage", "Percent", insert_after="maximum_assessment_score", reqd=1, default="100"),
 			],
 			"Assessment Result": [
+				_field("talisma_class_section", "Class Section", "Link", "Talisma Class Section", "student_group", read_only=1, in_list_view=1),
 				_field("talisma_percentage", "Percentage", "Percent", insert_after="total_score", read_only=1, in_list_view=1, precision="2", allow_on_submit=1),
 				_field("talisma_grade_points", "Grade Points", "Float", insert_after="grade", read_only=1, in_list_view=1, precision="2", allow_on_submit=1),
 				_field("talisma_result_status", "Status", "Select", RESULT_STATES, "talisma_grade_points", read_only=1, default="Draft", in_list_view=1, allow_on_submit=1),
@@ -38,16 +42,24 @@ def configure_assessment() -> None:
 				_field("talisma_change_reason", "Grade Change Reason", "Small Text", insert_after="talisma_locked_on", allow_on_submit=1),
 				_field("talisma_grade_change_history", "Grade Change History", "Table", "Talisma Grade Change History", "talisma_change_reason", read_only=1, allow_on_submit=1),
 			],
+			"Assessment Result Tool": [
+				_field("talisma_class_section", "Class Section", "Link", "Talisma Class Section", "assessment_plan", reqd=1),
+			],
 		},
 		update=True,
 	)
 	for doctype, fieldname, prop, value, prop_type in (
-		("Assessment Plan", "student_group", "label", "Class Schedule", "Data"),
+		("Assessment Plan Criteria", "talisma_weightage", "read_only", 0, "Check"),
+		("Assessment Plan", "student_group", "reqd", 0, "Check"),
+		("Assessment Plan", "student_group", "hidden", 1, "Check"),
 		("Assessment Plan", "grading_scale", "label", "Grade Scale", "Data"),
 		("Assessment Plan", "schedule_date", "label", "Assessment Date", "Data"),
 		("Assessment Plan", "from_time", "label", "Start Time", "Data"),
 		("Assessment Plan", "to_time", "label", "End Time", "Data"),
-		("Assessment Result", "student_group", "label", "Class Schedule", "Data"),
+		("Assessment Result", "student_group", "reqd", 0, "Check"),
+		("Assessment Result", "student_group", "hidden", 1, "Check"),
+		("Assessment Result Tool", "student_group", "reqd", 0, "Check"),
+		("Assessment Result Tool", "student_group", "hidden", 1, "Check"),
 		("Assessment Result", "grading_scale", "label", "Grade Scale", "Data"),
 		("Assessment Result", "details", "label", "Assessment Criteria Scores", "Data"),
 		("Assessment Result", "details", "allow_on_submit", 1, "Check"),
@@ -56,9 +68,72 @@ def configure_assessment() -> None:
 		("Assessment Result", None, "track_changes", 1, "Check"),
 	):
 		make_property_setter(doctype, fieldname, prop, value, prop_type)
+	_configure_assessment_result_layout()
+	_backfill_class_sections()
 	_backfill_assessment_fields()
-	for doctype in ("Assessment Plan", "Assessment Plan Criteria", "Assessment Result"):
+	for doctype in ("Assessment Plan", "Assessment Plan Criteria", "Assessment Result", "Assessment Result Tool"):
 		frappe.clear_cache(doctype=doctype)
+
+
+def sync_assessment_plan_section(doc, method=None) -> None:
+	if not doc.get("talisma_class_section"):
+		return
+	section = frappe.get_doc("Talisma Class Section", doc.talisma_class_section)
+	doc.student_group = section.legacy_student_group or section.name
+	doc.program = section.program
+	doc.course = section.course
+	doc.academic_year = section.academic_year
+	doc.academic_term = section.academic_term
+
+
+def sync_assessment_result_section(doc, method=None) -> None:
+	if not doc.assessment_plan:
+		return
+	plan = frappe.db.get_value(
+		"Assessment Plan", doc.assessment_plan, ["talisma_class_section", "student_group"], as_dict=True
+	)
+	if plan:
+		doc.talisma_class_section = plan.talisma_class_section
+		doc.student_group = plan.student_group
+
+
+def _configure_assessment_result_layout() -> None:
+	"""Keep the score and grade summary balanced and easy to scan."""
+	frappe.clear_cache(doctype="Assessment Result")
+	field_order = [field.fieldname for field in frappe.get_meta("Assessment Result").fields]
+	result_summary = [
+		"section_break_8",
+		"maximum_score",
+		"total_score",
+		"talisma_percentage",
+		"column_break_11",
+		"grade",
+		"talisma_grade_points",
+		"talisma_result_status",
+	]
+	missing_fields = set(result_summary) - set(field_order)
+	if missing_fields:
+		frappe.throw(
+			_("Cannot configure the Assessment Result summary; missing fields: {0}.").format(
+				", ".join(sorted(missing_fields))
+			)
+		)
+
+	field_order = [fieldname for fieldname in field_order if fieldname not in result_summary]
+	summary_end = field_order.index("section_break_13")
+	field_order[summary_end:summary_end] = result_summary
+	make_property_setter(
+		"Assessment Result",
+		None,
+		"field_order",
+		json.dumps(field_order),
+		"Data",
+		for_doctype=True,
+	)
+	make_property_setter(
+		"Assessment Result", "section_break_8", "label", "Score & Grade Summary", "Data"
+	)
+	frappe.clear_cache(doctype="Assessment Result")
 
 
 def validate_assessment_plan(doc, method=None) -> None:
@@ -92,6 +167,10 @@ def validate_assessment_plan(doc, method=None) -> None:
 	for row in doc.assessment_criteria:
 		if not flt(row.talisma_weightage):
 			row.talisma_weightage = configured_weights.get(row.assessment_criteria, 0)
+	if len(doc.assessment_criteria) == 1 and not flt(doc.assessment_criteria[0].talisma_weightage):
+		doc.assessment_criteria[0].talisma_weightage = 100
+		doc.assessment_criteria[0].maximum_score = flt(doc.maximum_assessment_score)
+	for row in doc.assessment_criteria:
 		if flt(row.talisma_weightage) and flt(doc.maximum_assessment_score):
 			row.maximum_score = flt(doc.maximum_assessment_score) * flt(row.talisma_weightage) / 100
 	weightage = sum(flt(row.talisma_weightage) for row in doc.assessment_criteria)
@@ -371,6 +450,33 @@ def _cancel_draft_gradebooks(result) -> None:
 		pluck="name",
 	):
 		frappe.delete_doc("Assessment Gradebook", name, ignore_permissions=True)
+
+
+def _backfill_class_sections() -> None:
+	if not frappe.db.exists("DocType", "Talisma Class Section"):
+		return
+	for plan in frappe.get_all(
+		"Assessment Plan", fields=["name", "student_group", "talisma_class_section"]
+	):
+		class_section = plan.talisma_class_section
+		if not class_section and plan.student_group and frappe.db.exists("Talisma Class Section", plan.student_group):
+			class_section = plan.student_group
+		if class_section:
+			frappe.db.set_value(
+				"Assessment Plan", plan.name, "talisma_class_section", class_section, update_modified=False
+			)
+	for result in frappe.get_all(
+		"Assessment Result", fields=["name", "assessment_plan", "talisma_class_section"]
+	):
+		if result.talisma_class_section or not result.assessment_plan:
+			continue
+		class_section = frappe.db.get_value(
+			"Assessment Plan", result.assessment_plan, "talisma_class_section"
+		)
+		if class_section:
+			frappe.db.set_value(
+				"Assessment Result", result.name, "talisma_class_section", class_section, update_modified=False
+			)
 
 
 def _backfill_assessment_fields() -> None:

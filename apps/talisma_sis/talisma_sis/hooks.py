@@ -23,8 +23,8 @@ required_apps = ["erpnext", "education"]
 
 # Includes in <head>
 # ------------------
-app_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260719-25'
-app_include_js = '/assets/talisma_sis/js/talisma_demo.js?v=20260719-16'
+app_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260720-32'
+app_include_js = '/assets/talisma_sis/js/talisma_demo.js?v=20260721-3'
 web_include_css = '/assets/talisma_sis/css/talisma_demo.css?v=20260719-25'
 
 website_route_rules = [
@@ -54,22 +54,34 @@ doctype_js = {
 	"Student Applicant": "public/js/student_applicant_demo.js",
 	"Student Admission": "public/js/admission_intake.js",
 	"Student": "public/js/student_demo.js",
-	"Student Group": "public/js/class_scheduling.js",
+	"Student Group": "public/js/student_group_cohort.js",
+	"Talisma Class Section": "public/js/class_scheduling.js",
 	"Course Schedule": "public/js/course_schedule_legacy_redirect.js",
 	"Grading Scale": "public/js/grading_scale.js",
 	"Assessment Plan": "public/js/assessment_plan.js",
 	"Assessment Result": "public/js/assessment_result.js",
+	"Assessment Result Tool": "public/js/assessment_result_tool.js",
 	"Assessment Gradebook": "public/js/assessment_gradebook.js",
 	"Degree": "public/js/degree_demo.js",
 	"Program": "public/js/program_academics.js",
+	"Talisma Curriculum Version": "public/js/curriculum_version.js",
 	"Course Category": "public/js/course_category_demo.js",
 	"Course": "public/js/course_academics.js",
 	"Program Enrollment": "public/js/program_enrollment_demo.js",
 	"Student Report Generation Tool": "public/js/student_report_generation_tool_demo.js",
+	"Academic Year": "public/js/academic_year.js",
 }
 
 doctype_list_js = {
+	"Academic Year": "public/js/academic_year_list.js",
+	"Student": "public/js/student_list.js",
+	"Student Group": "public/js/student_group_list.js",
 	"Student Applicant": "public/js/student_applicant_list.js",
+}
+
+override_doctype_class = {
+	"Academic Term": "talisma_sis.overrides.academic_term.AcademicTerm",
+	"Student": "talisma_sis.overrides.student.Student",
 }
 
 doc_events = {
@@ -89,27 +101,44 @@ doc_events = {
 		],
 	},
 	"Program": {"validate": "talisma_sis.academics.validate_program"},
-	"Program Enrollment": {"validate": "talisma_sis.curriculum.validate_program_enrollment"},
-	"Course": {"validate": ["talisma_sis.us_academics.validate_course", "talisma_sis.academics.validate_course"]},
+	"Program Enrollment": {
+		"validate": "talisma_sis.curriculum.validate_program_enrollment",
+		"after_insert": "talisma_sis.lifecycle.program_enrollment_created",
+	},
+	"Course": {
+		"before_validate": "talisma_sis.academics.prepare_course_name",
+		"validate": ["talisma_sis.us_academics.validate_course", "talisma_sis.academics.validate_course"],
+		"on_update": "talisma_sis.academics.refresh_academic_standing_for_course",
+	},
 	"Course Category": {"validate": "talisma_sis.academics.validate_course_category"},
 	"Course Enrollment": {
 		"validate": "talisma_sis.academics.validate_course_enrollment",
+		"after_insert": "talisma_sis.lifecycle.course_enrollment_created",
 		"on_update": "talisma_sis.academics.refresh_academic_standing_for_enrollment",
 		"after_delete": "talisma_sis.academics.refresh_academic_standing_for_enrollment",
 	},
 	"Assessment Result": {
+		"before_validate": "talisma_sis.assessment.sync_assessment_result_section",
 		"validate": "talisma_sis.assessment.validate_assessment_result",
 		"before_update_after_submit": "talisma_sis.assessment.capture_grade_change",
 		"on_submit": "talisma_sis.assessment.assessment_result_submitted",
 		"on_cancel": "talisma_sis.assessment.assessment_result_cancelled",
 	},
-	"Assessment Plan": {"validate": "talisma_sis.assessment.validate_assessment_plan"},
+	"Assessment Plan": {
+		"before_validate": "talisma_sis.assessment.sync_assessment_plan_section",
+		"validate": "talisma_sis.assessment.validate_assessment_plan",
+	},
+	"Academic Year": {
+		"before_validate": "talisma_sis.academics.prepare_academic_year",
+		"validate": "talisma_sis.academics.validate_academic_year",
+	},
 	"Academic Term": {"validate": "talisma_sis.us_academics.validate_academic_term"},
 	"Grading Scale": {"validate": "talisma_sis.academics.validate_grading_scale"},
-	"Student Group": {
+	"Talisma Class Section": {
 		"before_validate": "talisma_sis.class_scheduling.before_validate_class_schedule",
-		"validate": ["talisma_sis.us_academics.validate_course_section", "talisma_sis.class_scheduling.validate_class_schedule"],
+		"validate": "talisma_sis.class_scheduling.validate_class_schedule",
 	},
+	"Student Group": {"validate": "talisma_sis.class_scheduling.validate_student_group"},
 	"Address": {"validate": "talisma_sis.student_records.validate_contact_dates"},
 	"Contact": {"validate": "talisma_sis.student_records.validate_contact_dates"},
 	"Talisma Student Identifier": {
@@ -325,9 +354,9 @@ after_migrate = ["talisma_sis.demo.restore_demo_navigation_after_migrate"]
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "talisma_sis.task.get_dashboard_data"
-# }
+override_doctype_dashboards = {
+	"Student Group": "talisma_sis.student_group_dashboard.get_data",
+}
 
 # exempt linked doctypes from being automatically cancelled
 #
@@ -342,6 +371,7 @@ after_migrate = ["talisma_sis.demo.restore_demo_navigation_after_migrate"]
 # ----------------
 # before_request = ["talisma_sis.utils.before_request"]
 after_request = ["talisma_sis.demo.redirect_demo_desk"]
+boot_session = "talisma_sis.demo.enforce_bryan_university_boot"
 
 # Job Events
 # ----------

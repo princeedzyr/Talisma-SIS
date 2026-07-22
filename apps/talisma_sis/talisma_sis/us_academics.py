@@ -13,9 +13,7 @@ def validate_course(doc, method=None) -> None:
 	if not _is_demo() or not doc.meta.has_field("talisma_credit_hours"):
 		return
 	if flt(doc.talisma_credit_hours) <= 0:
-		frappe.throw(_("Credit Hours must be greater than zero."))
-	if not doc.talisma_subject_code or not doc.talisma_catalog_number:
-		frappe.throw(_("Subject Code and Catalog Number are required for the US course catalog."))
+		frappe.throw(_("Credits must be greater than zero."))
 
 
 def validate_academic_term(doc, method=None) -> None:
@@ -25,7 +23,6 @@ def validate_academic_term(doc, method=None) -> None:
 		doc.talisma_registration_opens,
 		doc.term_start_date,
 		doc.talisma_add_drop_deadline,
-		doc.talisma_census_date,
 		doc.talisma_withdrawal_deadline,
 		doc.term_end_date,
 		doc.talisma_grades_due,
@@ -38,7 +35,7 @@ def validate_academic_term(doc, method=None) -> None:
 
 
 def validate_course_section(doc, method=None) -> None:
-	if not _is_demo() or doc.group_based_on != "Course" or not doc.meta.has_field("talisma_crn"):
+	if not _is_demo() or not doc.meta.has_field("talisma_crn"):
 		return
 	for fieldname in ("talisma_crn", "talisma_section_number", "talisma_campus", "talisma_delivery_method"):
 		if not doc.get(fieldname):
@@ -62,20 +59,19 @@ def healthcheck() -> dict:
 		},
 	)
 	sections = frappe.db.count(
-		"Student Group",
-		{"group_based_on": "Course", "talisma_crn": ("is", "set")},
+		"Talisma Class Section",
+		{"talisma_crn": ("is", "set")},
 	)
-	schedules = frappe.db.count("Course Schedule", {"student_group": ("is", "set")})
+	schedules = frappe.db.count("Course Schedule", {"talisma_class_section": ("is", "set")})
 	section_registrations = frappe.db.count(
 		"Course Enrollment", {"talisma_course_section": ("is", "set")}
 	)
 	term = frappe.db.get_value(
 		"Academic Term",
-		"2026-2027 (Fall 2026)",
+		"Fall 2026",
 		[
 			"talisma_registration_opens",
 			"talisma_add_drop_deadline",
-			"talisma_census_date",
 			"talisma_withdrawal_deadline",
 			"talisma_grades_due",
 		],

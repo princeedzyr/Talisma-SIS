@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import json
+import re
+
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.custom.doctype.property_setter.property_setter import make_property_setter
-from frappe.utils import flt
+from frappe.utils import flt, getdate
 
 
 DEMO_SITE = "demo.talisma.local"
@@ -43,26 +46,41 @@ DEFAULT_GRADE_POINTS = {
 
 def configure_academics() -> None:
 	"""Add relationship and policy fields without replacing Education DocTypes."""
+	configure_academic_year()
 	create_custom_fields(
 		{
+			"Degree": [
+				_field(
+					"talisma_degree_column_2",
+					"",
+					"Column Break",
+					insert_after="degree_code",
+				),
+			],
 			"Program": [
 				_field("talisma_program_code", "Program Code", "Data", insert_after="program_name", reqd=1, unique=1, in_list_view=1),
 				_field("talisma_degree", "Degree", "Link", "Degree", "program_abbreviation", reqd=1, in_list_view=1),
 			],
 			"Program Course": [
 				_field("talisma_course_code", "Course Code", "Data", insert_after="course", read_only=1, fetch_from="course.talisma_course_code", in_list_view=1),
-				_field("talisma_credit_hours", "Credit Hours", "Float", insert_after="course_name", read_only=1, fetch_from="course.talisma_credit_hours", in_list_view=1),
+				_field("talisma_credit_hours", "Credits", "Float", insert_after="course_name", read_only=1, fetch_from="course.talisma_credit_hours", in_list_view=1),
 				_field("talisma_course_type", "Course Type", "Data", insert_after="talisma_credit_hours", read_only=1, fetch_from="course.talisma_course_type", in_list_view=1),
 				_field("talisma_academic_term", "Academic Term", "Link", "Academic Term", "talisma_course_type", read_only=1, fetch_from="course.talisma_effective_term", in_list_view=1),
 			],
 			"Course": [
 				_field("talisma_course_code", "Course Code", "Data", insert_after="course_name", reqd=1, unique=1, in_list_view=1),
-				_field("talisma_program", "Program", "Link", "Program", "talisma_academic_unit", reqd=1, in_list_view=1),
+				_field("talisma_course_name", "Course Name", "Data", insert_after="talisma_course_code", reqd=1, unique=1, in_list_view=1),
+				_field("talisma_program", "Program", "Link", "Program", "talisma_academic_unit", in_list_view=1),
 				_field("talisma_course_type", "Course Type", "Select", COURSE_TYPES, "talisma_course_level", reqd=1),
+				_field("talisma_hours", "Hours", "Float", insert_after="talisma_credit_hours", reqd=1, precision="1"),
+				_field("talisma_course_details_section", "Course Details", "Section Break", insert_after="course_name"),
+				_field("talisma_course_details_column_2", "", "Column Break", insert_after="talisma_credit_hours"),
+				_field("talisma_course_details_column_3", "", "Column Break", insert_after="talisma_course_level"),
 				_field("talisma_retake_section", "Retake Configuration", "Section Break", insert_after="talisma_repeatable"),
-				_field("talisma_max_retake_attempts", "Maximum Retake Attempts", "Int", insert_after="talisma_retake_section", default=1, depends_on="eval:doc.talisma_repeatable == 1"),
-				_field("talisma_gpa_attempt_policy", "Future GPA Attempt Policy", "Select", "\nHighest Grade Counts\nLatest Grade Counts\nAverage Grade Counts", "talisma_max_retake_attempts"),
-				_field("talisma_prerequisites_section", "Prerequisites", "Section Break", insert_after="topics"),
+				_field("talisma_retake_values_section", "", "Section Break", insert_after="talisma_repeatable"),
+				_field("talisma_max_retake_attempts", "Maximum Retake Attempts", "Int", insert_after="talisma_retake_values_section", default=1),
+				_field("talisma_gpa_attempt_policy", "GPA Attempt Policy", "Select", "Highest Grade Counts\nLatest Grade Counts\nAverage Grade Counts", "talisma_retake_column_2", default="Highest Grade Counts"),
+				_field("talisma_prerequisites_section", "Prerequisites", "Section Break", insert_after="talisma_gpa_attempt_policy"),
 				_field("talisma_prerequisites", "Prerequisites", "Table", "Talisma Course Prerequisite", "talisma_prerequisites_section"),
 			],
 			"Course Topic": [
@@ -80,6 +98,11 @@ def configure_academics() -> None:
 		},
 		update=False,
 	)
+	_backfill_course_names()
+	_backfill_course_hours()
+	_backfill_prerequisite_course_codes()
+	_configure_degree_layout()
+	_configure_course_layout()
 	configure_grading_scales()
 	completion_field = frappe.db.get_value(
 		"Custom Field",
@@ -97,17 +120,327 @@ def configure_academics() -> None:
 		frappe.clear_cache(doctype="Course Enrollment")
 	for doctype, fieldname, prop, value, prop_type in (
 		("Program", "program_abbreviation", "reqd", 1, "Check"),
-		("Course", "talisma_credit_hours", "label", "Credit Hours", "Data"),
+		("Course", "talisma_credit_hours", "label", "Credits", "Data"),
 		("Course", "talisma_credit_hours", "reqd", 1, "Check"),
 		("Course", "talisma_effective_term", "label", "Academic Term", "Data"),
-		("Course", "talisma_effective_term", "reqd", 1, "Check"),
+		("Course", "talisma_effective_term", "reqd", 0, "Check"),
 		("Course", "talisma_repeatable", "label", "Retake Course", "Data"),
 		("Course", "default_grading_scale", "label", "Grade Scale", "Data"),
 		("Course", "topics", "label", "Topics", "Data"),
+		("Course", "talisma_max_retake_attempts", "mandatory_depends_on", "eval:doc.talisma_repeatable == 1", "Data"),
+		("Course", "talisma_max_retake_attempts", "depends_on", "", "Data"),
+		("Course", "talisma_max_retake_attempts", "read_only_depends_on", "eval:!doc.talisma_repeatable", "Data"),
+		("Course", "talisma_gpa_attempt_policy", "label", "GPA Attempt Policy", "Data"),
+		("Course", "talisma_gpa_attempt_policy", "options", "Highest Grade Counts\nLatest Grade Counts\nAverage Grade Counts", "Text"),
+		("Course", "talisma_gpa_attempt_policy", "default", "Highest Grade Counts", "Data"),
+		("Course", "talisma_gpa_attempt_policy", "depends_on", "", "Data"),
+		("Course", "talisma_gpa_attempt_policy", "read_only_depends_on", "eval:!doc.talisma_repeatable", "Data"),
+		("Course", "talisma_gpa_attempt_policy", "mandatory_depends_on", "eval:doc.talisma_repeatable == 1", "Data"),
+		("Program Course", "talisma_credit_hours", "label", "Credits", "Data"),
 		("Course Topic", "topic", "insert_after", "talisma_unit_number", "Data"),
 	):
 		make_property_setter(doctype, fieldname, prop, value, prop_type)
 	_seed_degrees_and_backfill()
+
+
+def _configure_course_layout() -> None:
+	"""Keep the Course master focused on identity and credit configuration."""
+	visible_layout = [
+		"talisma_course_information_section",
+		"talisma_course_code",
+		"column_break_tflc",
+		"talisma_course_name",
+		"talisma_course_details_section",
+		"talisma_credit_hours",
+		"talisma_course_level",
+		"talisma_course_details_column_2",
+		"talisma_hours",
+		"talisma_course_type",
+		"talisma_retake_section",
+		"talisma_repeatable",
+		"talisma_retake_values_section",
+		"talisma_max_retake_attempts",
+		"talisma_retake_column_2",
+		"talisma_gpa_attempt_policy",
+		"talisma_prerequisites_section",
+		"talisma_prerequisites",
+	]
+	hidden_fields = [
+		"talisma_academic_unit",
+		"talisma_program",
+		"department",
+		"hero_image",
+		"default_grading_scale",
+		"talisma_subject_code",
+		"talisma_catalog_number",
+		"talisma_course_configuration_section",
+		"talisma_grading_basis",
+		"talisma_effective_term",
+		"talisma_course_configuration_column_2",
+		"description",
+		"talisma_course_details_column_3",
+		"section_break_6",
+		"topics",
+	]
+
+	current_order = [field.fieldname for field in frappe.get_meta("Course").fields]
+	remaining = [
+		fieldname
+		for fieldname in current_order
+		if fieldname not in visible_layout and fieldname not in hidden_fields and fieldname != "course_name"
+	]
+	make_property_setter(
+		"Course",
+		None,
+		"field_order",
+		json.dumps(visible_layout + ["course_name"] + hidden_fields + remaining),
+		"Data",
+		for_doctype=True,
+	)
+	for fieldname in hidden_fields:
+		make_property_setter("Course", fieldname, "reqd", 0, "Check")
+		make_property_setter("Course", fieldname, "hidden", 1, "Check")
+	for fieldname in visible_layout:
+		make_property_setter("Course", fieldname, "hidden", 0, "Check")
+
+	frappe.clear_cache(doctype="Course")
+
+
+def _backfill_course_names() -> None:
+	"""Populate the editable display field from the standard Course naming field."""
+	if not frappe.get_meta("Course").has_field("talisma_course_name"):
+		return
+	for course in frappe.get_all("Course", fields=["name", "course_name", "talisma_course_name"]):
+		if not course.talisma_course_name:
+			frappe.db.set_value(
+				"Course",
+				course.name,
+				"talisma_course_name",
+				course.course_name or course.name,
+				update_modified=False,
+			)
+
+
+def _backfill_course_hours() -> None:
+	"""Initialize Hours from existing Credits without changing legacy credit values."""
+	if not frappe.get_meta("Course").has_field("talisma_hours"):
+		return
+	for course in frappe.get_all(
+		"Course",
+		fields=["name", "talisma_credit_hours", "talisma_hours", "talisma_gpa_attempt_policy"],
+	):
+		values = {}
+		if not flt(course.talisma_hours) and flt(course.talisma_credit_hours):
+			values["talisma_hours"] = course.talisma_credit_hours
+		if not course.talisma_gpa_attempt_policy:
+			values["talisma_gpa_attempt_policy"] = "Highest Grade Counts"
+		if values:
+			frappe.db.set_value(
+				"Course",
+				course.name,
+				values,
+				update_modified=False,
+			)
+
+
+def _backfill_prerequisite_course_codes() -> None:
+	"""Populate the display-only code for prerequisite rows created before this column existed."""
+	if not frappe.get_meta("Talisma Course Prerequisite").has_field("course_code"):
+		return
+	for row in frappe.get_all(
+		"Talisma Course Prerequisite",
+		fields=["name", "course", "course_code"],
+	):
+		if row.course and not row.course_code:
+			frappe.db.set_value(
+				"Talisma Course Prerequisite",
+				row.name,
+				"course_code",
+				frappe.db.get_value("Course", row.course, "talisma_course_code"),
+				update_modified=False,
+			)
+
+
+def _configure_degree_layout() -> None:
+	"""Display Degree Code and Degree Name together on the first row."""
+	layout = [
+		"degree_code",
+		"talisma_degree_column_2",
+		"degree_name",
+		"programs_section",
+		"programs_html",
+	]
+	current_order = [field.fieldname for field in frappe.get_meta("Degree").fields]
+	remaining = [fieldname for fieldname in current_order if fieldname not in layout]
+	make_property_setter(
+		"Degree",
+		None,
+		"field_order",
+		json.dumps(layout + remaining),
+		"Data",
+		for_doctype=True,
+	)
+	frappe.clear_cache(doctype="Degree")
+
+
+def configure_academic_year() -> None:
+	"""Add an editable institutional code and compact two-column layout."""
+	create_custom_fields(
+		{
+			"Academic Year": [
+				_field(
+					"talisma_academic_year_section",
+					"",
+					"Section Break",
+					insert_after="academic_year_name",
+				),
+				_field(
+					"talisma_academic_year_code",
+					"Academic Year Code",
+					"Data",
+					insert_after="academic_year_name",
+					unique=1,
+					in_list_view=1,
+					in_standard_filter=1,
+				),
+				_field(
+					"talisma_academic_year_column_2",
+					"",
+					"Column Break",
+					insert_after="year_start_date",
+				),
+			],
+		},
+		update=True,
+	)
+	_backfill_academic_year_codes()
+	make_property_setter(
+		"Academic Year", "talisma_academic_year_code", "reqd", 1, "Check"
+	)
+	make_property_setter(
+		"Academic Year", "talisma_academic_year_code", "unique", 1, "Check"
+	)
+	make_property_setter(
+		"Academic Year",
+		None,
+		"title_field",
+		"academic_year_name",
+		"Data",
+		for_doctype=True,
+	)
+
+	layout = [
+		"talisma_academic_year_section",
+		"academic_year_name",
+		"year_start_date",
+		"talisma_academic_year_column_2",
+		"talisma_academic_year_code",
+		"year_end_date",
+	]
+	current_order = [field.fieldname for field in frappe.get_meta("Academic Year").fields]
+	remaining = [fieldname for fieldname in current_order if fieldname not in layout]
+	make_property_setter(
+		"Academic Year",
+		None,
+		"field_order",
+		json.dumps(layout + remaining),
+		"Data",
+		for_doctype=True,
+	)
+	_configure_academic_year_list_view()
+	frappe.clear_cache(doctype="Academic Year")
+
+
+def _configure_academic_year_list_view() -> None:
+	"""Keep the institutional name first and arrange the remaining list columns."""
+	fields = json.dumps(
+		[
+			{"fieldname": "talisma_academic_year_code", "label": "Academic Year Code"},
+			{"fieldname": "year_start_date", "label": "Year Start Date"},
+			{"fieldname": "year_end_date", "label": "Year End Date"},
+		]
+	)
+	if frappe.db.exists("List View Settings", "Academic Year"):
+		frappe.db.set_value("List View Settings", "Academic Year", "fields", fields)
+		return
+
+	doc = frappe.new_doc("List View Settings")
+	doc.name = "Academic Year"
+	doc.fields = fields
+	doc.insert(ignore_permissions=True)
+
+
+def prepare_academic_year(doc, method=None) -> None:
+	"""Generate the code only when it has not been manually supplied."""
+	if doc.meta.has_field("talisma_academic_year_code") and not doc.talisma_academic_year_code:
+		doc.talisma_academic_year_code = _default_academic_year_code(doc)
+
+
+def validate_academic_year(doc, method=None) -> None:
+	if doc.year_start_date and doc.year_end_date:
+		if getdate(doc.year_start_date) >= getdate(doc.year_end_date):
+			frappe.throw(_("Year Start Date must be earlier than Year End Date."))
+
+	if not doc.meta.has_field("talisma_academic_year_code"):
+		return
+	code = (doc.talisma_academic_year_code or "").strip()
+	if not code:
+		frappe.throw(_("Academic Year Code is required."))
+	doc.talisma_academic_year_code = code
+	duplicate = frappe.db.exists(
+		"Academic Year",
+		{
+			"talisma_academic_year_code": code,
+			"name": ["!=", doc.name or ""],
+		},
+	)
+	if duplicate:
+		frappe.throw(
+			_("Academic Year Code {0} is already assigned to {1}.").format(
+				frappe.bold(code), frappe.bold(duplicate)
+			)
+		)
+
+
+def _backfill_academic_year_codes() -> None:
+	used_codes = {
+		code
+		for code in frappe.get_all(
+			"Academic Year",
+			filters={"talisma_academic_year_code": ["is", "set"]},
+			pluck="talisma_academic_year_code",
+		)
+		if code
+	}
+	for row in frappe.get_all(
+		"Academic Year",
+		filters={"talisma_academic_year_code": ["is", "not set"]},
+		fields=["name", "academic_year_name", "year_start_date"],
+		order_by="year_start_date asc, name asc",
+	):
+		base = _default_academic_year_code(row)
+		candidate = base
+		suffix = 2
+		while candidate in used_codes:
+			candidate = f"{base}-{suffix}"
+			suffix += 1
+		frappe.db.set_value(
+			"Academic Year",
+			row.name,
+			"talisma_academic_year_code",
+			candidate,
+			update_modified=False,
+		)
+		used_codes.add(candidate)
+
+
+def _default_academic_year_code(doc) -> str:
+	if doc.get("year_start_date"):
+		return f"AY{getdate(doc.year_start_date).year}"
+	match = re.search(r"\b(\d{4})\b", doc.get("academic_year_name") or doc.get("name") or "")
+	if match:
+		return f"AY{match.group(1)}"
+	frappe.throw(_("Enter Year Start Date to generate Academic Year Code."))
 
 
 def configure_grading_scales() -> None:
@@ -430,15 +763,29 @@ def validate_program(doc, method=None) -> None:
 	_validate_unique_rows(doc.courses, "course", _("A Course can appear only once in a Program."))
 
 
+def prepare_course_name(doc, method=None) -> None:
+	"""Keep the editable Course Name and standard naming field synchronized."""
+	if not _is_demo() or not doc.meta.has_field("talisma_course_name"):
+		return
+	if doc.talisma_course_name:
+		doc.course_name = doc.talisma_course_name.strip()
+	elif doc.course_name:
+		doc.talisma_course_name = doc.course_name.strip()
+
+
 def validate_course(doc, method=None) -> None:
 	if not _is_demo():
 		return
-	if not all((doc.talisma_course_code, doc.course_name, doc.talisma_program, doc.talisma_effective_term, doc.talisma_course_type)):
-		frappe.throw(_("Course Code, Course Name, Program, Academic Term, and Course Type are required."))
+	if not all((doc.talisma_course_code, doc.talisma_course_name, doc.talisma_course_type)):
+		frappe.throw(_("Course Code, Course Name, and Course Type are required."))
 	if flt(doc.talisma_credit_hours) <= 0:
-		frappe.throw(_("Credit Hours must be greater than zero."))
+		frappe.throw(_("Credits must be greater than zero."))
+	if flt(doc.talisma_hours) <= 0:
+		frappe.throw(_("Hours must be greater than zero."))
 	if doc.talisma_repeatable and (doc.talisma_max_retake_attempts or 0) < 2:
 		frappe.throw(_("Maximum Retake Attempts must be at least 2 when Retake Course is enabled."))
+	if doc.talisma_repeatable and not doc.talisma_gpa_attempt_policy:
+		frappe.throw(_("GPA Attempt Policy is required when Retake Course is enabled."))
 	if not doc.talisma_repeatable:
 		doc.talisma_max_retake_attempts = 1
 	_validate_unique_rows(doc.talisma_prerequisites, "course", _("A prerequisite Course can appear only once."))
@@ -562,6 +909,19 @@ def refresh_academic_standing_for_enrollment(doc, method=None) -> None:
 		refresh_academic_standing(doc.student)
 
 
+def refresh_academic_standing_for_course(doc, method=None) -> None:
+	"""Reapply a changed retake policy to students enrolled in this Course."""
+	if not _is_demo() or not doc.name:
+		return
+	students = set(frappe.get_all(
+		"Course Enrollment",
+		filters={"course": doc.name, "docstatus": ("!=", 2)},
+		pluck="student",
+	))
+	for student in students:
+		refresh_academic_standing(student)
+
+
 def refresh_academic_standing(student: str) -> list[str]:
 	"""Recalculate term and cumulative GPA history from authoritative course attempts."""
 	if not _is_demo() or not student or not frappe.db.exists("Student", student):
@@ -571,9 +931,11 @@ def refresh_academic_standing(student: str) -> list[str]:
 		filters={"student": student, "docstatus": ("!=", 2)},
 		fields=[
 			"name", "program", "program_enrollment", "course", "talisma_academic_term",
-			"talisma_grade_points", "talisma_completion_status",
+			"talisma_grade_points", "talisma_completion_status", "talisma_attempt_number",
+			"enrollment_date", "creation",
 		],
 	)
+	gpa_attempt_names = _gpa_attempt_names(attempts)
 	term_attempts: dict[str, list] = {}
 	for attempt in attempts:
 		term = attempt.talisma_academic_term or _course_enrollment_term(attempt)
@@ -606,6 +968,8 @@ def refresh_academic_standing(student: str) -> list[str]:
 			program = program or attempt.program
 			status = attempt.talisma_completion_status or "In Progress"
 			if status not in {"Completed", "Failed"}:
+				continue
+			if attempt.name not in gpa_attempt_names:
 				continue
 			credits = flt(frappe.db.get_value("Course", attempt.course, "talisma_credit_hours"))
 			points = flt(attempt.talisma_grade_points)
@@ -651,10 +1015,60 @@ def refresh_academic_standing(student: str) -> list[str]:
 	return updated
 
 
+def _gpa_attempt_names(attempts: list) -> set[str]:
+	"""Select course attempts that contribute to GPA using each Course's retake policy."""
+	terminal = [
+		attempt
+		for attempt in attempts
+		if (attempt.talisma_completion_status or "In Progress") in {"Completed", "Failed"}
+	]
+	selected = {attempt.name for attempt in terminal}
+	by_course: dict[str, list] = {}
+	for attempt in terminal:
+		by_course.setdefault(attempt.course, []).append(attempt)
+	if not by_course:
+		return selected
+
+	policies = {
+		row.name: row.talisma_gpa_attempt_policy or "Highest Grade Counts"
+		for row in frappe.get_all(
+			"Course",
+			filters={"name": ("in", list(by_course))},
+			fields=["name", "talisma_repeatable", "talisma_gpa_attempt_policy"],
+		)
+		if row.talisma_repeatable
+	}
+	for course, course_attempts in by_course.items():
+		policy = policies.get(course)
+		if not policy or policy == "Average Grade Counts" or len(course_attempts) < 2:
+			continue
+		selected.difference_update(attempt.name for attempt in course_attempts)
+		if policy == "Latest Grade Counts":
+			winner = max(
+				course_attempts,
+				key=lambda attempt: (
+					int(attempt.talisma_attempt_number or 0),
+					getdate(attempt.enrollment_date) if attempt.enrollment_date else getdate("1900-01-01"),
+					attempt.creation,
+				),
+			)
+		else:
+			winner = max(
+				course_attempts,
+				key=lambda attempt: (
+					flt(attempt.talisma_grade_points),
+					int(attempt.talisma_attempt_number or 0),
+					attempt.creation,
+				),
+			)
+		selected.add(winner.name)
+	return selected
+
+
 def _course_enrollment_term(doc) -> str | None:
 	section = doc.get("talisma_course_section")
 	if section:
-		term = frappe.db.get_value("Student Group", section, "academic_term")
+		term = frappe.db.get_value("Talisma Class Section", section, "academic_term")
 		if term:
 			return term
 	program_enrollment = doc.get("program_enrollment")

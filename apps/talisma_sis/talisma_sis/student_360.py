@@ -125,28 +125,7 @@ def configure_student_360() -> None:
 					"talisma_fee_structure_html",
 				),
 				_field("talisma_fee_details_html", "", "HTML", "talisma_fee_details_section"),
-				_field(
-					"talisma_payment_history_section",
-					"Account Activity",
-					"Section Break",
-					"talisma_fee_details_html",
-				),
-				_field(
-					"talisma_payment_history_html",
-					"",
-					"HTML",
-					"talisma_payment_history_section",
-				),
-				_field(
-					"talisma_scholarships_section",
-					"Scholarships",
-					"Section Break",
-					"talisma_payment_history_html",
-				),
-				_field("talisma_scholarships_html", "", "HTML", "talisma_scholarships_section"),
-				_field("talisma_waivers_section", "Waivers", "Section Break", "talisma_scholarships_html"),
-				_field("talisma_waivers_html", "", "HTML", "talisma_waivers_section"),
-				_field("talisma_refunds_section", "Refunds", "Section Break", "talisma_waivers_html"),
+				_field("talisma_refunds_section", "Refunds", "Section Break", "talisma_fee_details_html"),
 				_field("talisma_refunds_html", "", "HTML", "talisma_refunds_section"),
 				_field("talisma_academic_profile_tab", "Academic Profile", "Tab Break", "talisma_refunds_html"),
 				_field("talisma_profile_overview_section", "Current Academic Profile", "Section Break", "talisma_academic_profile_tab"),
@@ -239,10 +218,10 @@ def configure_student_360() -> None:
 		"talisma_academic_profile_tab",
 		"talisma_profile_overview_section",
 		"talisma_profile_overview_html",
-		"talisma_advisor_assignments_section",
-		"talisma_advisor_assignments_html",
 		"talisma_status_history_section",
 		"talisma_status_history_html",
+		"talisma_advisor_assignments_section",
+		"talisma_advisor_assignments_html",
 		"talisma_academic_standing_section",
 		"talisma_academic_standing_html",
 		"talisma_degree_audit_section",
@@ -262,12 +241,6 @@ def configure_student_360() -> None:
 		"talisma_fee_structure_html",
 		"talisma_fee_details_section",
 		"talisma_fee_details_html",
-		"talisma_payment_history_section",
-		"talisma_payment_history_html",
-		"talisma_scholarships_section",
-		"talisma_scholarships_html",
-		"talisma_waivers_section",
-		"talisma_waivers_html",
 		"talisma_refunds_section",
 		"talisma_refunds_html",
 		"talisma_holds_privacy_tab",
@@ -279,7 +252,7 @@ def configure_student_360() -> None:
 		"talisma_documents_section",
 		"talisma_documents_html",
 	]
-	visible_fields = set(details_fields + student_views + ["connections_tab"])
+	visible_fields = set(details_fields + student_views)
 	all_fields = [field.fieldname for field in meta.fields]
 	missing = visible_fields - set(all_fields)
 	if missing:
@@ -293,7 +266,7 @@ def configure_student_360() -> None:
 	for fieldname in hidden_fields:
 		_set_property(fieldname, "hidden", 1, "Check")
 
-	field_order = details_fields + hidden_fields + student_views + ["connections_tab"]
+	field_order = details_fields + hidden_fields + student_views
 	make_property_setter(
 		"Student", None, "field_order", json.dumps(field_order), "Data", for_doctype=True
 	)
@@ -442,15 +415,15 @@ def _student_records_view(student_doc) -> dict:
 		placeholder = frappe.db.get_value(
 			"Talisma Student Document Type",
 			row.document_type,
-			["description", "allowed_extensions", "max_file_size_mb", "requires_expiry_date"],
+			["description", "allowed_extensions", "max_file_size_mb"],
 			as_dict=True,
 		) or {}
 		row.update(placeholder)
 	statuses = _permitted_rows(
 		"Talisma Student Status History",
 		student,
-		["name", "status", "reason", "academic_term", "effective_from", "effective_to", "source"],
-		"effective_from desc",
+		["name", "previous_status", "status", "reason", "academic_term", "effective_from", "effective_to", "source", "changed_by", "transition_timestamp", "creation"],
+		"effective_from desc, creation desc",
 	)
 	classifications = _permitted_rows(
 		"Talisma Student Classification History",
@@ -619,7 +592,7 @@ def _course_registration_view(student_doc) -> dict:
 	section_names = {row.talisma_course_section for row in rows if row.talisma_course_section}
 	sections = {
 		name: frappe.db.get_value(
-			"Student Group",
+			"Talisma Class Section",
 			name,
 			[
 				"talisma_section_status",

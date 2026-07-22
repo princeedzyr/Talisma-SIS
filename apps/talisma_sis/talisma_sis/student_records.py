@@ -5,6 +5,7 @@ from __future__ import annotations
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import add_days, getdate, now_datetime, today
 
 
@@ -26,7 +27,7 @@ def configure_student_records() -> None:
 	create_custom_fields(
 		{
 			"Student": [
-				_field("talisma_record_status", "Student Record Status", "Select", "talisma_enrollment_status", options="Applicant\nAdmitted\nActive\nLeave of Absence\nWithdrawn\nSuspended\nDismissed\nGraduated\nDeceased", read_only=1),
+				_field("talisma_record_status", "Student Lifecycle Status", "Select", "talisma_enrollment_status", options="Applicant\nAdmitted\nEnrolled\nActive\nLeave of Absence\nWithdrawn\nSuspended\nDismissed\nGraduated\nDeceased", read_only=1),
 				_field("talisma_primary_program", "Primary Program", "Link", "talisma_record_status", options="Program", read_only=1),
 				_field("talisma_privacy_restriction", "Privacy Restriction", "Check", "talisma_primary_program", read_only=1),
 				_field("talisma_active_hold_count", "Active Holds", "Int", "talisma_privacy_restriction", read_only=1),
@@ -50,18 +51,57 @@ def configure_student_records() -> None:
 				_field("talisma_effective_to", "Effective To", "Date", "talisma_effective_from"),
 			],
 			"Talisma Family Member": [
-				_field("emergency_contact", "Emergency Contact", "Check", "relation", in_list_view=1),
-				_field("legal_guardian", "Legal Guardian", "Check", "emergency_contact", in_list_view=1),
+				_field("phone", "Contact Number", "Data", "relation", in_list_view=1, columns=2),
+				_field("emergency_contact", "Emergency Contact", "Check", "phone", in_list_view=1, columns=2),
+				_field("legal_guardian", "Legal Guardian", "Check", "emergency_contact", in_list_view=1, columns=2),
 				_field("authorized_contact", "Authorized Contact", "Check", "legal_guardian"),
 				_field("financially_responsible", "Financially Responsible", "Check", "authorized_contact"),
 				_field("ferpa_authorized", "FERPA Authorized", "Check", "financially_responsible"),
 				_field("priority", "Priority", "Int", "ferpa_authorized", default="1"),
-				_field("phone", "Phone", "Data", "priority"),
-				_field("email", "Email", "Data", "phone", options="Email"),
+				_field("email", "Email", "Data", "priority", options="Email"),
 			],
 		},
 		update=False,
 	)
+	frappe.db.set_value(
+		"Custom Field",
+		{"dt": "Student", "fieldname": "talisma_record_status"},
+		{
+			"label": "Student Lifecycle Status",
+			"options": "Applicant\nAdmitted\nEnrolled\nActive\nLeave of Absence\nWithdrawn\nSuspended\nDismissed\nGraduated\nDeceased",
+			"read_only": 1,
+		},
+		update_modified=False,
+	)
+	frappe.db.set_value(
+		"Custom Field",
+		{"dt": "Talisma Family Member", "fieldname": "phone"},
+		{"label": "Contact Number", "insert_after": "relation", "in_list_view": 1},
+		update_modified=False,
+	)
+	frappe.db.set_value(
+		"Custom Field",
+		{"dt": "Talisma Family Member", "fieldname": "emergency_contact"},
+		"insert_after",
+		"phone",
+		update_modified=False,
+	)
+	frappe.db.set_value(
+		"Custom Field",
+		{"dt": "Talisma Family Member", "fieldname": "email"},
+		"insert_after",
+		"priority",
+		update_modified=False,
+	)
+	for fieldname, columns in (
+		("family_member_name", 3),
+		("relation", 2),
+		("phone", 2),
+		("emergency_contact", 2),
+		("legal_guardian", 2),
+	):
+		make_property_setter("Talisma Family Member", fieldname, "columns", columns, "Int")
+	frappe.clear_cache(doctype="Talisma Family Member")
 
 
 def _field(fieldname, label, fieldtype, insert_after="", options="", **values):
@@ -89,6 +129,8 @@ def validate_effective_record(doc, method=None) -> None:
 		_validate_hold(doc)
 	if doc.doctype == "Talisma Student Status History":
 		doc.approved_by = doc.approved_by or frappe.session.user
+		doc.changed_by = doc.changed_by or frappe.session.user
+		doc.transition_timestamp = doc.transition_timestamp or now_datetime()
 	if doc.doctype == "Talisma Student Privacy Preference":
 		doc.verified_by = doc.verified_by or frappe.session.user
 	if doc.doctype == "Talisma Student Academic Program":
@@ -100,11 +142,12 @@ def validate_effective_record(doc, method=None) -> None:
 	if doc.doctype == "Talisma Student Advisor Assignment":
 		_validate_advisor_assignment(doc)
 	if doc.doctype in {
-		"Talisma Student Status History",
 		"Talisma Student Classification History",
 		"Talisma Student Privacy Preference",
 	}:
 		_validate_no_overlap(doc, {})
+	if doc.doctype == "Talisma Student Status History":
+		_validate_status_history(doc)
 	if doc.doctype == "Talisma Student Academic Program" and doc.primary_program and doc.status == "Active":
 		_validate_no_overlap(doc, {"primary_program": 1, "status": "Active"})
 	if doc.doctype == "Talisma Student Advisor Assignment" and doc.primary_advisor and doc.status == "Active":
@@ -128,6 +171,27 @@ def _validate_no_overlap(doc, extra_filters: dict) -> None:
 			frappe.throw(
 				_("Effective dates overlap existing {0} record {1}.").format(
 					doc.doctype, frappe.bold(row.name)
+				)
+			)
+
+
+def _validate_status_history(doc) -> None:
+	"""Lifecycle dates use an exclusive Effective To boundary."""
+	start = getdate(doc.effective_from)
+	end = getdate(doc.effective_to) if doc.effective_to else getdate("2999-12-31")
+	if doc.effective_to and end < start:
+		frappe.throw(_("Effective To cannot be before Effective From."))
+	for row in frappe.get_all(
+		"Talisma Student Status History",
+		filters={"student": doc.student, "name": ("!=", doc.name or "")},
+		fields=["name", "effective_from", "effective_to"],
+	):
+		row_start = getdate(row.effective_from)
+		row_end = getdate(row.effective_to) if row.effective_to else getdate("2999-12-31")
+		if start < row_end and row_start < end:
+			frappe.throw(
+				_("Lifecycle dates overlap existing Student Status History record {0}.").format(
+					frappe.bold(row.name)
 				)
 			)
 
@@ -233,7 +297,16 @@ def _current_record(doctype: str, student: str, as_of, extra_filters: dict | Non
 		order_by=f"{from_field} desc, creation desc",
 	)
 	return next(
-		(row for row in rows if not row.get(to_field) or getdate(row.get(to_field)) >= getdate(as_of)),
+		(
+			row
+			for row in rows
+			if not row.get(to_field)
+			or (
+				getdate(row.get(to_field)) > getdate(as_of)
+				if doctype == "Talisma Student Status History"
+				else getdate(row.get(to_field)) >= getdate(as_of)
+			)
+		),
 		None,
 	)
 
